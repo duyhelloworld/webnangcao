@@ -18,7 +18,7 @@
 - SQL Server 2022
 
 ## Cài đặt
-- Cài [NodeJS](https://nodejs.org/dist/v18.18.2/node-v18.18.2-x64.msi) phiên bản 18.18.2
+- Cài [NodeJS](https://nodejs.org/dist/v20.8.1/node-v20.8.1-x64.msi) phiên bản 20.8.1
 - Cài [.NET 7.0 SDK](https://dotnet.microsoft.com/download/dotnet/7.0)
 - Clone project về máy
 - Mở project bằng Visual Studio 2022
