@@ -11,4 +11,5 @@ public class AppUser : IdentityUser
     public override string Id { get; set; } = Guid.NewGuid().ToString();
 
     public string? Address { get; set; }
+    public string? FullName { get; set; }
 }

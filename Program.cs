@@ -1,15 +1,23 @@
 using System.Text;
-using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using webnangcao.Context;
 using webnangcao.Entities;
+using webnangcao.Exceptions;
+using webnangcao.Services;
+using webnangcao.Services.Impl;
 
 var builder = WebApplication.CreateBuilder(args);
+var config = builder.Configuration;
 
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllers();
+
+builder.Services.AddScoped<ErrorMiddleware>();
+
+builder.Services.AddScoped<IAuthService, AuthService>();
+
 builder.Services.AddDbContext<ApplicationContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("Default"));
@@ -17,7 +25,7 @@ builder.Services.AddDbContext<ApplicationContext>(options =>
 
 builder.Services.AddAuthentication(options =>
 {
-    options.DefaultAuthenticateScheme = GoogleDefaults.AuthenticationScheme;
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 })
@@ -28,26 +36,26 @@ builder.Services.AddAuthentication(options =>
     {
         ClockSkew = TimeSpan.Zero,
         ValidateIssuer = true,
-        ValidIssuer = builder.Configuration["JWT:Issuer"],
+        ValidIssuer = config["Authentication:Jwt:Issuer"],
         ValidateAudience = false,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]!)),
+            Encoding.UTF8.GetBytes(config["Authentication:Jwt:Key"]!)),
     };
 })
 .AddFacebook(options =>
 {
-    options.AppId = builder.Configuration["Facebook:AppId"]!;
-    options.AppSecret = builder.Configuration["Facebook:AppSecret"]!;
+    options.AppId = config["Authentication:Facebook:AppId"]!;
+    options.AppSecret = config["Authentication:Facebook:AppSecret"]!;
+    options.SaveTokens = true;
+
 })
 .AddGoogle(Options => 
 {
-    Options.ClientId = builder.Configuration["Google:ClientId"]!;
-    Options.ClientSecret = builder.Configuration["Google:ClientSecret"]!;
+    Options.ClientId = config["Authentication:Google:ClientId"]!;
+    Options.ClientSecret = config["Authentication:Google:ClientSecret"]!;
 });
-
-builder.Services.AddSpaStaticFiles();
 
 builder.Services.AddIdentity<AppUser, AppRole>(options =>
 {
@@ -76,6 +84,10 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
+} 
+else
+{
+    app.UseMiddleware<ErrorMiddleware>();
 }
 
 app.UseAuthentication();
@@ -83,6 +95,7 @@ app.UseAuthorization();
 
 app.UseStaticFiles();
 app.UseRouting();
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller}/{action=Index}/{id?}");
