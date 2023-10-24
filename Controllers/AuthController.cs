@@ -1,14 +1,9 @@
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Google;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using webnangcao.Entities;
+using webnangcao.Entities.Enumerables;
 using webnangcao.Models.Securities;
 using webnangcao.Services;
+
 namespace webnangcao.Controllers;
 
 [Route("[controller]")]
@@ -21,21 +16,22 @@ public class AuthController : ControllerBase
         _service = service;
     }
 
-    [HttpPost("register")]
-    public async Task<IActionResult> Register([FromBody] SignupModel model)
+    [HttpPost("signup")]
+    public async Task<IActionResult> SignUp([FromBody] SignupModel model)
     {
-        return Ok(await _service.Signup(model));
+        return Ok(await _service.SignUpAsync(model, "User"));
+    }
+
+    [Authorize(Roles = nameof(ERole.Admin) + "," + nameof(ERole.SuperAdmin))]
+    [HttpPost("signup/{role:minlength(1)}")]
+    public async Task<IActionResult> SignUp([FromBody] SignupModel model, [FromRoute] string role)
+    {
+        return Ok(await _service.SignUpAsync(model, role));
     }
 
     [HttpPost("login")]
-    public async Task Login()
+    public async Task<IActionResult> Login([FromBody] LoginModel model)
     {
-        await _service.SigninAsync(context);
-    }
-
-    [HttpGet]
-    public IActionResult SayHello()
-    {
-        return Ok("Hello World");
+        return Ok(await _service.SignInAsync(model));
     }
 }

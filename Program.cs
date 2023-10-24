@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using webnangcao.Context;
 using webnangcao.Entities;
+using webnangcao.Entities.Enumerables;
 using webnangcao.Exceptions;
 using webnangcao.Services;
 using webnangcao.Services.Impl;
@@ -13,7 +14,6 @@ var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
 
 builder.Services.AddControllers();
-
 builder.Services.AddScoped<ErrorMiddleware>();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
@@ -48,8 +48,6 @@ builder.Services.AddAuthentication(options =>
 {
     options.AppId = config["Authentication:Facebook:AppId"]!;
     options.AppSecret = config["Authentication:Facebook:AppSecret"]!;
-    options.SaveTokens = true;
-
 })
 .AddGoogle(Options => 
 {
@@ -84,6 +82,7 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
+    // Console.WriteLine(ERole.Admin.ToString() + "," + nameof(ERole.Admin));
 } 
 else
 {
