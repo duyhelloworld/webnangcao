@@ -8,16 +8,17 @@ using Microsoft.IdentityModel.Tokens;
 using webnangcao.Entities;
 using webnangcao.Exceptions;
 using webnangcao.Entities.Enumerables;
+using webnangcao.Tools;
 
 namespace webnangcao.Services.Impl;
 
 public class AuthService : IAuthService
 {
-    private readonly UserManager<AppUser> _userManager;
-    private readonly SignInManager<AppUser> _signInManager;
+    private readonly UserManager<User> _userManager;
+    private readonly SignInManager<User> _signInManager;
     private readonly IConfiguration _config;
 
-    public AuthService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IConfiguration config)
+    public AuthService(UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration config)
     {
         _userManager = userManager;
         _signInManager = signInManager;
@@ -41,7 +42,7 @@ public class AuthService : IAuthService
         }
 
         var highestRole = (await _userManager.GetRolesAsync(user))
-            .Select(r => ERoleConverter.ToERole(r)).Max();
+            .Select(r => ERoleTool.ToERole(r)).Max();
         var refreshToken = await _userManager.GenerateUserTokenAsync(user, "Default", "refresh_token");
         return new ResponseModel()
         {
@@ -57,7 +58,7 @@ public class AuthService : IAuthService
 
     public async Task<ResponseModel> SignUpAsync(SignupModel model, string role)
     {
-        var appuser = new AppUser()
+        var User = new User()
         {
             UserName = model.UserName,
             Email = model.Email,
@@ -66,31 +67,31 @@ public class AuthService : IAuthService
             Address = model.Address
         };
 
-        var result = await _userManager.CreateAsync(appuser, model.Password);
+        var result = await _userManager.CreateAsync(User, model.Password);
         if (!result.Succeeded)
         {
             throw new AppException(HttpStatusCode.BadRequest, "Đăng kí không thành công", "Hãy thử lại");
         }
-        var erole = ERoleConverter.ToERole(role);
-        await _userManager.AddToRoleAsync(appuser, erole.ToString());
-        var refreshToken = await _userManager.GenerateUserTokenAsync(appuser, "Default", "refresh_token");
+        var erole = ERoleTool.ToERole(role);
+        await _userManager.AddToRoleAsync(User, erole.ToString());
+        var refreshToken = await _userManager.GenerateUserTokenAsync(User, "Default", "refresh_token");
         return new ResponseModel()
         {
             IsSucceed = true,
             Data = new SuccessSignupModel()
             {
-                AccessToken = GenerateJwtToken(appuser, erole),
+                AccessToken = GenerateJwtToken(User, erole),
                 RefreshToken = refreshToken
             }
         };
     }
 
-    private string GenerateJwtToken(AppUser appUser, ERole role)
+    private string GenerateJwtToken(User User, ERole role)
     {
         var identity = new ClaimsIdentity(new[]
         {
-            new Claim(ClaimTypes.NameIdentifier, appUser.Id),
-            new Claim(ClaimTypes.Name, appUser.UserName!),
+            new Claim(ClaimTypes.NameIdentifier, User.Id),
+            new Claim(ClaimTypes.Name, User.UserName!),
             new Claim(ClaimTypes.Role, role.ToString())
         });
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Authentication:Jwt:Key"]!));
