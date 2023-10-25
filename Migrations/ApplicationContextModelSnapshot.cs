@@ -159,7 +159,210 @@ namespace webnangcao.Migrations
                     b.ToTable("UserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("webnangcao.Entities.AppUser", b =>
+            modelBuilder.Entity("webnangcao.Entities.Category", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("webnangcao.Entities.Comment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CommentAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("LastEditAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("TrackId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(150)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TrackId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Comments");
+                });
+
+            modelBuilder.Entity("webnangcao.Entities.Joins.Follow", b =>
+                {
+                    b.Property<string>("FollowedUserId")
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<string>("FollowingUserId")
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<DateTime>("StartedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("FollowedUserId", "FollowingUserId");
+
+                    b.HasIndex("FollowingUserId");
+
+                    b.ToTable("Follows");
+                });
+
+            modelBuilder.Entity("webnangcao.Entities.Joins.Track_Category", b =>
+                {
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TrackId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CategoryId", "TrackId");
+
+                    b.HasIndex("TrackId");
+
+                    b.ToTable("Track_Categories");
+                });
+
+            modelBuilder.Entity("webnangcao.Entities.Joins.Track_Playlist", b =>
+                {
+                    b.Property<int>("PlaylistId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TrackId")
+                        .HasColumnType("int");
+
+                    b.HasKey("PlaylistId", "TrackId");
+
+                    b.HasIndex("TrackId");
+
+                    b.ToTable("Track_Playlists");
+                });
+
+            modelBuilder.Entity("webnangcao.Entities.Joins.UserPlaylistAction", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("ActionName")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("PlaylistId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(150)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PlaylistId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserPlaylistActions");
+                });
+
+            modelBuilder.Entity("webnangcao.Entities.Playlist", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ArtWorkDirectory")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("CreateUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("LastUpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(35)
+                        .HasColumnType("nvarchar(35)");
+
+                    b.Property<string>("Tags")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreateUserId");
+
+                    b.ToTable("Playlists");
+                });
+
+            modelBuilder.Entity("webnangcao.Entities.Track", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ArtWorkDirectory")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Directory")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
+
+                    b.Property<DateTime>("UploadAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Tracks");
+                });
+
+            modelBuilder.Entity("webnangcao.Entities.User", b =>
                 {
                     b.Property<string>("Id")
                         .HasMaxLength(150)
@@ -171,6 +374,10 @@ namespace webnangcao.Migrations
                     b.Property<string>("Address")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("AvatarDirectory")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
@@ -181,6 +388,10 @@ namespace webnangcao.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("FullName")
+                        .HasMaxLength(140)
+                        .HasColumnType("nvarchar(140)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -228,159 +439,34 @@ namespace webnangcao.Migrations
                     b.ToTable("Users", (string)null);
                 });
 
-            modelBuilder.Entity("webnangcao.Entities.Category", b =>
+            modelBuilder.Entity("webnangcao.Entities.UserTrackAction", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
+                    b.Property<string>("ActionNameId")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("Id");
-
-                    b.ToTable("Categories");
-                });
-
-            modelBuilder.Entity("webnangcao.Entities.Joins.Follow", b =>
-                {
-                    b.Property<string>("NguoiFollowId")
-                        .HasColumnType("nvarchar(150)");
-
-                    b.Property<string>("NguoiDuocFollowId")
-                        .HasColumnType("nvarchar(150)");
-
-                    b.HasKey("NguoiFollowId", "NguoiDuocFollowId");
-
-                    b.HasIndex("NguoiDuocFollowId");
-
-                    b.ToTable("Follows");
-                });
-
-            modelBuilder.Entity("webnangcao.Entities.Joins.Playlist_Tag", b =>
-                {
-                    b.Property<int>("PlaylistId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Tag")
-                        .IsRequired()
-                        .HasMaxLength(40)
-                        .HasColumnType("nvarchar(40)");
-
-                    b.HasKey("PlaylistId");
-
-                    b.ToTable("Playlist_Tag");
-                });
-
-            modelBuilder.Entity("webnangcao.Entities.Joins.Track_Category", b =>
-                {
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("TrackId")
                         .HasColumnType("int");
 
-                    b.HasKey("CategoryId", "TrackId");
-
-                    b.HasIndex("TrackId");
-
-                    b.ToTable("Track_Category");
-                });
-
-            modelBuilder.Entity("webnangcao.Entities.Joins.Track_Playlist", b =>
-                {
-                    b.Property<int>("PlaylistId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TrackId")
-                        .HasColumnType("int");
-
-                    b.HasKey("PlaylistId", "TrackId");
-
-                    b.HasIndex("TrackId");
-
-                    b.ToTable("Track_Playlist");
-                });
-
-            modelBuilder.Entity("webnangcao.Entities.Playlist", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ArtWork")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("LanSuaCuoi")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NguoiTaoId")
+                    b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(150)");
 
-                    b.Property<DateTime>("ThoiGianTao")
-                        .HasColumnType("datetime2");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("NguoiTaoId");
+                    b.HasIndex("ActionNameId");
 
-                    b.ToTable("Playlists");
-                });
+                    b.HasIndex("TrackId");
 
-            modelBuilder.Entity("webnangcao.Entities.Track", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                    b.HasIndex("UserId");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ArtWork")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Directory")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("SoLuotBinhLuan")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SoLuotNghe")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SoLuotThich")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("UploadAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("CacTrack");
+                    b.ToTable("UserTrackActions");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -394,7 +480,7 @@ namespace webnangcao.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("webnangcao.Entities.AppUser", null)
+                    b.HasOne("webnangcao.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -403,7 +489,7 @@ namespace webnangcao.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("webnangcao.Entities.AppUser", null)
+                    b.HasOne("webnangcao.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -418,7 +504,7 @@ namespace webnangcao.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("webnangcao.Entities.AppUser", null)
+                    b.HasOne("webnangcao.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -427,41 +513,49 @@ namespace webnangcao.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("webnangcao.Entities.AppUser", null)
+                    b.HasOne("webnangcao.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("webnangcao.Entities.Joins.Follow", b =>
+            modelBuilder.Entity("webnangcao.Entities.Comment", b =>
                 {
-                    b.HasOne("webnangcao.Entities.AppUser", "NguoiDuocFollow")
-                        .WithMany()
-                        .HasForeignKey("NguoiDuocFollowId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("webnangcao.Entities.AppUser", "NguoiFollow")
-                        .WithMany()
-                        .HasForeignKey("NguoiFollowId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("NguoiDuocFollow");
-
-                    b.Navigation("NguoiFollow");
-                });
-
-            modelBuilder.Entity("webnangcao.Entities.Joins.Playlist_Tag", b =>
-                {
-                    b.HasOne("webnangcao.Entities.Playlist", "Playlist")
-                        .WithMany("Tags")
-                        .HasForeignKey("PlaylistId")
+                    b.HasOne("webnangcao.Entities.Track", "Track")
+                        .WithMany("Comments")
+                        .HasForeignKey("TrackId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Playlist");
+                    b.HasOne("webnangcao.Entities.User", "User")
+                        .WithMany("Comments")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Track");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("webnangcao.Entities.Joins.Follow", b =>
+                {
+                    b.HasOne("webnangcao.Entities.User", "FollowedUser")
+                        .WithMany()
+                        .HasForeignKey("FollowedUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("webnangcao.Entities.User", "FollowingUser")
+                        .WithMany()
+                        .HasForeignKey("FollowingUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("FollowedUser");
+
+                    b.Navigation("FollowingUser");
                 });
 
             modelBuilder.Entity("webnangcao.Entities.Joins.Track_Category", b =>
@@ -486,7 +580,7 @@ namespace webnangcao.Migrations
             modelBuilder.Entity("webnangcao.Entities.Joins.Track_Playlist", b =>
                 {
                     b.HasOne("webnangcao.Entities.Playlist", "Playlist")
-                        .WithMany("CacTrack")
+                        .WithMany("Tracks")
                         .HasForeignKey("PlaylistId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -502,15 +596,61 @@ namespace webnangcao.Migrations
                     b.Navigation("Track");
                 });
 
-            modelBuilder.Entity("webnangcao.Entities.Playlist", b =>
+            modelBuilder.Entity("webnangcao.Entities.Joins.UserPlaylistAction", b =>
                 {
-                    b.HasOne("webnangcao.Entities.AppUser", "NguoiTao")
-                        .WithMany()
-                        .HasForeignKey("NguoiTaoId")
+                    b.HasOne("webnangcao.Entities.Playlist", "Playlist")
+                        .WithMany("Users")
+                        .HasForeignKey("PlaylistId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("NguoiTao");
+                    b.HasOne("webnangcao.Entities.User", "User")
+                        .WithMany("Playlists")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Playlist");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("webnangcao.Entities.Playlist", b =>
+                {
+                    b.HasOne("webnangcao.Entities.User", "CreateUser")
+                        .WithMany()
+                        .HasForeignKey("CreateUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CreateUser");
+                });
+
+            modelBuilder.Entity("webnangcao.Entities.UserTrackAction", b =>
+                {
+                    b.HasOne("webnangcao.Entities.UserTrackAction", "ActionName")
+                        .WithMany()
+                        .HasForeignKey("ActionNameId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("webnangcao.Entities.Track", "Track")
+                        .WithMany("UserActions")
+                        .HasForeignKey("TrackId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("webnangcao.Entities.User", "User")
+                        .WithMany("TrackActions")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ActionName");
+
+                    b.Navigation("Track");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("webnangcao.Entities.Category", b =>
@@ -520,16 +660,29 @@ namespace webnangcao.Migrations
 
             modelBuilder.Entity("webnangcao.Entities.Playlist", b =>
                 {
-                    b.Navigation("CacTrack");
+                    b.Navigation("Tracks");
 
-                    b.Navigation("Tags");
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("webnangcao.Entities.Track", b =>
                 {
                     b.Navigation("Categories");
 
+                    b.Navigation("Comments");
+
                     b.Navigation("Playlists");
+
+                    b.Navigation("UserActions");
+                });
+
+            modelBuilder.Entity("webnangcao.Entities.User", b =>
+                {
+                    b.Navigation("Comments");
+
+                    b.Navigation("Playlists");
+
+                    b.Navigation("TrackActions");
                 });
 #pragma warning restore 612, 618
         }
