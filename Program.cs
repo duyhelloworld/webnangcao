@@ -55,7 +55,7 @@ builder.Services.AddAuthentication(options =>
     Options.ClientSecret = config["Authentication:Google:ClientSecret"]!;
 });
 
-builder.Services.AddIdentity<AppUser, AppRole>(options =>
+builder.Services.AddIdentity<User, Role>(options =>
 {
     options.SignIn.RequireConfirmedPhoneNumber = false;
     options.SignIn.RequireConfirmedEmail = false;
@@ -79,15 +79,16 @@ builder.Services.AddIdentity<AppUser, AppRole>(options =>
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseDeveloperExceptionPage();
-    // Console.WriteLine(ERole.Admin.ToString() + "," + nameof(ERole.Admin));
-} 
-else
-{
-    app.UseMiddleware<ErrorMiddleware>();
-}
+// if (app.Environment.IsDevelopment())
+// {
+//     app.UseDeveloperExceptionPage();
+// } 
+// else
+// {
+//     app.UseMiddleware<ErrorMiddleware>();
+// }
+
+app.UseMiddleware<ErrorMiddleware>();
 
 app.UseAuthentication();
 app.UseAuthorization();
