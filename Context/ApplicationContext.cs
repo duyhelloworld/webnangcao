@@ -5,20 +5,26 @@ using webnangcao.Entities.Joins;
 
 namespace webnangcao.Context;
 
-public class ApplicationContext : IdentityDbContext<AppUser>
+public class ApplicationContext : IdentityDbContext<User>
 {
     public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
     {
     }
     
-    public DbSet<Track> CacTrack { get; set; } = null!;
+    // Thực thể thuần
+    public DbSet<Track> Tracks { get; set; } = null!;
     public DbSet<Playlist> Playlists { get; set; } = null!;
     public DbSet<Category> Categories { get; set; } = null!;
 
-    public DbSet<Playlist_Tag> Playlist_Tag { get; set; } = null!;
-    public DbSet<Track_Playlist> Track_Playlist { get; set; } = null!;
-    public DbSet<Track_Category> Track_Category { get; set; } = null!;
+    // Bảng quan hệ
     public DbSet<Follow> Follows { get; set; } = null!;
+    public DbSet<Comment> Comments { get; set; } = null!;
+    public DbSet<UserTrackAction> UserTrackActions { get; set; } = null!;
+    public DbSet<UserPlaylistAction> UserPlaylistActions { get; set; } = null!;
+
+    // Bảng liên kết n-n
+    public DbSet<Track_Playlist> Track_Playlists { get; set; } = null!;
+    public DbSet<Track_Category> Track_Categories { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

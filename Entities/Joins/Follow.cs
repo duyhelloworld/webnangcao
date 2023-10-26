@@ -1,18 +1,22 @@
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
 namespace webnangcao.Entities.Joins;
 
-[PrimaryKey("NguoiFollowId", "NguoiDuocFollowId")]
+[PrimaryKey("FollowedUserId", "FollowingUserId")]
 public class Follow
 {
-    public string NguoiFollowId { get; set; } = null!;
-    [ForeignKey("NguoiFollowId")]
+    public string FollowingUserId { get; set; } = null!;
+    [ForeignKey("FollowingUserId")]
     [DeleteBehavior(DeleteBehavior.NoAction)]
-    public AppUser NguoiFollow { get; set; } = null!;
+    public User FollowingUser { get; set; } = null!;
 
-    public string NguoiDuocFollowId { get; set; } = null!;
-    [ForeignKey("NguoiDuocFollowId")]
+    public string FollowedUserId { get; set; } = null!;
+    [ForeignKey("FollowedUserId")]
     [DeleteBehavior(DeleteBehavior.NoAction)]
-    public AppUser NguoiDuocFollow { get; set; } = null!;
+    public User FollowedUser { get; set; } = null!;
+
+    [DataType(DataType.DateTime)]
+    public DateTime StartedAt { get; set; } = DateTime.Now;
 }

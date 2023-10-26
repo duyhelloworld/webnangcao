@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using webnangcao.Context;
 using webnangcao.Entities;
+using webnangcao.Entities.Enumerables;
 using webnangcao.Exceptions;
 using webnangcao.Services;
 using webnangcao.Services.Impl;
@@ -13,7 +14,6 @@ var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
 
 builder.Services.AddControllers();
-
 builder.Services.AddScoped<ErrorMiddleware>();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
@@ -48,8 +48,6 @@ builder.Services.AddAuthentication(options =>
 {
     options.AppId = config["Authentication:Facebook:AppId"]!;
     options.AppSecret = config["Authentication:Facebook:AppSecret"]!;
-    options.SaveTokens = true;
-
 })
 .AddGoogle(Options => 
 {
@@ -57,7 +55,7 @@ builder.Services.AddAuthentication(options =>
     Options.ClientSecret = config["Authentication:Google:ClientSecret"]!;
 });
 
-builder.Services.AddIdentity<AppUser, AppRole>(options =>
+builder.Services.AddIdentity<User, Role>(options =>
 {
     options.SignIn.RequireConfirmedPhoneNumber = false;
     options.SignIn.RequireConfirmedEmail = false;
@@ -81,14 +79,16 @@ builder.Services.AddIdentity<AppUser, AppRole>(options =>
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseDeveloperExceptionPage();
-} 
-else
-{
-    app.UseMiddleware<ErrorMiddleware>();
-}
+// if (app.Environment.IsDevelopment())
+// {
+//     app.UseDeveloperExceptionPage();
+// } 
+// else
+// {
+//     app.UseMiddleware<ErrorMiddleware>();
+// }
+
+app.UseMiddleware<ErrorMiddleware>();
 
 app.UseAuthentication();
 app.UseAuthorization();
