@@ -15,6 +15,5 @@ public class LoginModel
     [EmailAddress]
     public string? Email { get; set; }
 
-    [Display(Name = "Nhớ cho lần đăng nhập sau?")]
-    public bool RememberMe { get; set; }
+    public bool RememberMe { get; set; } = false;
 }
