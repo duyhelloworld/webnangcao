@@ -1,21 +1,13 @@
+-- Active: 1695612038229@@127.0.0.1@1433@webnangcao
 INSERT INTO Categories (Name, Description)
 VALUES
-    (N'Pop', N'Bản nhạc Pop phổ biến'),
-    (N'Rock', N'Bản nhạc Rock nổi tiếng'),
-    (N'Rap', N'Bản nhạc Rap thời thượng'),
-    (N'Dance', N'Bản nhạc Dance sôi động'),
-    (N'Jazz', N'Bản nhạc Jazz mượt mà'),
-    (N'Classical', N'Bản nhạc Classical truyền thống'),
-    (N'Electronic', N'Bản nhạc Electronic hiện đại'),
-    (N'Country', N'Bản nhạc Country đồng quê'),
-    (N'Blues', N'Bản nhạc Blues cảm xúc'),
-    (N'Indie', N'Bản nhạc Indie độc lập');
-
-INSERT INTO Roles (Id, Name, NormalizedName, ConcurrencyStamp)
-VALUES
-    (N'1', N'Admin', N'ADMIN', N'abcdef123456'),
-    (N'2', N'SuperAdmin', N'SUPERADMIN', N'ghijkl789012'),
-    (N'3', N'User', N'USER', N'mnopqr345678');
+    (N'Pop', N'Nhạc Pop (Popular) hợp với mọi người'),
+    (N'Remix', N'Những bản mix hay nhất'),
+    (N'Rap', N'Những track Rap huyền thoại'),
+    (N'R&B', N'Các ca khúc R&B đặc sắc'),
+    (N'EDM', N'Những bản EDM hiện đại'),
+    (N'Balad', N'Những bản Balad "tình" nhất'), 
+    (N'Indie', N'Nơi các Indier toả sáng');
 
 INSERT INTO Tracks (Name, Directory, UploadAt)
 VALUES
@@ -26,40 +18,38 @@ VALUES
     (N'Rap chậm thôi', N'/Assets/musics/"Rap Cham Thoi.mp3"', '2023-10-27 09:00:00'),
     (N'Thủ Đô Cypher', N'/Assets/musics/"Thu Do Cypher.mp3"', '2023-10-27 09:15:00');
 
-INSERT INTO RoleClaims (RoleId, ClaimType, ClaimValue)
-VALUES
-    (N'1', N'CanEditComment ', N'true'),
-    (N'1', N'CanAddComment', N'true'),
-    (N'2', N'CanAddTrack', N'false'),
-    (N'2', N'CanEditTrack', N'false'),
-    (N'3', N'CanDeleteUser', N'false'),
-    (N'3', N'CanDeleteTrack', N'false');
-
 INSERT INTO Track_Categories (TrackId, CategoryId)
 VALUES
-    (1, 1),
-    (2, 2),
-    (3, 3),
-    (4, 4),
-    (5, 5),
-    (6, 6),
-    (7, 7),
-    (8, 8),
-    (9, 9),
-    (10, 10);
+    (1, 7),
+    (2, 1),
+    (2, 6),
+    (3, 4),
+    (4, 5),
+    (5, 3),
+    (6, 3);
 
-INSERT INTO Comments (Content, CommentAt, LastEditAt, TrackId, UserId)
-VALUES
-    (N'Hay', '2023-10-27 08:10:00', '2023-10-27 08:15:00', 1, N'admin'),
-    (N'Tuyệt vời', '2023-10-27 08:20:00', '2023-10-27 08:25:00', 2, N'superadmin'),
-    (N'hayvail', '2023-10-27 08:30:00', '2023-10-27 08:35:00', 3, N'user1'),
-    (N'dme bọn bắt kì', '2023-10-27 08:40:00', '2023-10-27 08:45:00', 4, N'user2'),
-    (N'rap chậm thôi', '2023-10-27 08:50:00', '2023-10-27 08:55:00', 5, N'user3'),
-    (N'justatee mãi đỉnh', '2023-10-27 09:00:00', '2023-10-27 09:05:00', 6, N'user4'),
-    (N'the most favour song in my life', '2023-10-27 09:10:00', '2023-10-27 09:15:00', 7, N'user5'),
-    (N'Thank you, lynk lee', '2023-10-27 09:20:00', '2023-10-27 09:25:00', 8, N'user6');
+INSERT INTO [Roles] ([Id], [Name], [NormalizedName])
+VALUES ('1111', 'Admin', 'Quản trị viên hệ thống'),
+       ('2222', 'SuperAdmin', 'Quản trị viên cao cấp'),
+       ('3333', 'User', 'Người dùng');
 
-INSERT INTO Playlists (Name, CreatedAt, LastUpdatedAt, Description, ArtWorkDirectory, CreateUserId, Tags)
+INSERT INTO [Users] ([Id], [UserName], [NormalizedUserName], [Email], [NormalizedEmail], [EmailConfirmed], [PasswordHash], [SecurityStamp], [ConcurrencyStamp], [PhoneNumberConfirmed], [TwoFactorEnabled], [LockoutEnabled], [AccessFailedCount])
+VALUES ('1', 'webnangcao', 'Web nâng cao', 'webnangcao@gmail.com', 'webnangcao@gmail.com', 'True', 'password', 'security_stamp', 'concurrency_stamp', 'False', 'False', 'False', 0),
+       ('2', 'superwebnangcao', 'Super Admin', 'superwebnangcao@gmail.com', 'superwebnangcao@gmail.com', 'True', 'password', 'security_stamp', 'concurrency_stamp', 'False', 'False', 'False', 0),
+       ('3', 'hiep', 'Hiệp', 'hiep8am@gmail.com', 'hiep8am@gmail.com', 'True', 'password', 'security_stamp', 'concurrency_stamp', 'False', 'False', 'False', 0),
+       ('4', 'duy', 'Duy', 'codedaovoiduy@gmail.com', 'codedaovoiduy@gmail.com', 'True', 'password', 'security_stamp', 'concurrency_stamp', 'False', 'False', 'False', 0);
+
+INSERT INTO [UserRoles] ([UserId], [RoleId])
+VALUES ('1', '1111'),
+       ('2', '2222'),
+       ('3', '3333'),
+       ('4', '3333');
+
+INSERT INTO RoleClaims (RoleId, ClaimType, ClaimValue)
 VALUES
-    (N'Playlist 1', '2023-10-27 08:00:00', '2023-10-27 08:15:00', N),
-    
+    (N'1111', N'CanEditComment ', N'true'),
+    (N'1111', N'CanAddComment', N'true'),
+    (N'2222', N'CanAddTrack', N'false'),
+    (N'2222', N'CanEditTrack', N'false'),
+    (N'3333', N'CanDeleteUser', N'false'),
+    (N'3333', N'CanDeleteTrack', N'false');
