@@ -12,8 +12,9 @@ public class Track
     [StringLength((int)EMaxValue.TrackNameLength)]
     public string Name { get; set; } = null!;
 
+
     [StringLength((int)EMaxValue.DirectoryLength)]
-    public string Directory { get; set; } = null!;
+    public string Location { get; set; } = null!;
 
 
     [DataType(DataType.DateTime)]
@@ -24,8 +25,8 @@ public class Track
 
 
     [StringLength((int)EMaxValue.DirectoryLength)]
-    public string? ArtWorkDirectory { get; set; }
-
+    public string? ArtWork { get; set; }
+    
 
     public ICollection<Track_Category> Categories { get; set; } 
         = new HashSet<Track_Category>();

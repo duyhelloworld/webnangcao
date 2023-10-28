@@ -21,7 +21,7 @@ public class Playlist
     public string? Description { get; set; }
 
     [StringLength((int)EMaxValue.DirectoryLength)]
-    public string? ArtWorkDirectory { get; set; }
+    public string? ArtWork { get; set; }
 
     public string CreateUserId { get; set; } = null!;
     [ForeignKey("CreateUserId")]
@@ -32,7 +32,4 @@ public class Playlist
 
     public ICollection<Track_Playlist> Tracks { get; set; } 
         = new HashSet<Track_Playlist>();
-
-    public ICollection<UserPlaylistAction> Users { get; set; } 
-        = new HashSet<UserPlaylistAction>();
 }
