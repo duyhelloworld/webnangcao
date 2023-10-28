@@ -1,23 +1,28 @@
-using Microsoft.AspNetCore.Authentication.Facebook;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using webnangcao.Services;
 namespace webnangcao.Controllers;
 
-[Route("[controller]")]
 [ApiController]
+[Route("[controller]")]
 public class TrackController : ControllerBase
 {
-    [HttpGet("/")]
+    private readonly ITrackService _service;
+    public TrackController(ITrackService service)
+    {
+        _service = service;
+    }
+
+    [HttpGet]
     public async Task<IActionResult> SayHello()
     {
-        await Task.CompletedTask;
-        return Ok("Hello World");
+        return Ok(await _service.GetAll());
     }
 
     [HttpGet("upload")]
-    public IActionResult Upload(IFormFile file)
+    public async Task Upload(IFormFile file)
     {
         Console.WriteLine(file.FileName);
-        return Ok("Uploaded");
+        await _service.UploadTrack(file);
+        Console.WriteLine("Upload success");
     }
 }
