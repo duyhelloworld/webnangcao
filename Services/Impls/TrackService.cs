@@ -14,9 +14,26 @@ public class TrackService : ITrackService
     {
         _context = context;
     }
-    public Task<Track> AddNew(Track track)
+
+    public async Task<IEnumerable<Track>> GetAll()
     {
-        throw new NotImplementedException();
+        return await _context.Tracks.ToListAsync();
+    }
+
+    public async Task<Track?> GetById(int id)
+    {
+        return await _context.Tracks.FindAsync(id);
+    }
+
+    public async Task UploadTrack(IFormFile file, Track track)
+    {
+        if (!file.FileName.EndsWith(".mp3"))
+        {
+            throw new AppException(HttpStatusCode.NotAcceptable, "File phải định dạng mp3", file.FileName);
+        }
+        await file.CopyToAsync(new FileStream(Path.Combine("Assets", "musics", file.FileName), FileMode.Create));
+        await _context.AddAsync(track);
+        await _context.SaveChangesAsync();
     }
 
     public Task Remove(int id)
@@ -24,34 +41,7 @@ public class TrackService : ITrackService
         throw new NotImplementedException();
     }
 
-    public async Task<IEnumerable<Track>> GetAll()
-    {
-        return await _context.Tracks.ToListAsync();
-    }
-
-    public Task<Track?> GetById(int id)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<Track> Update(Track track)
-    {
-        throw new NotImplementedException();
-    }
-
-    Task<int> ITrackService.AddNew(Track track)
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task UploadTrack(IFormFile file)
-    {
-        if (!file.FileName.EndsWith(".mp3"))
-        {
-            throw new AppException(HttpStatusCode.NotAcceptable, "File phải định dạng mp3", file.FileName);
-        }
-        await file.CopyToAsync(new FileStream(Path.Combine("Assets", "musics", file.FileName), FileMode.Create));
-    }
+    
 
     public Task UpdateInfomation(Track track)
     {

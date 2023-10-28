@@ -6,8 +6,7 @@ public interface ITrackService
 {
     Task<IEnumerable<Track>> GetAll();
     Task<Track?> GetById(int id);
-    Task<int> AddNew(Track track);
-    Task UploadTrack(IFormFile file);
+    Task UploadTrack(IFormFile file, Track track);
     Task UpdateInfomation(Track track);
     Task Remove(int id);
 }
