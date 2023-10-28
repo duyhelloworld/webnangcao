@@ -16,7 +16,8 @@ public class User : IdentityUser
     public string? FullName { get; set; }
 
     [StringLength((int)EMaxValue.DirectoryLength)]
-    public string? AvatarDirectory { get; set; }
+    public string? Avatar { get; set; }
+
 
     public ICollection<Comment> Comments { get; set; } 
         = new HashSet<Comment>();
@@ -24,6 +25,6 @@ public class User : IdentityUser
     public ICollection<UserTrackAction> TrackActions { get; set; } 
         = new HashSet<UserTrackAction>();
 
-    public ICollection<UserPlaylistAction> Playlists { get; set; } 
-        = new HashSet<UserPlaylistAction>();
+    public ICollection<Playlist> Playlists { get; set; } 
+        = new HashSet<Playlist>();
 }
