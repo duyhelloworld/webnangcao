@@ -21,11 +21,13 @@
 
 - Chạy lệnh `npm install` để cài đặt các package cần thiết
 
-- Chèn dữ liệu vào database qua các file .sql trong [này](/Assets/)
+- Chèn dữ liệu vào database qua các file .sql trong [đây](/Properties/Sql/)
 (Mở bằng SQL Server Management Studio và chạy toàn bộ lệnh trong file)
-> Thứ tự : User.sql ==> DBTable.sql ==> Data.sql
+> Thứ tự : User.sql ==> Table.sql ==> Data.sql
 
 - Chạy project bằng cách trở về thư mục chính `cd ..` và lệnh `dotnet run` 
 ![](/Assets/images/ketquachaylenh.png)
 
-- Nếu có nhu cầu, có thể down nhạc trên [soundcloud](https://soundcloud.com/) bằng [link](https://vi.savefrom.net/12-cach-tai-nhac-soundcloud-20.html) và thêm vào thư mục [Assets](/Assets/musics/)
+> NOTE: Nếu có nhu cầu, có thể down nhạc trên [soundcloud](https://soundcloud.com/) bằng [link](https://vi.savefrom.net/12-cach-tai-nhac-soundcloud-20.html) và thêm vào thư mục [Assets](/Assets/musics/)
+
+<!-- "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.SpaProxy" -->
