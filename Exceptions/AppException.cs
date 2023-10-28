@@ -9,11 +9,17 @@ public class AppException : Exception
     public IEnumerable<string>? RecommmendSolutions { get; set; } = new List<string>();
     public object? DataToFix { get; set; }
 
-    public AppException(HttpStatusCode statusCode, string reason, object data)
+    public AppException(HttpStatusCode statusCode, string reason)
     {
         StatusCode = statusCode;
         Reasons = new List<string>() { reason };
-        DataToFix = data;
+    }
+
+    public AppException(HttpStatusCode statusCode, string reason, string solution)
+    {
+        StatusCode = statusCode;
+        Reasons = new List<string>() { reason };
+        RecommmendSolutions = new List<string>() { solution };
     }
 
     public AppException(HttpStatusCode statusCode, IEnumerable<string> reasons, IEnumerable<string> recommendSolutions)
