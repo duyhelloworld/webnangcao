@@ -13,14 +13,14 @@ GO
 
 CREATE TABLE [Categories] (
     [Id] int NOT NULL IDENTITY,
-    [Name] nvarchar(50) NOT NULL,
+    [Name] nvarchar(30) NOT NULL,
     [Description] nvarchar(max) NULL,
     CONSTRAINT [PK_Categories] PRIMARY KEY ([Id])
 );
 GO
 
 CREATE TABLE [Roles] (
-    [Id] nvarchar(450) NOT NULL,
+    [Id] nvarchar(10) NOT NULL,
     [Name] nvarchar(256) NULL,
     [NormalizedName] nvarchar(256) NULL,
     [ConcurrencyStamp] nvarchar(max) NULL,
@@ -31,19 +31,19 @@ GO
 CREATE TABLE [Tracks] (
     [Id] int NOT NULL IDENTITY,
     [Name] nvarchar(40) NOT NULL,
-    [Directory] nvarchar(200) NOT NULL,
+    [Location] nvarchar(200) NOT NULL,
     [UploadAt] datetime2 NOT NULL,
     [Description] nvarchar(max) NULL,
-    [ArtWorkDirectory] nvarchar(200) NULL,
+    [ArtWork] nvarchar(200) NULL,
     CONSTRAINT [PK_Tracks] PRIMARY KEY ([Id])
 );
 GO
 
 CREATE TABLE [Users] (
-    [Id] nvarchar(150) NOT NULL,
+    [Id] nvarchar(450) NOT NULL,
     [Address] nvarchar(max) NULL,
     [FullName] nvarchar(140) NULL,
-    [AvatarDirectory] nvarchar(200) NULL,
+    [Avatar] nvarchar(200) NULL,
     [UserName] nvarchar(256) NULL,
     [NormalizedUserName] nvarchar(256) NULL,
     [Email] nvarchar(256) NULL,
@@ -64,7 +64,7 @@ GO
 
 CREATE TABLE [RoleClaims] (
     [Id] int NOT NULL IDENTITY,
-    [RoleId] nvarchar(450) NOT NULL,
+    [RoleId] nvarchar(10) NOT NULL,
     [ClaimType] nvarchar(max) NULL,
     [ClaimValue] nvarchar(max) NULL,
     CONSTRAINT [PK_RoleClaims] PRIMARY KEY ([Id]),
@@ -87,7 +87,7 @@ CREATE TABLE [Comments] (
     [CommentAt] datetime2 NOT NULL,
     [LastEditAt] datetime2 NOT NULL,
     [TrackId] int NOT NULL,
-    [UserId] nvarchar(150) NOT NULL,
+    [UserId] nvarchar(450) NOT NULL,
     CONSTRAINT [PK_Comments] PRIMARY KEY ([Id]),
     CONSTRAINT [FK_Comments_Tracks_TrackId] FOREIGN KEY ([TrackId]) REFERENCES [Tracks] ([Id]) ON DELETE CASCADE,
     CONSTRAINT [FK_Comments_Users_UserId] FOREIGN KEY ([UserId]) REFERENCES [Users] ([Id]) ON DELETE CASCADE
@@ -95,8 +95,8 @@ CREATE TABLE [Comments] (
 GO
 
 CREATE TABLE [Follows] (
-    [FollowingUserId] nvarchar(150) NOT NULL,
-    [FollowedUserId] nvarchar(150) NOT NULL,
+    [FollowingUserId] nvarchar(450) NOT NULL,
+    [FollowedUserId] nvarchar(450) NOT NULL,
     [StartedAt] datetime2 NOT NULL,
     CONSTRAINT [PK_Follows] PRIMARY KEY ([FollowedUserId], [FollowingUserId]),
     CONSTRAINT [FK_Follows_Users_FollowedUserId] FOREIGN KEY ([FollowedUserId]) REFERENCES [Users] ([Id]),
@@ -110,8 +110,8 @@ CREATE TABLE [Playlists] (
     [CreatedAt] datetime2 NOT NULL,
     [LastUpdatedAt] datetime2 NOT NULL,
     [Description] nvarchar(max) NULL,
-    [ArtWorkDirectory] nvarchar(200) NULL,
-    [CreateUserId] nvarchar(150) NOT NULL,
+    [ArtWork] nvarchar(200) NULL,
+    [CreateUserId] nvarchar(450) NOT NULL,
     [Tags] nvarchar(max) NULL,
     CONSTRAINT [PK_Playlists] PRIMARY KEY ([Id]),
     CONSTRAINT [FK_Playlists_Users_CreateUserId] FOREIGN KEY ([CreateUserId]) REFERENCES [Users] ([Id]) ON DELETE CASCADE
@@ -120,7 +120,7 @@ GO
 
 CREATE TABLE [UserClaims] (
     [Id] int NOT NULL IDENTITY,
-    [UserId] nvarchar(150) NOT NULL,
+    [UserId] nvarchar(450) NOT NULL,
     [ClaimType] nvarchar(max) NULL,
     [ClaimValue] nvarchar(max) NULL,
     CONSTRAINT [PK_UserClaims] PRIMARY KEY ([Id]),
@@ -132,15 +132,15 @@ CREATE TABLE [UserLogins] (
     [LoginProvider] nvarchar(128) NOT NULL,
     [ProviderKey] nvarchar(128) NOT NULL,
     [ProviderDisplayName] nvarchar(max) NULL,
-    [UserId] nvarchar(150) NOT NULL,
+    [UserId] nvarchar(450) NOT NULL,
     CONSTRAINT [PK_UserLogins] PRIMARY KEY ([LoginProvider], [ProviderKey]),
     CONSTRAINT [FK_UserLogins_Users_UserId] FOREIGN KEY ([UserId]) REFERENCES [Users] ([Id]) ON DELETE CASCADE
 );
 GO
 
 CREATE TABLE [UserRoles] (
-    [UserId] nvarchar(150) NOT NULL,
-    [RoleId] nvarchar(450) NOT NULL,
+    [UserId] nvarchar(450) NOT NULL,
+    [RoleId] nvarchar(10) NOT NULL,
     CONSTRAINT [PK_UserRoles] PRIMARY KEY ([UserId], [RoleId]),
     CONSTRAINT [FK_UserRoles_Roles_RoleId] FOREIGN KEY ([RoleId]) REFERENCES [Roles] ([Id]) ON DELETE CASCADE,
     CONSTRAINT [FK_UserRoles_Users_UserId] FOREIGN KEY ([UserId]) REFERENCES [Users] ([Id]) ON DELETE CASCADE
@@ -148,7 +148,7 @@ CREATE TABLE [UserRoles] (
 GO
 
 CREATE TABLE [UserTokens] (
-    [UserId] nvarchar(150) NOT NULL,
+    [UserId] nvarchar(450) NOT NULL,
     [LoginProvider] nvarchar(128) NOT NULL,
     [Name] nvarchar(128) NOT NULL,
     [Value] nvarchar(max) NULL,
@@ -159,14 +159,13 @@ GO
 
 CREATE TABLE [UserTrackActions] (
     [Id] nvarchar(450) NOT NULL,
-    [ActionNameId] nvarchar(450) NOT NULL,
+    [ActionType] int NOT NULL,
     [CreatedAt] datetime2 NOT NULL,
-    [UserId] nvarchar(150) NOT NULL,
+    [UserId] nvarchar(450) NOT NULL,
     [TrackId] int NOT NULL,
     CONSTRAINT [PK_UserTrackActions] PRIMARY KEY ([Id]),
-    CONSTRAINT [FK_UserTrackActions_Tracks_TrackId] FOREIGN KEY ([TrackId]) REFERENCES [Tracks] ([Id]) ON DELETE CASCADE,
-    CONSTRAINT [FK_UserTrackActions_UserTrackActions_ActionNameId] FOREIGN KEY ([ActionNameId]) REFERENCES [UserTrackActions] ([Id]) ON DELETE CASCADE,
-    CONSTRAINT [FK_UserTrackActions_Users_UserId] FOREIGN KEY ([UserId]) REFERENCES [Users] ([Id]) ON DELETE CASCADE
+    CONSTRAINT [FK_UserTrackActions_Tracks_TrackId] FOREIGN KEY ([TrackId]) REFERENCES [Tracks] ([Id]),
+    CONSTRAINT [FK_UserTrackActions_Users_UserId] FOREIGN KEY ([UserId]) REFERENCES [Users] ([Id])
 );
 GO
 
@@ -176,18 +175,6 @@ CREATE TABLE [Track_Playlists] (
     CONSTRAINT [PK_Track_Playlists] PRIMARY KEY ([PlaylistId], [TrackId]),
     CONSTRAINT [FK_Track_Playlists_Playlists_PlaylistId] FOREIGN KEY ([PlaylistId]) REFERENCES [Playlists] ([Id]) ON DELETE CASCADE,
     CONSTRAINT [FK_Track_Playlists_Tracks_TrackId] FOREIGN KEY ([TrackId]) REFERENCES [Tracks] ([Id]) ON DELETE CASCADE
-);
-GO
-
-CREATE TABLE [UserPlaylistActions] (
-    [Id] nvarchar(450) NOT NULL,
-    [UserId] nvarchar(150) NOT NULL,
-    [PlaylistId] int NOT NULL,
-    [DateCreated] datetime2 NOT NULL,
-    [ActionName] int NOT NULL,
-    CONSTRAINT [PK_UserPlaylistActions] PRIMARY KEY ([Id]),
-    CONSTRAINT [FK_UserPlaylistActions_Playlists_PlaylistId] FOREIGN KEY ([PlaylistId]) REFERENCES [Playlists] ([Id]) ON DELETE CASCADE,
-    CONSTRAINT [FK_UserPlaylistActions_Users_UserId] FOREIGN KEY ([UserId]) REFERENCES [Users] ([Id]) ON DELETE CASCADE
 );
 GO
 
@@ -221,12 +208,6 @@ GO
 CREATE INDEX [IX_UserLogins_UserId] ON [UserLogins] ([UserId]);
 GO
 
-CREATE INDEX [IX_UserPlaylistActions_PlaylistId] ON [UserPlaylistActions] ([PlaylistId]);
-GO
-
-CREATE INDEX [IX_UserPlaylistActions_UserId] ON [UserPlaylistActions] ([UserId]);
-GO
-
 CREATE INDEX [IX_UserRoles_RoleId] ON [UserRoles] ([RoleId]);
 GO
 
@@ -236,9 +217,6 @@ GO
 CREATE UNIQUE INDEX [UserNameIndex] ON [Users] ([NormalizedUserName]) WHERE [NormalizedUserName] IS NOT NULL;
 GO
 
-CREATE INDEX [IX_UserTrackActions_ActionNameId] ON [UserTrackActions] ([ActionNameId]);
-GO
-
 CREATE INDEX [IX_UserTrackActions_TrackId] ON [UserTrackActions] ([TrackId]);
 GO
 
@@ -246,7 +224,7 @@ CREATE INDEX [IX_UserTrackActions_UserId] ON [UserTrackActions] ([UserId]);
 GO
 
 INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-VALUES (N'20231025153112_TestBang', N'7.0.12');
+VALUES (N'20231028140631_Fix3.0', N'7.0.12');
 GO
 
 COMMIT;

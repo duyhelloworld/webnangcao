@@ -9,7 +9,7 @@ VALUES
     (N'Balad', N'Những bản Balad "tình" nhất'), 
     (N'Indie', N'Nơi các Indier toả sáng');
 
-INSERT INTO Tracks (Name, Directory, UploadAt)
+INSERT INTO Tracks (Name, Location, UploadAt)
 VALUES
     (N'7 Years', N'/Assets/musics/"7 Years.mp3"', '2023-10-27 08:00:00'),
     (N'Buồn thì cứ khóc đi', N'/Assets/musics/"Buon Thi Cu Khoc Di.mp3"', '2023-10-27 08:15:00'),
@@ -29,15 +29,19 @@ VALUES
     (6, 3);
 
 INSERT INTO [Roles] ([Id], [Name], [NormalizedName])
-VALUES ('1111', 'Admin', 'Quản trị viên hệ thống'),
-       ('2222', 'SuperAdmin', 'Quản trị viên cao cấp'),
-       ('3333', 'User', 'Người dùng');
+VALUES ('1111', 'Admin', 'admin'),
+       ('2222', 'SuperAdmin', 'superadmin'),
+       ('3333', 'User', 'user');
 
-INSERT INTO [Users] ([Id], [UserName], [NormalizedUserName], [Email], [NormalizedEmail], [EmailConfirmed], [PasswordHash], [SecurityStamp], [ConcurrencyStamp], [PhoneNumberConfirmed], [TwoFactorEnabled], [LockoutEnabled], [AccessFailedCount])
-VALUES ('1', 'webnangcao', 'Web nâng cao', 'webnangcao@gmail.com', 'webnangcao@gmail.com', 'True', 'password', 'security_stamp', 'concurrency_stamp', 'False', 'False', 'False', 0),
-       ('2', 'superwebnangcao', 'Super Admin', 'superwebnangcao@gmail.com', 'superwebnangcao@gmail.com', 'True', 'password', 'security_stamp', 'concurrency_stamp', 'False', 'False', 'False', 0),
-       ('3', 'hiep', 'Hiệp', 'hiep8am@gmail.com', 'hiep8am@gmail.com', 'True', 'password', 'security_stamp', 'concurrency_stamp', 'False', 'False', 'False', 0),
-       ('4', 'duy', 'Duy', 'codedaovoiduy@gmail.com', 'codedaovoiduy@gmail.com', 'True', 'password', 'security_stamp', 'concurrency_stamp', 'False', 'False', 'False', 0);
+INSERT INTO [Users] 
+       ([Id], [UserName], [NormalizedUserName], [FullName], [Email], [NormalizedEmail], [EmailConfirmed], [SecurityStamp], [ConcurrencyStamp], [PhoneNumberConfirmed], [TwoFactorEnabled], [LockoutEnabled], [AccessFailedCount])
+VALUES ('1', 'webnangcao','webnangcao', N'Web nâng cao', 'webnangcao@gmail.com', 'webnangcao@gmail.com', 'True', 'security_stamp', 'concurrency_stamp', 'False', 'False', 'False', 0),
+       ('2', 'superwebnangcao', 'superwebnangcao ', N'Super Admin', 'superwebnangcao@gmail.com', 'superwebnangcao@gmail.com', 'True', 'security_stamp', 'concurrency_stamp', 'False', 'False', 'False', 0),
+       ('3', 'hiep', 'hiep', N'Hiệp', 'hiep8am@gmail.com', 'hiep8am@gmail.com', 'True', 'security_stamp', 'concurrency_stamp', 'False', 'False', 'False', 0),
+       ('4', 'duy', 'duy', N'Duy', 'codedaovoiduy@gmail.com', 'codedaovoiduy@gmail.com', 'True', 'security_stamp', 'concurrency_stamp', 'False', 'False', 'False', 0),
+       ('5', 'quang', 'quang', N'Duy Quang', 'mail1@gmail.com', 'mail1@gmail.com', 'True', 'security_stamp', 'concurrency_stamp', 'False', 'False', 'False', 0),
+       ('6', 'youzo', 'quan', N'Hoàng Quân', 'mail2@gmail.com', 'mail2@gmail.com', 'True', 'security_stamp', 'concurrency_stamp', 'False', 'False', 'False', 0),
+       ('7', 'chien', 'chien', N'Xuân Chiến', 'mail3@gmail.com', 'mail3@gmail.com', 'True', 'security_stamp', 'concurrency_stamp', 'False', 'False', 'False', 0);
 
 INSERT INTO [UserRoles] ([UserId], [RoleId])
 VALUES ('1', '1111'),
