@@ -5,7 +5,7 @@ using webnangcao.Entities.Joins;
 
 namespace webnangcao.Context;
 
-public class ApplicationContext : IdentityDbContext<User>
+public class ApplicationContext : IdentityDbContext<User, Role, string>
 {
     public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
     {
@@ -20,7 +20,6 @@ public class ApplicationContext : IdentityDbContext<User>
     public DbSet<Follow> Follows { get; set; } = null!;
     public DbSet<Comment> Comments { get; set; } = null!;
     public DbSet<UserTrackAction> UserTrackActions { get; set; } = null!;
-    public DbSet<UserPlaylistAction> UserPlaylistActions { get; set; } = null!;
 
     // Bảng liên kết n-n
     public DbSet<Track_Playlist> Track_Playlists { get; set; } = null!;
