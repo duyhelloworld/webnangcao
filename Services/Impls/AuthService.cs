@@ -10,7 +10,7 @@ using webnangcao.Exceptions;
 using webnangcao.Entities.Enumerables;
 using webnangcao.Tools;
 
-namespace webnangcao.Services.Impl;
+namespace webnangcao.Services.Impls;
 
 public class AuthService : IAuthService
 {
@@ -41,8 +41,7 @@ public class AuthService : IAuthService
             };
         }
 
-        var highestRole = (await _userManager.GetRolesAsync(user))
-            .Select(r => ERoleTool.ToERole(r)).Max();
+        var highestRole = ERoleTool.GetHighestRole(await _userManager.GetRolesAsync(user));
         var refreshToken = await _userManager.GenerateUserTokenAsync(user, "Default", "refresh_token");
         return new ResponseModel()
         {
@@ -56,9 +55,9 @@ public class AuthService : IAuthService
         };
     }
 
-    public async Task<ResponseModel> SignUpAsync(SignupModel model, string role)
+    public async Task<ResponseModel> SignUpAsync(SignupModel model, ERole erole)
     {
-        var User = new User()
+        var user = new User()
         {
             UserName = model.UserName,
             Email = model.Email,
@@ -67,24 +66,38 @@ public class AuthService : IAuthService
             Address = model.Address
         };
 
-        var result = await _userManager.CreateAsync(User, model.Password);
+        var result = await _userManager.CreateAsync(user, model.Password);
         if (!result.Succeeded)
         {
-            throw new AppException(HttpStatusCode.BadRequest, "Đăng kí không thành công", "Hãy thử lại");
+            foreach (var err in result.Errors)
+            {
+                switch (err.Code)
+                {
+                    case "DuplicateUserName":
+                        throw new AppException(HttpStatusCode.BadRequest, 
+                                $"Tên đăng nhập '{model.UserName}' đã tồn tại", "Hãy thử lại tên khác");
+                    case "DuplicateEmail":
+                        throw new AppException(HttpStatusCode.BadRequest, 
+                                $"Email '{model.Email}' đã tồn tại", "Hãy thử lại email khác");
+                    default:
+                        Console.WriteLine($"Lỗi: {err.Code}\n- Cụ thể: {err.Description}");
+                        throw new AppException(HttpStatusCode.BadRequest, 
+                            "Đăng kí không thành công", "Hãy thử lại");
+                }
+            }
         }
-        var erole = ERoleTool.ToERole(role);
-        await _userManager.AddToRoleAsync(User, erole.ToString());
-        var refreshToken = await _userManager.GenerateUserTokenAsync(User, "Default", "refresh_token");
+        await _userManager.AddToRoleAsync(user, erole.ToString());
         return new ResponseModel()
         {
             IsSucceed = true,
             Data = new SuccessSignupModel()
             {
-                AccessToken = GenerateJwtToken(User, erole),
-                RefreshToken = refreshToken
+                AccessToken = GenerateJwtToken(user, erole),
+                RefreshToken = GenerateRefreshToken(user),
             }
         };
     }
+
 
     private string GenerateJwtToken(User User, ERole role)
     {
@@ -98,11 +111,16 @@ public class AuthService : IAuthService
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         var token = new JwtSecurityToken(
-            _config["Jwt:Issuer"] ?? "",
-            _config["Jwt:Audience"] ?? "",
+            _config["Jwt:Issuer"]!,
+            null,
             identity.Claims,
             expires: DateTime.Now.AddMinutes(30),
             signingCredentials: credentials);
         return new JwtSecurityTokenHandler().WriteToken(token);
+    }
+
+    private string GenerateRefreshToken(User User)
+    {
+        return _userManager.GenerateUserTokenAsync(User, "Default", "refresh_token").Result;
     }
 }
