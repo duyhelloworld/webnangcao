@@ -8,12 +8,10 @@ namespace webnangcao.Entities.Joins;
 public class Follow
 {
     public string FollowingUserId { get; set; } = null!;
-    [ForeignKey("FollowingUserId")]
     [DeleteBehavior(DeleteBehavior.NoAction)]
     public User FollowingUser { get; set; } = null!;
 
     public string FollowedUserId { get; set; } = null!;
-    [ForeignKey("FollowedUserId")]
     [DeleteBehavior(DeleteBehavior.NoAction)]
     public User FollowedUser { get; set; } = null!;
 
