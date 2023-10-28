@@ -8,7 +8,6 @@ namespace webnangcao.Entities;
 public class User : IdentityUser
 {
     [Key]
-    [StringLength(150)]
     public override string Id { get; set; } = Guid.NewGuid().ToString();
 
     public string? Address { get; set; }
