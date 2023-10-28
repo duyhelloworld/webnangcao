@@ -4,12 +4,12 @@ namespace webnangcao.Entities.Enumerables;
 
 public enum ERole
 {
-    [EnumMember(Value = "SuperAdmin")]
-    SuperAdmin,
+    [EnumMember(Value = "SUPERADMIN")]
+    SUPERADMIN,
 
-    [EnumMember(Value = "Admin")]
-    Admin,
+    [EnumMember(Value = "ADMIN")]
+    ADMIN,
 
-    [EnumMember(Value = "User")]
-    User
+    [EnumMember(Value = "USER")]
+    USER
 }
