@@ -8,10 +8,16 @@ namespace webnangcao.Controllers;
 public class TrackController : ControllerBase
 {
     [HttpGet("/")]
-    [Authorize(AuthenticationSchemes = FacebookDefaults.AuthenticationScheme)]
     public async Task<IActionResult> SayHello()
     {
         await Task.CompletedTask;
         return Ok("Hello World");
+    }
+
+    [HttpGet("upload")]
+    public IActionResult Upload(IFormFile file)
+    {
+        Console.WriteLine(file.FileName);
+        return Ok("Uploaded");
     }
 }
