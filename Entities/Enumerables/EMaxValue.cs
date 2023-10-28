@@ -6,8 +6,10 @@ public enum EMaxValue : int
     DirectoryLength = 200,
     CategoryNameLength = 30,
     PlaylistNameLength = 35,
-    NumberOfTags = 15,
+    NumberOfTags = 20,
     AddressLength = 140,
+    ActionTypeNameLength = 15,
+    RoleLength = 10
 }
 
 public static class EMaxValueExtension {

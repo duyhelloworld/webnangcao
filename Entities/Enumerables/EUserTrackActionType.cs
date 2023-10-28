@@ -1,6 +1,6 @@
 namespace webnangcao.Entities.Enumerables;
 
-public enum EUserTrackAction
+public enum EUserTrackActionType
 {
     View,
     Listen,

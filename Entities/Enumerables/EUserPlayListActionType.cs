@@ -1,6 +1,6 @@
 namespace webnangcao.Entities.Enumerables;
 
-public enum EUserPlayListAction
+public enum EUserPlayListActionType
 {
     Create,
     Update,
