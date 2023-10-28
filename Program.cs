@@ -5,10 +5,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using webnangcao.Context;
 using webnangcao.Entities;
-using webnangcao.Entities.Enumerables;
 using webnangcao.Exceptions;
 using webnangcao.Services;
-using webnangcao.Services.Impl;
+using webnangcao.Services.Impls;
 
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
@@ -17,6 +16,7 @@ builder.Services.AddControllers();
 builder.Services.AddScoped<ErrorMiddleware>();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ITrackService, TrackService>();
 
 builder.Services.AddDbContext<ApplicationContext>(options =>
 {
@@ -77,7 +77,12 @@ builder.Services.AddIdentity<User, Role>(options =>
 .AddEntityFrameworkStores<ApplicationContext>()
 .AddDefaultTokenProviders();
 
+builder.Services.AddScoped<FakeData>();
 var app = builder.Build();
+
+// Fake dữ liệu, có thể comment sau lần chạy đầu
+var scope = app.Services.CreateScope();
+await scope.ServiceProvider.GetRequiredService<FakeData>().InitDataAsync();
 
 // if (app.Environment.IsDevelopment())
 // {
@@ -85,21 +90,23 @@ var app = builder.Build();
 // } 
 // else
 // {
-//     app.UseMiddleware<ErrorMiddleware>();
+    app.UseMiddleware<ErrorMiddleware>();
 // }
 
-app.UseMiddleware<ErrorMiddleware>();
+
+app.UseRouting();
+app.UseStaticFiles();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseStaticFiles();
-app.UseRouting();
+app.MapControllers();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller}/{action=Index}/{id?}");
 
-app.MapFallbackToFile("index.html");
+// app.MapControllerRoute(
+//     name: "default",
+//     pattern: "{controller}/{action=Index}/{id?}");
+
+// app.MapFallbackToFile("index.html");
 
 app.Run();
