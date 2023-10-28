@@ -16,6 +16,12 @@ public class AuthController : ControllerBase
         _service = service;
     }
 
+    [HttpGet]
+    public IActionResult Get()
+    {
+        return BadRequest("Truy cập postman.com để dùng POST");
+    }
+
     [HttpPost("signup")]
     public async Task<IActionResult> SignUp([FromBody] SignupModel model)
     {
