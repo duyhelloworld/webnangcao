@@ -22,33 +22,6 @@ namespace webnangcao.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("NormalizedName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedName")
-                        .IsUnique()
-                        .HasDatabaseName("RoleNameIndex")
-                        .HasFilter("[NormalizedName] IS NOT NULL");
-
-                    b.ToTable("Roles", (string)null);
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.Property<int>("Id")
@@ -65,7 +38,7 @@ namespace webnangcao.Migrations
 
                     b.Property<string>("RoleId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(10)");
 
                     b.HasKey("Id");
 
@@ -129,7 +102,7 @@ namespace webnangcao.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("RoleId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(10)");
 
                     b.HasKey("UserId", "RoleId");
 
@@ -172,8 +145,8 @@ namespace webnangcao.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.HasKey("Id");
 
@@ -262,35 +235,6 @@ namespace webnangcao.Migrations
                     b.ToTable("Track_Playlists");
                 });
 
-            modelBuilder.Entity("webnangcao.Entities.Joins.UserPlaylistAction", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ActionType")
-                        .IsRequired()
-                        .HasMaxLength(15)
-                        .HasColumnType("varchar");
-
-                    b.Property<DateTime>("DateCreated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("PlaylistId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PlaylistId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserPlaylistActions");
-                });
-
             modelBuilder.Entity("webnangcao.Entities.Playlist", b =>
                 {
                     b.Property<int>("Id")
@@ -299,7 +243,7 @@ namespace webnangcao.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("ArtWorkDirectory")
+                    b.Property<string>("ArtWork")
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
@@ -331,6 +275,34 @@ namespace webnangcao.Migrations
                     b.ToTable("Playlists");
                 });
 
+            modelBuilder.Entity("webnangcao.Entities.Role", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
+
+                    b.ToTable("Roles", (string)null);
+                });
+
             modelBuilder.Entity("webnangcao.Entities.Track", b =>
                 {
                     b.Property<int>("Id")
@@ -339,14 +311,14 @@ namespace webnangcao.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("ArtWorkDirectory")
+                    b.Property<string>("ArtWork")
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Directory")
+                    b.Property<string>("Location")
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
@@ -375,7 +347,7 @@ namespace webnangcao.Migrations
                     b.Property<string>("Address")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("AvatarDirectory")
+                    b.Property<string>("Avatar")
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
@@ -445,10 +417,8 @@ namespace webnangcao.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("ActionType")
-                        .IsRequired()
-                        .HasMaxLength(15)
-                        .HasColumnType("varchar");
+                    b.Property<int>("ActionType")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -471,7 +441,7 @@ namespace webnangcao.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                    b.HasOne("webnangcao.Entities.Role", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -498,7 +468,7 @@ namespace webnangcao.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                    b.HasOne("webnangcao.Entities.Role", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -596,29 +566,10 @@ namespace webnangcao.Migrations
                     b.Navigation("Track");
                 });
 
-            modelBuilder.Entity("webnangcao.Entities.Joins.UserPlaylistAction", b =>
-                {
-                    b.HasOne("webnangcao.Entities.Playlist", "Playlist")
-                        .WithMany("Users")
-                        .HasForeignKey("PlaylistId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("webnangcao.Entities.User", "User")
-                        .WithMany("Playlists")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Playlist");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("webnangcao.Entities.Playlist", b =>
                 {
                     b.HasOne("webnangcao.Entities.User", "CreateUser")
-                        .WithMany()
+                        .WithMany("Playlists")
                         .HasForeignKey("CreateUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -653,8 +604,6 @@ namespace webnangcao.Migrations
             modelBuilder.Entity("webnangcao.Entities.Playlist", b =>
                 {
                     b.Navigation("Tracks");
-
-                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("webnangcao.Entities.Track", b =>
