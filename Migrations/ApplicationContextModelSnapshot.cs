@@ -90,7 +90,7 @@ namespace webnangcao.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(150)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -114,7 +114,7 @@ namespace webnangcao.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(150)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("LoginProvider", "ProviderKey");
 
@@ -126,7 +126,7 @@ namespace webnangcao.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
                     b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(150)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("RoleId")
                         .HasColumnType("nvarchar(450)");
@@ -141,7 +141,7 @@ namespace webnangcao.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
                     b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(150)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LoginProvider")
                         .HasMaxLength(128)
@@ -203,7 +203,7 @@ namespace webnangcao.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(150)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -217,10 +217,10 @@ namespace webnangcao.Migrations
             modelBuilder.Entity("webnangcao.Entities.Joins.Follow", b =>
                 {
                     b.Property<string>("FollowedUserId")
-                        .HasColumnType("nvarchar(150)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("FollowingUserId")
-                        .HasColumnType("nvarchar(150)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("StartedAt")
                         .HasColumnType("datetime2");
@@ -267,8 +267,10 @@ namespace webnangcao.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("ActionName")
-                        .HasColumnType("int");
+                    b.Property<string>("ActionType")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("varchar");
 
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");
@@ -278,7 +280,7 @@ namespace webnangcao.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(150)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -303,7 +305,7 @@ namespace webnangcao.Migrations
 
                     b.Property<string>("CreateUserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(150)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -365,8 +367,7 @@ namespace webnangcao.Migrations
             modelBuilder.Entity("webnangcao.Entities.User", b =>
                 {
                     b.Property<string>("Id")
-                        .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
@@ -444,9 +445,10 @@ namespace webnangcao.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("ActionNameId")
+                    b.Property<string>("ActionType")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(15)
+                        .HasColumnType("varchar");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -456,11 +458,9 @@ namespace webnangcao.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(150)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ActionNameId");
 
                     b.HasIndex("TrackId");
 
@@ -601,13 +601,13 @@ namespace webnangcao.Migrations
                     b.HasOne("webnangcao.Entities.Playlist", "Playlist")
                         .WithMany("Users")
                         .HasForeignKey("PlaylistId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("webnangcao.Entities.User", "User")
                         .WithMany("Playlists")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Playlist");
@@ -628,25 +628,17 @@ namespace webnangcao.Migrations
 
             modelBuilder.Entity("webnangcao.Entities.UserTrackAction", b =>
                 {
-                    b.HasOne("webnangcao.Entities.UserTrackAction", "ActionName")
-                        .WithMany()
-                        .HasForeignKey("ActionNameId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("webnangcao.Entities.Track", "Track")
                         .WithMany("UserActions")
                         .HasForeignKey("TrackId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("webnangcao.Entities.User", "User")
                         .WithMany("TrackActions")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
-
-                    b.Navigation("ActionName");
 
                     b.Navigation("Track");
 

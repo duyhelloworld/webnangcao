@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace webnangcao.Migrations
 {
     /// <inheritdoc />
-    public partial class TestBang : Migration
+    public partial class Fix20 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -60,7 +60,7 @@ namespace webnangcao.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     FullName = table.Column<string>(type: "nvarchar(140)", maxLength: 140, nullable: true),
                     AvatarDirectory = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
@@ -139,7 +139,7 @@ namespace webnangcao.Migrations
                     CommentAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LastEditAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     TrackId = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(150)", nullable: false)
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -162,8 +162,8 @@ namespace webnangcao.Migrations
                 name: "Follows",
                 columns: table => new
                 {
-                    FollowingUserId = table.Column<string>(type: "nvarchar(150)", nullable: false),
-                    FollowedUserId = table.Column<string>(type: "nvarchar(150)", nullable: false),
+                    FollowingUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    FollowedUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     StartedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -192,7 +192,7 @@ namespace webnangcao.Migrations
                     LastUpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ArtWorkDirectory = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
-                    CreateUserId = table.Column<string>(type: "nvarchar(150)", nullable: false),
+                    CreateUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Tags = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -212,7 +212,7 @@ namespace webnangcao.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<string>(type: "nvarchar(150)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -234,7 +234,7 @@ namespace webnangcao.Migrations
                     LoginProvider = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
                     ProviderKey = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
                     ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserId = table.Column<string>(type: "nvarchar(150)", nullable: false)
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -251,7 +251,7 @@ namespace webnangcao.Migrations
                 name: "UserRoles",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(type: "nvarchar(150)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
@@ -275,7 +275,7 @@ namespace webnangcao.Migrations
                 name: "UserTokens",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(type: "nvarchar(150)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     LoginProvider = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
                     Name = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
                     Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
@@ -296,9 +296,9 @@ namespace webnangcao.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ActionNameId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ActionType = table.Column<string>(type: "varchar(15)", maxLength: 15, nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(150)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     TrackId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -308,20 +308,12 @@ namespace webnangcao.Migrations
                         name: "FK_UserTrackActions_Tracks_TrackId",
                         column: x => x.TrackId,
                         principalTable: "Tracks",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_UserTrackActions_UserTrackActions_ActionNameId",
-                        column: x => x.ActionNameId,
-                        principalTable: "UserTrackActions",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_UserTrackActions_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -353,10 +345,10 @@ namespace webnangcao.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(150)", nullable: false),
-                    PlaylistId = table.Column<int>(type: "int", nullable: false),
                     DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ActionName = table.Column<int>(type: "int", nullable: false)
+                    ActionType = table.Column<string>(type: "varchar(15)", maxLength: 15, nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    PlaylistId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -365,14 +357,12 @@ namespace webnangcao.Migrations
                         name: "FK_UserPlaylistActions_Playlists_PlaylistId",
                         column: x => x.PlaylistId,
                         principalTable: "Playlists",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_UserPlaylistActions_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
@@ -453,11 +443,6 @@ namespace webnangcao.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UserTrackActions_ActionNameId",
-                table: "UserTrackActions",
-                column: "ActionNameId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserTrackActions_TrackId",

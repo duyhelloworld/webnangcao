@@ -4,9 +4,10 @@ namespace webnangcao.Services;
 
 public interface ITrackService
 {
-    public Task<IEnumerable<Track>> GetAllAsync();
-    public Task<Track> GetByIdAsync(int id);
-    public Task<Track> CreateAsync(Track track);
-    public Task<Track> UpdateAsync(Track track);
-    public Task<Track> DeleteAsync(int id);
+    Task<IEnumerable<Track>> GetAll();
+    Task<Track?> GetById(int id);
+    Task<int> AddNew(Track track);
+    Task UploadTrack(IFormFile file);
+    Task UpdateInfomation(Track track);
+    Task Remove(int id);
 }
