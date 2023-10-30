@@ -28,13 +28,15 @@ builder.Services.AddAuthentication(options =>
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultSignOutScheme = JwtBearerDefaults.AuthenticationScheme;
 })
 .AddJwtBearer(jwtOPT => 
 {
     jwtOPT.RequireHttpsMetadata = false;
     jwtOPT.TokenValidationParameters = new TokenValidationParameters()
     {
-        ClockSkew = TimeSpan.Zero,
+        ClockSkew = TimeSpan.FromMinutes(3),
         ValidateIssuer = true,
         ValidIssuer = config["Authentication:Jwt:Issuer"],
         ValidateAudience = false,
@@ -69,10 +71,9 @@ builder.Services.AddIdentity<User, Role>(options =>
 
     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(3);
     options.Lockout.MaxFailedAccessAttempts = 3;
-    options.Lockout.AllowedForNewUsers = true;
+    options.Lockout.AllowedForNewUsers = false;
 
     options.User.RequireUniqueEmail = true;
-    options.Stores.MaxLengthForKeys = 128;
 })
 .AddEntityFrameworkStores<ApplicationContext>()
 .AddDefaultTokenProviders();
@@ -86,11 +87,11 @@ await scope.ServiceProvider.GetRequiredService<FakeData>().InitDataAsync();
 
 // if (app.Environment.IsDevelopment())
 // {
-//     app.UseDeveloperExceptionPage();
+    app.UseDeveloperExceptionPage();
 // } 
 // else
 // {
-    app.UseMiddleware<ErrorMiddleware>();
+    // app.UseMiddleware<ErrorMiddleware>();
 // }
 
 
