@@ -1,4 +1,4 @@
--- Active: 1695612038229@@127.0.0.1@1433@webnangcao
+-- Active: 1698578533477@@127.0.0.1@1433@webnangcao
 INSERT INTO Categories (Name, Description)
 VALUES
     (N'Pop', N'Nhạc Pop (Popular) hợp với mọi người'),
@@ -27,6 +27,10 @@ VALUES
     (4, 5),
     (5, 3),
     (6, 3);
+
+INSERT INTO UserTrackActions ([Id], [UserId], [TrackId], [ActionType], [CreatedAt])
+VALUES ('1', 1, 1, 'UPLOAD', '2023-10-10'),
+        ('2', 1, 2, 'LIKE', '2023-10-10');
 
 INSERT INTO [Roles] ([Id], [Name], [NormalizedName])
 VALUES ('1111', 'Admin', 'admin'),
