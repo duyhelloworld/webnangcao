@@ -4,5 +4,6 @@ public enum EUserTrackActionType
 {
     PLAY,
     LIKE,
-    DISLIKE
+    DISLIKE,
+    UPLOAD
 }
