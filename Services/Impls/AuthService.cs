@@ -40,9 +40,8 @@ public class AuthService : IAuthService
                 Data = "Tài khoản hoặc mật khẩu không chính xác"
             };
         }
-
         var highestRole = ERoleTool.GetHighestRole(await _userManager.GetRolesAsync(user));
-        var refreshToken = await _userManager.GenerateUserTokenAsync(user, "Default", "refresh_token");
+        // var refreshToken = await _userManager.GenerateUserTokenAsync(user, "Default", "refresh_token");
         return new ResponseModel()
         {
             IsSucceed = true,
@@ -50,7 +49,7 @@ public class AuthService : IAuthService
             {
                 UserId = user.Id,
                 AccessToken = GenerateJwtToken(user, highestRole),
-                RefreshToken = refreshToken
+                // RefreshToken = refreshToken
             }
         };
     }
@@ -80,7 +79,7 @@ public class AuthService : IAuthService
                         throw new AppException(HttpStatusCode.BadRequest, 
                                 $"Email '{model.Email}' đã tồn tại", "Hãy thử lại email khác");
                     default:
-                        Console.WriteLine($"Lỗi: {err.Code}\n- Cụ thể: {err.Description}");
+                        Console.WriteLine($"Error: {err.Code}\n- Detail: {err.Description}");
                         throw new AppException(HttpStatusCode.BadRequest, 
                             "Đăng kí không thành công", "Hãy thử lại");
                 }
@@ -93,7 +92,7 @@ public class AuthService : IAuthService
             Data = new SuccessSignupModel()
             {
                 AccessToken = GenerateJwtToken(user, erole),
-                RefreshToken = GenerateRefreshToken(user),
+                // RefreshToken = GenerateRefreshToken(user),
             }
         };
     }
@@ -114,13 +113,13 @@ public class AuthService : IAuthService
             _config["Jwt:Issuer"]!,
             null,
             identity.Claims,
-            expires: DateTime.Now.AddMinutes(30),
+            expires: DateTime.Now.AddDays(30),
             signingCredentials: credentials);
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
-    private string GenerateRefreshToken(User User)
-    {
-        return _userManager.GenerateUserTokenAsync(User, "Default", "refresh_token").Result;
-    }
+    // private string GenerateRefreshToken(User User)
+    // {
+    //     return _userManager.GenerateUserTokenAsync(User, "Default", "refresh_token").Result;
+    // }
 }
