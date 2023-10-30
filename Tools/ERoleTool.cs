@@ -22,9 +22,9 @@ public class ERoleTool
 
     public static ERole GetHighestRole(IList<string> roles)
     {
-        if (roles.Contains("SUPERADMIN"))
+        if (roles.FirstOrDefault(r => string.Equals(r, "SUPERADMIN", StringComparison.OrdinalIgnoreCase)) != null)
             return ERole.SUPERADMIN;
-        else if (roles.Contains("ADMIN"))
+        else if (roles.FirstOrDefault(r => string.Equals(r, "ADMIN", StringComparison.OrdinalIgnoreCase)) != null)
             return ERole.ADMIN;
         else
             return ERole.USER;
