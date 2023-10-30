@@ -14,14 +14,16 @@ public class TrackService : ITrackService
     {
         _context = context;
     }
-    public Task<Track> AddNew(Track track)
-    {
-        throw new NotImplementedException();
-    }
 
-    public Task Remove(int id)
+    public async Task Remove(int id)
     {
-        throw new NotImplementedException();
+        var track = _context.Tracks.Find(id);
+        if (track == null)
+        {
+            throw new AppException(HttpStatusCode.NotFound, "Không tìm thấy bài hát", id);
+        }
+        _context.Tracks.Remove(track);
+        await _context.SaveChangesAsync();
     }
 
     public async Task<IEnumerable<Track>> GetAll()
@@ -29,21 +31,18 @@ public class TrackService : ITrackService
         return await _context.Tracks.ToListAsync();
     }
 
-    public Task<Track?> GetById(int id)
+    public async Task<IEnumerable<Track>> GetByName(string name)
     {
-        throw new NotImplementedException();
+        return await _context.Tracks
+        .Where(t => t.Name.Contains(name))
+        .OrderBy(t => t.Name)
+        .ToListAsync();
     }
 
-    public Task<Track> Update(Track track)
+    public async Task<Track?> GetById(int id)
     {
-        throw new NotImplementedException();
+        return await _context.Tracks.FindAsync(id);
     }
-
-    Task<int> ITrackService.AddNew(Track track)
-    {
-        throw new NotImplementedException();
-    }
-
     public async Task UploadTrack(IFormFile file)
     {
         if (!file.FileName.EndsWith(".mp3"))
