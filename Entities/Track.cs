@@ -16,13 +16,10 @@ public class Track
     [StringLength((int)EMaxValue.DirectoryLength)]
     public string Location { get; set; } = null!;
 
-
-    [DataType(DataType.DateTime)]
-    public DateTime UploadAt { get; set; } = DateTime.Now;
+    // Dùng UploadAt ở UserTrackAction
 
     [MaxLength]
     public string? Description { get; set; }
-
 
     [StringLength((int)EMaxValue.DirectoryLength)]
     public string? ArtWork { get; set; }
@@ -36,6 +33,7 @@ public class Track
 
     public ICollection<Track_Playlist> Playlists { get; set; } 
         = new HashSet<Track_Playlist>();
+        
     public ICollection<UserTrackAction> UserActions { get; set; } 
         = new HashSet<UserTrackAction>();
 }
