@@ -1,12 +1,11 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using webnangcao.Entities;
-using webnangcao.Entities.Enumerables;
 using webnangcao.Models.Securities;
 using webnangcao.Services;
 
 namespace webnangcao.Controllers;
 
+[AllowAnonymous]
 [ApiController]
 [Route("[controller]")]
 public class AuthController : ControllerBase
@@ -18,42 +17,26 @@ public class AuthController : ControllerBase
     }
 
     [HttpGet]
-    public IActionResult Get()
+    public IActionResult GetRoot()
     {
-        return BadRequest("Truy cập <a href=\"postman.com\">Postman</a> để dùng POST");
+        return BadRequest("Truy cập <a href=\"postman.com\">Postman</a> để dùng API");
     }
 
-    [AllowAnonymous]
-    [HttpPost("signup/user")]
-    public async Task<IActionResult> SignUpUser([FromBody] SignupModel model)
+    [HttpPost("signup")]
+    public async Task<IActionResult> Signup([FromBody] SignupModel model)
     {
-        return Ok(await _service.SignUpAsync(model, ERole.USER));
+        return Ok(await _service.SignUpAsync(model));
     }
 
-    [Authorize(Roles = nameof(ERole.SUPERADMIN))]
-    [HttpPost("signup/admin")]
-    public async Task<IActionResult> SignUpAmin([FromBody] SignupModel model)
-    {
-        return Ok(await _service.SignUpAsync(model, ERole.ADMIN));
-    }
-
-    [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody] LoginModel model)
+    [HttpPost("signin")]
+    public async Task<IActionResult> Signin([FromBody] SigninModel model)
     {
         return Ok(await _service.SignInAsync(model));
     }
 
-    // [HttpGet("hello")]
-    // [Authorize(Roles = "Admin")]
-    // public IActionResult Hello()
-    // {
-    //     return Ok("Hello");
-    // }
-
-    // [HttpGet("hi")] 
-    // [Authorize(Roles = nameof(ERole.SUPERADMIN))]
-    // public IActionResult Hi()
-    // {
-    //     return Ok("Hi");
-    // }
+    [HttpGet("signout")]
+    public async Task Signout()
+    {
+        await _service.SignOutAsync();
+    }
 }
