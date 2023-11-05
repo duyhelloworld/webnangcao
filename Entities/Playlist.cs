@@ -18,6 +18,8 @@ public class Playlist
 
     public DateTime LastUpdatedAt { get; set; }
 
+    public bool IsPrivate { get; set; }
+
     [MaxLength]
     public string? Description { get; set; }
 
