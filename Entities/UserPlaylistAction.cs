@@ -1,17 +1,16 @@
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 using webnangcao.Entities.Enumerables;
 
 namespace webnangcao.Entities;
 
-public class UserTrackAction
+public class UserPlaylistAction
 {
     [Key]
     public string Id { get; set; } = Guid.NewGuid().ToString();
 
-    [EnumDataType(typeof(EUserTrackActionType))]
-    public EUserTrackActionType ActionType { get; set; }
+    [EnumDataType(typeof(EUserPlaylistActionType))]
+    public EUserPlaylistActionType ActionType { get; set; }
 
     [DataType(DataType.DateTime)]
     public DateTime ActionAt { get; set; }
@@ -20,7 +19,7 @@ public class UserTrackAction
     [DeleteBehavior(DeleteBehavior.NoAction)]
     public User User { get; set; } = null!;
 
-    public int TrackId { get; set; }
+    public int PlaylistId { get; set; }
     [DeleteBehavior(DeleteBehavior.NoAction)]
-    public Track Track { get; set; } = null!;
+    public Playlist Playlist { get; set; } = null!;
 }

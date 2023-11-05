@@ -1,4 +1,6 @@
 using System.Text;
+using Microsoft.AspNetCore.Authentication.Facebook;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -23,27 +25,20 @@ builder.Services.AddDbContext<ApplicationContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("Default"));
 });
 
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultSignOutScheme = JwtBearerDefaults.AuthenticationScheme;
-})
+builder.Services.AddAuthentication(FacebookDefaults.AuthenticationScheme)
 .AddJwtBearer(jwtOPT => 
 {
     jwtOPT.RequireHttpsMetadata = false;
+    jwtOPT.SaveToken = true;
     jwtOPT.TokenValidationParameters = new TokenValidationParameters()
     {
-        ClockSkew = TimeSpan.FromMinutes(3),
-        ValidateIssuer = true,
         ValidIssuer = config["Authentication:Jwt:Issuer"],
-        ValidateAudience = false,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(
             Encoding.UTF8.GetBytes(config["Authentication:Jwt:Key"]!)),
+        ValidateIssuer = true, 
+        ValidateAudience = false,
+        ValidateIssuerSigningKey = true,
+        ValidateLifetime = true
     };
 })
 .AddFacebook(options =>
@@ -51,11 +46,13 @@ builder.Services.AddAuthentication(options =>
     options.AppId = config["Authentication:Facebook:AppId"]!;
     options.AppSecret = config["Authentication:Facebook:AppSecret"]!;
 })
-.AddGoogle(Options => 
+.AddGoogle(options => 
 {
-    Options.ClientId = config["Authentication:Google:ClientId"]!;
-    Options.ClientSecret = config["Authentication:Google:ClientSecret"]!;
+    options.ClientId = config["Authentication:Google:ClientId"]!;
+    options.ClientSecret = config["Authentication:Google:ClientSecret"]!;
 });
+
+builder.Services.AddAuthorization();
 
 builder.Services.AddIdentity<User, Role>(options =>
 {
@@ -81,17 +78,17 @@ builder.Services.AddIdentity<User, Role>(options =>
 builder.Services.AddScoped<FakeData>();
 var app = builder.Build();
 
-// Fake dữ liệu, có thể comment sau lần chạy đầu
-var scope = app.Services.CreateScope();
-await scope.ServiceProvider.GetRequiredService<FakeData>().InitDataAsync();
+// Fake password cho user, có thể comment sau lần chạy đầu
+// var scope = app.Services.CreateScope();
+// await scope.ServiceProvider.GetRequiredService<FakeData>().InitDataAsync();
 
 // if (app.Environment.IsDevelopment())
 // {
-    app.UseDeveloperExceptionPage();
+    // app.UseDeveloperExceptionPage();
 // } 
 // else
 // {
-    // app.UseMiddleware<ErrorMiddleware>();
+    app.UseMiddleware<ErrorMiddleware>();
 // }
 
 

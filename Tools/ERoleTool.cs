@@ -17,7 +17,7 @@ public class ERoleTool
 
     public static string ToString(ERole erole)
     {
-        return erole.ToString().ToUpper();
+        return erole.ToString();
     }
 
     public static ERole GetHighestRole(IList<string> roles)

@@ -1,9 +1,11 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
 namespace webnangcao.Entities.Joins;
 
+[Table("Track_Category")]
 [PrimaryKey("CategoryId", "TrackId")]
-public class Track_Category
+public class TrackCategory
 {
     public int TrackId { get; set; }
     public Track Track { get; set; } = null!;

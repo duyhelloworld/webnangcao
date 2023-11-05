@@ -13,22 +13,22 @@ public class PlaylistService : IPlaylistService
     }
     public async Task<IEnumerable<PlaylistResponseModel>> GetAll()
     {
-        var result = from playlists in _context.Playlists
-                    join playlists_tracks in _context.Track_Playlists 
-                        on playlists.Id equals playlists_tracks.PlaylistId
+        var result = from p in _context.Playlists
+                    join tp in _context.TrackPlaylists 
+                        on p.Id equals tp.PlaylistId
                     select new PlaylistResponseModel
                     {
-                        Id = playlists.Id,
-                        PlaylistName = playlists.Name,
-                        AuthorName = playlists.CreateUser.UserName!,
-                        CreatedAt = playlists.CreatedAt,
-                        LastUpdatedAt = playlists.LastUpdatedAt,
-                        Description = playlists.Description,
-                        ArtWork = playlists.ArtWork,
-                        Tracks = playlists.Tracks.Select(t => t.TrackId),
-                        Tags = playlists.Tags == null 
+                        Id = p.Id,
+                        PlaylistName = p.Name,
+                        AuthorName = p.UserPlaylistActions.FirstOrDefault().User.UserName,
+                        CreatedAt = p.CreatedAt,
+                        LastUpdatedAt = p.LastUpdatedAt,
+                        Description = p.Description,
+                        ArtWork = p.ArtWork,
+                        Tracks = p.Tracks.Select(t => t.TrackId),
+                        Tags = p.Tags == null 
                             ? new string[] { } 
-                            : playlists.Tags.Split(",", StringSplitOptions.RemoveEmptyEntries),
+                            : p.Tags.Split(",", StringSplitOptions.RemoveEmptyEntries),
                     }; 
         return await Task.FromResult(result);
     }
@@ -41,7 +41,7 @@ public class PlaylistService : IPlaylistService
             {
                 Id = p.Id,
                 PlaylistName = p.Name,
-                AuthorName = p.CreateUser.UserName!,
+                AuthorName = p.UserPlaylistActions.FirstOrDefault().User.UserName,
                 CreatedAt = p.CreatedAt,
                 LastUpdatedAt = p.LastUpdatedAt,
                 Description = p.Description,

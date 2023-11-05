@@ -1,8 +1,7 @@
 namespace webnangcao.Entities.Enumerables;
 
-public enum EUserTrackActionType
+public enum EUserPlaylistActionType
 {
     PLAY,
     LIKE,
-    UPLOAD
 }
