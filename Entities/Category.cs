@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using webnangcao.Entities.Enumerables;
 using webnangcao.Entities.Joins;
+using webnangcao.Tools;
 
 namespace webnangcao.Entities;
 
@@ -9,11 +10,12 @@ public class Category
     [Key]
     public int Id { get; set; }
 
-    [StringLength((int) EMaxValue.CategoryNameLength)]
+    [Max(EMaxValue.NameLength_Category)]
     public string Name { get; set; } = null!;
     
     [MaxLength]
     public string? Description { get; set; }
 
-    public ICollection<Track_Category> Tracks { get; set; } = new HashSet<Track_Category>();
+    public ICollection<TrackCategory> TrackCategories { get; set; } 
+        = new List<TrackCategory>();
 }
