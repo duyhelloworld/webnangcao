@@ -10,14 +10,13 @@ public class UserTrackAction
     [Key]
     public string Id { get; set; } = Guid.NewGuid().ToString();
 
-    // [EnumDataType(typeof(EUserTrackActionType))]
-    [Column(TypeName = "varchar(20)")]
+    [EnumDataType(typeof(EUserTrackActionType))]
     public EUserTrackActionType ActionType { get; set; }
 
     [DataType(DataType.DateTime)]
-    public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public DateTime ActionAt { get; set; }
 
-    public string UserId { get; set; } = null!;
+    public long UserId { get; set; }
     [DeleteBehavior(DeleteBehavior.NoAction)]
     public User User { get; set; } = null!;
 
