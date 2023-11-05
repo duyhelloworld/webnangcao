@@ -11,7 +11,4 @@ public class TrackResponseModel
     public int LikeCount { get; set; }
     public int CommentCount { get; set; }
     public string? ArtWork { get; set; }
-    // public string Location { get; set; } = null!;   
-    // public string? Description { get; set; }
-    // public IEnumerable<string>? Categories { get; set; }
 }
