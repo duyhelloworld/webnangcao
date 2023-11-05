@@ -30,7 +30,17 @@ VALUES
 
 INSERT INTO UserTrackActions ([Id], [UserId], [TrackId], [ActionType], [CreatedAt])
 VALUES ('1', 1, 1, 'UPLOAD', '2023-10-10'),
-        ('2', 1, 2, 'LIKE', '2023-10-10');
+        ('2', 1, 2, 'LIKE', '2023-10-10'),
+        ('3', 2, 1, 'LIKE', '2023-10-11');
+
+INSERT INTO Comments ([Content], [CommentAt], [LastEditAt], [TrackId], [UserId]) 
+VALUES ('Hay quá', '2023-10-10 09:10:12', '2023-10-10 09:10:12', 1, '1'),
+('Tuyệt vời ạ', '2023-10-10 09:11:42', '2023-10-10 09:12:30', 1, '1'), 
+('This song is make my childhoods back. Thank you sir!', '2023-10-10 10:24:20', '2023-10-11 09:30:11', 2, '1'), 
+('Bài này hay quá, yeah yeah', '2023-10-10 10:11:20', '2023-10-12 11:11:01', 1, '2'), 
+('Nhạc này còn hơi kén người nghe quá bro', '2023-10-10 19:50:12', '2023-10-12 20:11:21', 1, '1');
+
+
 
 INSERT INTO [Roles] ([Id], [Name], [NormalizedName])
 VALUES ('1111', 'Admin', 'admin'),
