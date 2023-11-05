@@ -28,53 +28,41 @@ public class TrackService : ITrackService
                 on track.Id equals userTrackAction.TrackId
             join user in _context.Users
                 on userTrackAction.UserId equals user.Id
-            join comment in _context.Comments
-                on track.Id equals comment.TrackId
         select new TrackResponseModel()
         {
             Id = track.Id,
             Author = user.UserName!,
             TrackName = track.Name,
             ArtWork = track.ArtWork,
-            UploadAt = userTrackAction.CreatedAt,
-            ListenCount = track.UserActions.Count(ua => ua.ActionType == EUserTrackActionType.PLAY),
-            LikeCount = track.UserActions.Count(ua => ua.ActionType == EUserTrackActionType.LIKE),
-            CommentCount = track.Comments.Count,
+            UploadAt = userTrackAction.ActionAt,
+            ListenCount = track.ListenCount,
+            LikeCount = track.LikeCount,
+            CommentCount = track.CommentCount,
         };
         return await Task.FromResult(result);
     }
 
     public async Task<TrackResponseModel?> GetById(int id)
     {
-        var track = await _context.Tracks
-            .Include(t => t.UserActions)
-            .Include(t => t.Comments)
-            .Include(t => t.Categories)
-            .FirstOrDefaultAsync(t => t.Id == id)
+        var result = await _context.Tracks.FirstOrDefaultAsync(t => t.Id == id)
             ?? throw new AppException(HttpStatusCode.NotFound, 
-                "Không tìm thấy bài hát", "Hãy thử lại");
+                "Không thể tìm kiếm bài hát", 
+                "Hãy thử kiểm tra đường truyền");
         return new TrackResponseModel()
         {
-            Id = track.Id,
-            Author = track.UserActions
-                .FirstOrDefault(ua => ua.ActionType == EUserTrackActionType.UPLOAD)!
-                .User.UserName ?? "Unknown",
-            TrackName = track.Name,
-            ListenCount = track.UserActions.Count(ua => ua.ActionType == EUserTrackActionType.PLAY),
-            LikeCount = track.UserActions.Count(ua => ua.ActionType == EUserTrackActionType.LIKE),
-            CommentCount = track.Comments.Count,
-            ArtWork = track.ArtWork,
-            UploadAt = track.UserActions.FirstOrDefault(ua => ua.ActionType == EUserTrackActionType.UPLOAD)!.CreatedAt,
+            Id = id,
+            TrackName = result.Name,
+            Author = result.Author ?? "Không rõ",
+            ArtWork = result.ArtWork,
+            UploadAt = result.UserTrackActions.FirstOrDefault()!.ActionAt,
+            ListenCount = result.ListenCount,
+            LikeCount = result.LikeCount,
+            CommentCount = result.CommentCount,
         };
     }
 
-    public async Task AddNew(TrackInsertModel model, string userId)
-    {
-        if (userId == null)
-        {
-            throw new AppException(HttpStatusCode.Unauthorized, "Cần tài khoản để upload nhạc", "Hãy đăng nhập lại");
-        }
-    
+    public async Task AddNew(TrackInsertModel model, long userId)
+    {    
         var track = new Track()
         {
             Name = model.TrackName,
@@ -86,7 +74,7 @@ public class TrackService : ITrackService
             Track = track,
             UserId = userId,
             ActionType = EUserTrackActionType.UPLOAD,
-            CreatedAt = DateTime.Now,
+            ActionAt = DateTime.Now,
         };
         try 
         {
@@ -101,27 +89,10 @@ public class TrackService : ITrackService
         }
     }
 
-    public async Task<TrackUploadSuccessModel> UploadCache(IFormFile file)
-    {
-        if (file.FileName.EndsWith(".mp3"))
-        {
-            throw new AppException(HttpStatusCode.BadRequest, 
-                "File không đúng định dạng", "File phải đuôi .mp3");
-        }
-        var location = Path.Combine("Assets", "musics", file.FileName);
-        await file.CopyToAsync(new FileStream(location, FileMode.Create));
-        return new TrackUploadSuccessModel()
-        {
-            TrackName = Path.GetFileNameWithoutExtension(file.FileName),
-            UploadAt = DateTime.Now,
-            ExpiredAt = DateTime.Now.AddMinutes(3)
-        };
-    }
-
     public async Task Remove(int id)
     {
         var track = await _context.Tracks
-            .Include(t => t.UserActions)
+            .Include(t => t.UserTrackActions)
             .Include(t => t.Comments)
             .Include(t => t.Categories)
             .FirstOrDefaultAsync(t => t.Id == id)
@@ -132,9 +103,9 @@ public class TrackService : ITrackService
         using var deleteTrackTransaction = _context.Database.BeginTransaction();
         try
         {
-            _context.UserTrackActions.RemoveRange(track.UserActions);
+            _context.UserTrackActions.RemoveRange(track.UserTrackActions);
             _context.Comments.RemoveRange(track.Comments);
-            _context.Track_Categories.RemoveRange(track.Categories);
+            _context.TrackCategories.RemoveRange(track.Categories);
             _context.Tracks.Remove(track);
             await _context.SaveChangesAsync();
 
@@ -156,22 +127,10 @@ public class TrackService : ITrackService
         currentTrack.Name = model.TrackName;
         currentTrack.Description = model.Description;
         currentTrack.ArtWork = model.ArtWork;
-        if (model.Categories != null)
-        {
-            var currentCategories = await _context.Track_Categories
-                .Where(tc => tc.TrackId == id)
-                .ToListAsync();
-            _context.Track_Categories.RemoveRange(currentCategories);
-            var updateCategories = await _context.Categories
-                .Where(c => model.Categories.Contains(c.Id))
-                .ToListAsync();
-            await _context.Track_Categories
-                .AddRangeAsync(updateCategories.Select(c => new Track_Category()
-                {
-                    TrackId = id,
-                    CategoryId = c.Id
-                }));
-        }
+        var currentCategories = await _context.TrackCategories
+            .Where(tc => tc.TrackId == id)
+            .ToListAsync();
+        _context.TrackCategories.RemoveRange(currentCategories);
         await _context.SaveChangesAsync();
     }
 }

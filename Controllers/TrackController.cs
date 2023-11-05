@@ -1,11 +1,16 @@
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Text;
+using System.Text.Json;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using webnangcao.Entities;
 using webnangcao.Entities.Enumerables;
 using webnangcao.Models;
 using webnangcao.Models.Inserts;
+using webnangcao.Models.Securities;
 using webnangcao.Models.Updates;
 using webnangcao.Services;
 namespace webnangcao.Controllers;
@@ -15,13 +20,14 @@ namespace webnangcao.Controllers;
 public class TrackController : ControllerBase
 {
     private readonly ITrackService _service;
-    public TrackController(ITrackService service)
+    private readonly IConfiguration _config;
+    public TrackController(ITrackService service, IConfiguration config)
     {
         _service = service;
+        _config = config;
     }
 
     [HttpGet]
-    // [Authorize(Roles = nameof(ERole.ADMIN))]
     public async Task<IActionResult> GetAllTrack()
     {
         return Ok(await _service.GetAll());
@@ -30,18 +36,11 @@ public class TrackController : ControllerBase
     [HttpPost("add")]
     public async Task Upload([FromForm] TrackInsertModel model)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (userId != null)
+        var userId = User.FindFirstValue("userid");
+        if (userId != null && long.TryParse(userId, out long id))
         {
-            await _service.AddNew(model, userId);
-            Console.WriteLine("OK");
+            await _service.AddNew(model, id);
         }
-    }
-
-    [HttpPost("upload")]
-    public async Task UploadFile(IFormFile file)
-    {
-        await _service.UploadCache(file);
     }
 
     [HttpPut("{id}")]
