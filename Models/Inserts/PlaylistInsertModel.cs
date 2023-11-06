@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using webnangcao.Entities.Enumerables;
+using webnangcao.Enumerables;
 using webnangcao.Tools;
 
 namespace webnangcao.Models.Inserts;

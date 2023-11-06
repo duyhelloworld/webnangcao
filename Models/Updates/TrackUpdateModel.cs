@@ -1,4 +1,4 @@
-using webnangcao.Entities.Enumerables;
+using webnangcao.Enumerables;
 using webnangcao.Tools;
 
 namespace webnangcao.Models.Updates;
