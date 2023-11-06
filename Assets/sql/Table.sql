@@ -1,4 +1,5 @@
-﻿IF OBJECT_ID(N'[__EFMigrationsHistory]') IS NULL
+﻿-- Active: 1698578533477@@127.0.0.1@1433@webnangcao
+IF OBJECT_ID(N'[__EFMigrationsHistory]') IS NULL
 BEGIN
     CREATE TABLE [__EFMigrationsHistory] (
         [MigrationId] nvarchar(150) NOT NULL,
@@ -20,7 +21,7 @@ CREATE TABLE [Categories] (
 GO
 
 CREATE TABLE [Roles] (
-    [Id] nvarchar(10) NOT NULL,
+    [Id] bigint NOT NULL,
     [Name] nvarchar(256) NULL,
     [NormalizedName] nvarchar(256) NULL,
     [ConcurrencyStamp] nvarchar(max) NULL,
@@ -40,7 +41,7 @@ CREATE TABLE [Tracks] (
 GO
 
 CREATE TABLE [Users] (
-    [Id] nvarchar(450) NOT NULL,
+    [Id] bigint NOT NULL,
     [Address] nvarchar(max) NULL,
     [FullName] nvarchar(140) NULL,
     [Avatar] nvarchar(200) NULL,
@@ -64,7 +65,7 @@ GO
 
 CREATE TABLE [RoleClaims] (
     [Id] int NOT NULL IDENTITY,
-    [RoleId] nvarchar(10) NOT NULL,
+    [RoleId] bigint NOT NULL,
     [ClaimType] nvarchar(max) NULL,
     [ClaimValue] nvarchar(max) NULL,
     CONSTRAINT [PK_RoleClaims] PRIMARY KEY ([Id]),
@@ -87,7 +88,7 @@ CREATE TABLE [Comments] (
     [CommentAt] datetime2 NOT NULL,
     [LastEditAt] datetime2 NOT NULL,
     [TrackId] int NOT NULL,
-    [UserId] nvarchar(450) NOT NULL,
+    [UserId] bigint NOT NULL,
     CONSTRAINT [PK_Comments] PRIMARY KEY ([Id]),
     CONSTRAINT [FK_Comments_Tracks_TrackId] FOREIGN KEY ([TrackId]) REFERENCES [Tracks] ([Id]) ON DELETE CASCADE,
     CONSTRAINT [FK_Comments_Users_UserId] FOREIGN KEY ([UserId]) REFERENCES [Users] ([Id]) ON DELETE CASCADE
@@ -95,8 +96,8 @@ CREATE TABLE [Comments] (
 GO
 
 CREATE TABLE [Follows] (
-    [FollowingUserId] nvarchar(450) NOT NULL,
-    [FollowedUserId] nvarchar(450) NOT NULL,
+    [FollowingUserId] bigint NOT NULL,
+    [FollowedUserId] bigint NOT NULL,
     [StartedAt] datetime2 NOT NULL,
     CONSTRAINT [PK_Follows] PRIMARY KEY ([FollowedUserId], [FollowingUserId]),
     CONSTRAINT [FK_Follows_Users_FollowedUserId] FOREIGN KEY ([FollowedUserId]) REFERENCES [Users] ([Id]),
@@ -111,7 +112,7 @@ CREATE TABLE [Playlists] (
     [LastUpdatedAt] datetime2 NOT NULL,
     [Description] nvarchar(max) NULL,
     [ArtWork] nvarchar(200) NULL,
-    [CreateUserId] nvarchar(450) NOT NULL,
+    [CreateUserId] bigint NOT NULL,
     [Tags] nvarchar(max) NULL,
     CONSTRAINT [PK_Playlists] PRIMARY KEY ([Id]),
     CONSTRAINT [FK_Playlists_Users_CreateUserId] FOREIGN KEY ([CreateUserId]) REFERENCES [Users] ([Id]) ON DELETE CASCADE
@@ -120,7 +121,7 @@ GO
 
 CREATE TABLE [UserClaims] (
     [Id] int NOT NULL IDENTITY,
-    [UserId] nvarchar(450) NOT NULL,
+    [UserId] bigint NOT NULL,
     [ClaimType] nvarchar(max) NULL,
     [ClaimValue] nvarchar(max) NULL,
     CONSTRAINT [PK_UserClaims] PRIMARY KEY ([Id]),
@@ -132,15 +133,15 @@ CREATE TABLE [UserLogins] (
     [LoginProvider] nvarchar(128) NOT NULL,
     [ProviderKey] nvarchar(128) NOT NULL,
     [ProviderDisplayName] nvarchar(max) NULL,
-    [UserId] nvarchar(450) NOT NULL,
+    [UserId] bigint NOT NULL,
     CONSTRAINT [PK_UserLogins] PRIMARY KEY ([LoginProvider], [ProviderKey]),
     CONSTRAINT [FK_UserLogins_Users_UserId] FOREIGN KEY ([UserId]) REFERENCES [Users] ([Id]) ON DELETE CASCADE
 );
 GO
 
 CREATE TABLE [UserRoles] (
-    [UserId] nvarchar(450) NOT NULL,
-    [RoleId] nvarchar(10) NOT NULL,
+    [UserId] bigint NOT NULL,
+    [RoleId] bigint NOT NULL,
     CONSTRAINT [PK_UserRoles] PRIMARY KEY ([UserId], [RoleId]),
     CONSTRAINT [FK_UserRoles_Roles_RoleId] FOREIGN KEY ([RoleId]) REFERENCES [Roles] ([Id]) ON DELETE CASCADE,
     CONSTRAINT [FK_UserRoles_Users_UserId] FOREIGN KEY ([UserId]) REFERENCES [Users] ([Id]) ON DELETE CASCADE
@@ -148,7 +149,7 @@ CREATE TABLE [UserRoles] (
 GO
 
 CREATE TABLE [UserTokens] (
-    [UserId] nvarchar(450) NOT NULL,
+    [UserId] bigint NOT NULL,
     [LoginProvider] nvarchar(128) NOT NULL,
     [Name] nvarchar(128) NOT NULL,
     [Value] nvarchar(max) NULL,
@@ -158,10 +159,10 @@ CREATE TABLE [UserTokens] (
 GO
 
 CREATE TABLE [UserTrackActions] (
-    [Id] nvarchar(450) NOT NULL,
+    [Id] bigint NOT NULL,
     [ActionType] int NOT NULL,
     [CreatedAt] datetime2 NOT NULL,
-    [UserId] nvarchar(450) NOT NULL,
+    [UserId] bigint NOT NULL,
     [TrackId] int NOT NULL,
     CONSTRAINT [PK_UserTrackActions] PRIMARY KEY ([Id]),
     CONSTRAINT [FK_UserTrackActions_Tracks_TrackId] FOREIGN KEY ([TrackId]) REFERENCES [Tracks] ([Id]),
