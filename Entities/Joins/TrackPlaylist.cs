@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace webnangcao.Entities.Joins;
 
-[Table("Track_Playlist")]
+[Table("Tracks_Playlists")]
 [PrimaryKey("PlaylistId", "TrackId")]
 public class TrackPlaylist
 {

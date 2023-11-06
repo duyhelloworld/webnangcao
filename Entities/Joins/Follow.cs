@@ -15,5 +15,5 @@ public class Follow
     public User FollowedUser { get; set; } = null!;
 
     [DataType(DataType.DateTime)]
-    public DateTime StartedAt { get; set; }
+    public DateTime FollowedAt { get; set; }
 }

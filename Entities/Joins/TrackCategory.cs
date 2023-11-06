@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace webnangcao.Entities.Joins;
 
-[Table("Track_Category")]
+[Table("Tracks_Categories")]
 [PrimaryKey("CategoryId", "TrackId")]
 public class TrackCategory
 {
