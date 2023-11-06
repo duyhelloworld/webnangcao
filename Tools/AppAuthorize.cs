@@ -2,14 +2,14 @@ using Microsoft.AspNetCore.Authentication.Facebook;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using webnangcao.Entities.Enumerables;
+using webnangcao.Enumerables;
 
 namespace webnangcao.Tools;
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
-public class AppAuthorize : AuthorizeAttribute
+public class AppAuthorizeAttribute : AuthorizeAttribute
 {
-    public AppAuthorize(params ERole[] eroles)
+    public AppAuthorizeAttribute(params ERole[] eroles)
     {
         Roles = string.Join(", ", eroles.Select(r => ERoleTool.ToString(r)));
         AuthenticationSchemes = @$"
