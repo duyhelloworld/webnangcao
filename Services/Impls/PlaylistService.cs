@@ -1,5 +1,5 @@
 using webnangcao.Context;
-using webnangcao.Entities.Enumerables;
+using webnangcao.Enumerables;
 using webnangcao.Models.Inserts;
 using webnangcao.Models.Responses;
 
