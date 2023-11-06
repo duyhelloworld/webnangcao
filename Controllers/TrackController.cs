@@ -7,12 +7,13 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using webnangcao.Entities;
-using webnangcao.Entities.Enumerables;
+using webnangcao.Enumerables;
 using webnangcao.Models;
 using webnangcao.Models.Inserts;
 using webnangcao.Models.Securities;
 using webnangcao.Models.Updates;
 using webnangcao.Services;
+using webnangcao.Tools;
 namespace webnangcao.Controllers;
 
 [ApiController]
@@ -20,14 +21,13 @@ namespace webnangcao.Controllers;
 public class TrackController : ControllerBase
 {
     private readonly ITrackService _service;
-    private readonly IConfiguration _config;
-    public TrackController(ITrackService service, IConfiguration config)
+    public TrackController(ITrackService service)
     {
         _service = service;
-        _config = config;
     }
 
     [HttpGet]
+    [AppAuthorize(ERole.USER)]
     public async Task<IActionResult> GetAllTrack()
     {
         return Ok(await _service.GetAll());
