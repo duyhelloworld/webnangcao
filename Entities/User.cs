@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
 using webnangcao.Entities.Enumerables;
 using webnangcao.Tools;
@@ -6,9 +7,13 @@ namespace webnangcao.Entities;
 public class User : IdentityUser<long>
 {
     public override long Id { get; set; }
-    public override string UserName  { get; set; } = null!;
-    public override string Email { get; set ; } = null!;
-    public override string PasswordHash { get; set; } = null!;
+
+    [Required]
+    public override string? UserName  { get; set; } 
+    [Required]
+    public override string? Email { get; set ; } 
+    [Required]
+    public override string? PasswordHash { get; set; } 
 
     public string? FirstName { get; set; }
     public string? LastName { get; set; }

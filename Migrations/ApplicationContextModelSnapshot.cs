@@ -412,8 +412,9 @@ namespace webnangcao.Migrations
                     b.Property<DateTime>("ActionAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("ActionType")
-                        .HasColumnType("int");
+                    b.Property<string>("ActionType")
+                        .IsRequired()
+                        .HasColumnType("varchar(10)");
 
                     b.Property<int>("PlaylistId")
                         .HasColumnType("int");
@@ -438,8 +439,9 @@ namespace webnangcao.Migrations
                     b.Property<DateTime>("ActionAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("ActionType")
-                        .HasColumnType("int");
+                    b.Property<string>("ActionType")
+                        .IsRequired()
+                        .HasColumnType("varchar(10)");
 
                     b.Property<int>("TrackId")
                         .HasColumnType("int");

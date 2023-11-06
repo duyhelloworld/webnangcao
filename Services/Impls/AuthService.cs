@@ -10,6 +10,7 @@ using webnangcao.Exceptions;
 using webnangcao.Entities.Enumerables;
 using webnangcao.Tools;
 using Microsoft.Extensions.Options;
+using webnangcao.Models.MapAppsetting;
 
 namespace webnangcao.Services.Impls;
 
@@ -99,16 +100,16 @@ public class AuthService : IAuthService
         });
         var credentials = new SigningCredentials(
             new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(_appSetting.JwtSecretKey)),
+                Encoding.UTF8.GetBytes(_appSetting.JwtInfo.Key)),
                 SecurityAlgorithms.HmacSha256Signature);
         var expireTime = DateTime.Now.AddDays(
-            _appSetting.JwtValidTimeInDay);
+            _appSetting.JwtInfo.ExpireDay);
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = claims,
             Expires = expireTime,
             SigningCredentials = credentials,
-            Issuer = _appSetting.JwtIssuer,
+            Issuer = _appSetting.JwtInfo.Issuer,
         };
         var token = tokenHandler.CreateJwtSecurityToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);
@@ -119,9 +120,9 @@ public class AuthService : IAuthService
         var tokenHandler = new JwtSecurityTokenHandler();
         var result = await tokenHandler.ValidateTokenAsync(token, new TokenValidationParameters()
         {
-            ValidIssuer = _appSetting.JwtIssuer,
+            ValidIssuer = _appSetting.JwtInfo.Issuer,
             IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(_appSetting.JwtSecretKey)),
+                Encoding.UTF8.GetBytes(_appSetting.JwtInfo.Key)),
             ValidateIssuer = true,
             ValidateAudience = false,
             ValidateIssuerSigningKey = true,

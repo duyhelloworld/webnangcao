@@ -10,7 +10,8 @@ public class UserTrackAction
     [Key]
     public string Id { get; set; } = Guid.NewGuid().ToString();
 
-    [EnumDataType(typeof(EUserTrackActionType))]
+    // [EnumDataType(typeof(EUserTrackActionType))]
+    [Column(TypeName = "varchar(10)")]
     public EUserTrackActionType ActionType { get; set; }
 
     [DataType(DataType.DateTime)]

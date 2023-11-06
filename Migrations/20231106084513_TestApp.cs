@@ -298,7 +298,7 @@ namespace webnangcao.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ActionType = table.Column<int>(type: "int", nullable: false),
+                    ActionType = table.Column<string>(type: "varchar(10)", nullable: false),
                     ActionAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UserId = table.Column<long>(type: "bigint", nullable: false),
                     TrackId = table.Column<int>(type: "int", nullable: false)
@@ -347,7 +347,7 @@ namespace webnangcao.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ActionType = table.Column<int>(type: "int", nullable: false),
+                    ActionType = table.Column<string>(type: "varchar(10)", nullable: false),
                     ActionAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UserId = table.Column<long>(type: "bigint", nullable: false),
                     PlaylistId = table.Column<int>(type: "int", nullable: false)
