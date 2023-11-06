@@ -2,7 +2,7 @@ using System.Net;
 using Microsoft.EntityFrameworkCore;
 using webnangcao.Context;
 using webnangcao.Entities;
-using webnangcao.Entities.Enumerables;
+using webnangcao.Enumerables;
 using webnangcao.Entities.Joins;
 using webnangcao.Exceptions;
 using webnangcao.Models;
@@ -52,7 +52,7 @@ public class TrackService : ITrackService
         {
             Id = id,
             TrackName = result.Name,
-            Author = result.Author ?? "Không rõ",
+            Author = result.Author?.UserName!,
             ArtWork = result.ArtWork,
             UploadAt = result.UserTrackActions.FirstOrDefault()!.ActionAt,
             ListenCount = result.ListenCount,
