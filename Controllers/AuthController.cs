@@ -34,6 +34,18 @@ public class AuthController : ControllerBase
         return Ok(await _service.SignInAsync(model));
     }
 
+    [HttpPost("validate")]
+    public async Task<bool> Validate()
+    {
+        if (Request.Headers.ContainsKey("Authorization"))
+        {
+            return await _service.ValidateToken(
+                Request.Headers["Authorization"]!.First(au => au!.StartsWith("Bearer"))!
+                .Replace("Bearer ", ""));     
+        }
+        return false;
+    }
+
     [HttpGet("signout")]
     public async Task Signout()
     {

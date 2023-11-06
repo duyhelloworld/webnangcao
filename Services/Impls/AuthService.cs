@@ -7,10 +7,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using webnangcao.Entities;
 using webnangcao.Exceptions;
-using webnangcao.Entities.Enumerables;
+using webnangcao.Enumerables;
 using webnangcao.Tools;
 using Microsoft.Extensions.Options;
-using webnangcao.Models.MapAppsetting;
 
 namespace webnangcao.Services.Impls;
 
@@ -18,13 +17,12 @@ public class AuthService : IAuthService
 {
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signInManager;
-    private readonly AppSetting _appSetting;
-
-    public AuthService(UserManager<User> userManager, SignInManager<User> signInManager, IOptions<AppSetting> appSetting)
+    private readonly IConfiguration _config;
+    public AuthService(UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration config)
     {
         _userManager = userManager;
         _signInManager = signInManager;
-        _appSetting = appSetting.Value;
+        _config = config;
     }
 
     public async Task<ResponseModel> SignInAsync(SigninModel model)
@@ -59,7 +57,6 @@ public class AuthService : IAuthService
             Email = model.Email,
             PhoneNumber = model.PhoneNumber,
         };
-
         var result = await _userManager.CreateAsync(user, model.Password);
         if (!result.Succeeded)
         {
@@ -74,7 +71,7 @@ public class AuthService : IAuthService
                         throw new AppException(HttpStatusCode.Conflict, 
                                 $"Email '{model.Email}' đã tồn tại", "Hãy thử lại email khác");
                     default:
-                        Console.WriteLine($"Error: {err.Code}\n- Detail: {err.Description}");
+                        Console.WriteLine($"Error: {err.Description}");
                         throw new AppException(HttpStatusCode.BadRequest, 
                             "Đăng kí không thành công", "Hãy thử lại");
                 }
@@ -100,16 +97,16 @@ public class AuthService : IAuthService
         });
         var credentials = new SigningCredentials(
             new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(_appSetting.JwtInfo.Key)),
-                SecurityAlgorithms.HmacSha256Signature);
+                Encoding.UTF8.GetBytes(_config["JwtInfo:Key"]!)),
+                SecurityAlgorithms.HmacSha512Signature);
         var expireTime = DateTime.Now.AddDays(
-            _appSetting.JwtInfo.ExpireDay);
+            _config.GetSection("JwtInfo:ExpireDays").Get<int>());
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = claims,
             Expires = expireTime,
             SigningCredentials = credentials,
-            Issuer = _appSetting.JwtInfo.Issuer,
+            Issuer = _config["JwtInfo:Issuer"]!,
         };
         var token = tokenHandler.CreateJwtSecurityToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);
@@ -120,14 +117,13 @@ public class AuthService : IAuthService
         var tokenHandler = new JwtSecurityTokenHandler();
         var result = await tokenHandler.ValidateTokenAsync(token, new TokenValidationParameters()
         {
-            ValidIssuer = _appSetting.JwtInfo.Issuer,
+            ValidIssuer = _config["JwtInfo:Issuer"]!,
             IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(_appSetting.JwtInfo.Key)),
+                Encoding.UTF8.GetBytes(_config["JwtInfo:Key"]!)),
             ValidateIssuer = true,
             ValidateAudience = false,
             ValidateIssuerSigningKey = true,
-            ValidateLifetime = true,
-            RequireAudience = false,
+            ValidateLifetime = true
         });
         if (!result.IsValid)
         {
