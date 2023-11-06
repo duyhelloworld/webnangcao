@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using webnangcao.Entities.Enumerables;
+using webnangcao.Enumerables;
 using webnangcao.Entities.Joins;
 using webnangcao.Tools;
 
@@ -32,7 +32,7 @@ public class Track
     [NotMapped]
     public int CommentCount { get; set; } = 0;
     [NotMapped]
-    public string? Author { get; set; }
+    public User? Author { get; set; }
 
     public ICollection<TrackCategory> Categories { get; set; } 
         = new HashSet<TrackCategory>();
