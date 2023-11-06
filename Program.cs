@@ -8,7 +8,6 @@ using Microsoft.IdentityModel.Tokens;
 using webnangcao.Context;
 using webnangcao.Entities;
 using webnangcao.Exceptions;
-using webnangcao.Models.MapAppsetting;
 using webnangcao.Services;
 using webnangcao.Services.Impls;
 
@@ -20,9 +19,6 @@ builder.Services.AddScoped<ErrorMiddleware>();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITrackService, TrackService>();
-
-builder.Services.AddScoped<AppSetting>();
-builder.Services.AddOptions<AppSetting>();
 
 builder.Services.AddDbContext<ApplicationContext>(options =>
 {
@@ -36,9 +32,9 @@ builder.Services.AddAuthentication(FacebookDefaults.AuthenticationScheme)
     jwtOPT.SaveToken = true;
     jwtOPT.TokenValidationParameters = new TokenValidationParameters()
     {
-        ValidIssuer = config["Authentication:Jwt:Issuer"],
+        ValidIssuer = config["JwtInfo:Issuer"],
         IssuerSigningKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(config["Authentication:Jwt:Key"]!)),
+            Encoding.UTF8.GetBytes(config["JwtInfo:Key"]!)),
         ValidateIssuer = true, 
         ValidateAudience = false,
         ValidateIssuerSigningKey = true,
@@ -47,13 +43,13 @@ builder.Services.AddAuthentication(FacebookDefaults.AuthenticationScheme)
 })
 .AddFacebook(options =>
 {
-    options.AppId = config["Authentication:Facebook:AppId"]!;
-    options.AppSecret = config["Authentication:Facebook:AppSecret"]!;
+    options.AppId = config["FacebookInfo:AppId"]!;
+    options.AppSecret = config["FacebookInfo:AppSecret"]!;
 })
 .AddGoogle(options => 
 {
-    options.ClientId = config["Authentication:Google:ClientId"]!;
-    options.ClientSecret = config["Authentication:Google:ClientSecret"]!;
+    options.ClientId = config["GoogleInfo:ClientId"]!;
+    options.ClientSecret = config["GoogleInfo:ClientSecret"]!;
 });
 
 builder.Services.AddAuthorization();
