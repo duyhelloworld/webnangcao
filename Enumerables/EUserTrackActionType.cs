@@ -1,4 +1,4 @@
-namespace webnangcao.Entities.Enumerables;
+namespace webnangcao.Enumerables;
 
 public enum EUserTrackActionType
 {
