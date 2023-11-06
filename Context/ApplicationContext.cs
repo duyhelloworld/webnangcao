@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using webnangcao.Entities;
@@ -29,6 +30,8 @@ public class ApplicationContext : IdentityDbContext<User, Role, long>
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
+        builder.Ignore<IdentityRoleClaim<string>>();
+        builder.Ignore<IdentityUserClaim<string>>();
         foreach (var type in builder.Model.GetEntityTypes())
         {
             var tableName = type.GetTableName()!;
@@ -37,5 +40,6 @@ public class ApplicationContext : IdentityDbContext<User, Role, long>
                 type.SetTableName(tableName.Replace("AspNet", ""));
             }
         }
+        
     }
 }
