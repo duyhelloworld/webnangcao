@@ -21,7 +21,7 @@
 
 - Chạy lệnh `npm install` để cài đặt các package cần thiết
 
-- Chèn dữ liệu vào database qua các file .sql trong [đây](/Properties/Sql/)
+- Chèn dữ liệu vào database qua các file .sql trong [đây](/Assets/sql/)
 (Mở bằng SQL Server Management Studio và chạy toàn bộ lệnh trong file)
 > Thứ tự : User.sql ==> Table.sql ==> Data.sql
 

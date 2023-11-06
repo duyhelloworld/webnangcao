@@ -1,4 +1,5 @@
 using webnangcao.Context;
+using webnangcao.Entities.Enumerables;
 using webnangcao.Models.Inserts;
 using webnangcao.Models.Responses;
 
@@ -20,7 +21,7 @@ public class PlaylistService : IPlaylistService
                     {
                         Id = p.Id,
                         PlaylistName = p.Name,
-                        AuthorName = p.UserPlaylistActions.FirstOrDefault().User.UserName,
+                        AuthorName = p.Author.UserName!,
                         CreatedAt = p.CreatedAt,
                         LastUpdatedAt = p.LastUpdatedAt,
                         Description = p.Description,
@@ -41,7 +42,7 @@ public class PlaylistService : IPlaylistService
             {
                 Id = p.Id,
                 PlaylistName = p.Name,
-                AuthorName = p.UserPlaylistActions.FirstOrDefault().User.UserName,
+                AuthorName = p.Author.UserName!,
                 CreatedAt = p.CreatedAt,
                 LastUpdatedAt = p.LastUpdatedAt,
                 Description = p.Description,

@@ -20,6 +20,10 @@ public class Playlist
 
     public bool IsPrivate { get; set; }
 
+    public long AuthorId { get; set; }
+    [ForeignKey("AuthorId")]
+    public User Author { get; set; } = null!;
+
     [MaxLength]
     public string? Description { get; set; }
 

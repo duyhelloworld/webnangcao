@@ -9,7 +9,7 @@ using webnangcao.Entities;
 using webnangcao.Exceptions;
 using webnangcao.Entities.Enumerables;
 using webnangcao.Tools;
-using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames;
+using Microsoft.Extensions.Options;
 
 namespace webnangcao.Services.Impls;
 
@@ -17,13 +17,13 @@ public class AuthService : IAuthService
 {
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signInManager;
-    private readonly IConfiguration _config;
+    private readonly AppSetting _appSetting;
 
-    public AuthService(UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration config)
+    public AuthService(UserManager<User> userManager, SignInManager<User> signInManager, IOptions<AppSetting> appSetting)
     {
         _userManager = userManager;
         _signInManager = signInManager;
-        _config = config;
+        _appSetting = appSetting.Value;
     }
 
     public async Task<ResponseModel> SignInAsync(SigninModel model)
@@ -94,21 +94,21 @@ public class AuthService : IAuthService
         {
             new Claim("userid", user.Id.ToString(), ClaimValueTypes.Integer64),
             new Claim(ClaimTypes.Role, ERoleTool.ToString(erole)),
-            new Claim(JwtRegisteredClaimNames.Name, user.UserName!),
-            new Claim(JwtRegisteredClaimNames.Email, user.Email!),
+            new Claim(ClaimTypes.Name, user.UserName!),
+            new Claim(ClaimTypes.Email, user.Email!),
         });
         var credentials = new SigningCredentials(
             new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(_config["Authentication:Jwt:Key"]!)),
+                Encoding.UTF8.GetBytes(_appSetting.JwtSecretKey)),
                 SecurityAlgorithms.HmacSha256Signature);
         var expireTime = DateTime.Now.AddDays(
-            _config.GetValue<int>("Authentication:Jwt:ExpireDay"));
+            _appSetting.JwtValidTimeInDay);
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = claims,
             Expires = expireTime,
             SigningCredentials = credentials,
-            Issuer = _config["Authentication:Jwt:Issuer"],
+            Issuer = _appSetting.JwtIssuer,
         };
         var token = tokenHandler.CreateJwtSecurityToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);
@@ -119,9 +119,9 @@ public class AuthService : IAuthService
         var tokenHandler = new JwtSecurityTokenHandler();
         var result = await tokenHandler.ValidateTokenAsync(token, new TokenValidationParameters()
         {
-            ValidIssuer = _config["Authentication:Jwt:Issuer"],
+            ValidIssuer = _appSetting.JwtIssuer,
             IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(_config["Authentication:Jwt:Key"]!)),
+                Encoding.UTF8.GetBytes(_appSetting.JwtSecretKey)),
             ValidateIssuer = true,
             ValidateAudience = false,
             ValidateIssuerSigningKey = true,

@@ -9,16 +9,16 @@ VALUES
     (N'Balad', N'Những bản Balad "tình" nhất'), 
     (N'Indie', N'Nơi các Indier toả sáng');
 
-INSERT INTO Tracks (Name, Location, UploadAt)
+INSERT INTO Tracks (Name, Location, Artwork , Description)
 VALUES
-    (N'7 Years', N'/Assets/musics/"7 Years.mp3"', '2023-10-27 08:00:00'),
-    (N'Buồn thì cứ khóc đi', N'/Assets/musics/"Buon Thi Cu Khoc Di.mp3"', '2023-10-27 08:15:00'),
-    (N'Đã lỡ yêu em nhiều', N'/Assets/musics/"Da Lo Yeu Em Nhieu.mp3"', '2023-10-27 08:30:00'),
-    (N'Nandemonaiya ', N'/Assets/musics/"Nandemonaiya.mp3"', '2023-10-27 08:45:00'),
-    (N'Rap chậm thôi', N'/Assets/musics/"Rap Cham Thoi.mp3"', '2023-10-27 09:00:00'),
-    (N'Thủ Đô Cypher', N'/Assets/musics/"Thu Do Cypher.mp3"', '2023-10-27 09:15:00');
+    (N'7 Years', N'/Assets/musics/"7 Years.mp3"', 'Lukas Graham', N'/Assets/images/"7 Years.jpg"'),
+    (N'Buồn thì cứ khóc đi', N'/Assets/musics/"Buon Thi Cu Khoc Di.mp3"', 'Mr.Siro', N'/Assets/images/"Buon Thi Cu Khoc Di.jpg"'),
+    (N'Đã lỡ yêu em nhiều', N'/Assets/musics/"Da Lo Yeu Em Nhieu.mp3"', 'JustaTee', N'/Assets/images/"Da Lo Yeu Em Nhieu.jpg"'),
+    (N'Nandemonaiya ', N'/Assets/musics/"Nandemonaiya.mp3"', '1012', N'/Assets/images/"Nandemonaiya.jpg"'),
+    (N'Rap chậm thôi', N'/Assets/musics/"Rap Cham Thoi.mp3"', 'MCK', N'/Assets/images/"Rap Cham Thoi.jpg"'),
+    (N'Thủ Đô Cypher', N'/Assets/musics/"Thu Do Cypher.mp3"', 'MCK, LowG', N'/Assets/images/"Thu Do Cypher.jpg"');
 
-INSERT INTO Track_Categories (TrackId, CategoryId)
+INSERT INTO Track_Category (TrackId, CategoryId)
 VALUES
     (1, 7),
     (2, 1),
@@ -28,7 +28,7 @@ VALUES
     (5, 3),
     (6, 3);
 
-INSERT INTO UserTrackActions ([Id], [UserId], [TrackId], [ActionType], [CreatedAt])
+INSERT INTO UserTrackActions ([Id], [UserId], [TrackId], [ActionType], [ActionAt])
 VALUES ('1', 1, 1, 'UPLOAD', '2023-10-10'),
         ('2', 1, 2, 'LIKE', '2023-10-10'),
         ('3', 2, 1, 'LIKE', '2023-10-11');

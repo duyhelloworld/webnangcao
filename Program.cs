@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using webnangcao.Context;
 using webnangcao.Entities;
 using webnangcao.Exceptions;
+using webnangcao.Models.MapAppsetting;
 using webnangcao.Services;
 using webnangcao.Services.Impls;
 
@@ -19,6 +20,9 @@ builder.Services.AddScoped<ErrorMiddleware>();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITrackService, TrackService>();
+
+builder.Services.AddScoped<AppSetting>();
+builder.Services.AddOptions<AppSetting>();
 
 builder.Services.AddDbContext<ApplicationContext>(options =>
 {
@@ -79,8 +83,8 @@ builder.Services.AddScoped<FakeData>();
 var app = builder.Build();
 
 // Fake password cho user, có thể comment sau lần chạy đầu
-// var scope = app.Services.CreateScope();
-// await scope.ServiceProvider.GetRequiredService<FakeData>().InitDataAsync();
+var scope = app.Services.CreateScope();
+await scope.ServiceProvider.GetRequiredService<FakeData>().InitDataAsync();
 
 // if (app.Environment.IsDevelopment())
 // {
@@ -92,19 +96,18 @@ var app = builder.Build();
 // }
 
 
-app.UseRouting();
-app.UseStaticFiles();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
 
-
+// Code react
+// app.UseRouting();
+// app.UseStaticFiles();
 // app.MapControllerRoute(
 //     name: "default",
 //     pattern: "{controller}/{action=Index}/{id?}");
-
 // app.MapFallbackToFile("index.html");
 
 app.Run();
