@@ -15,5 +15,5 @@ public class PlaylistResponseModel
     public string? ArtWork { get; set; }
 
     public string[]? Tags { get; set; }
-    public IEnumerable<int>? Tracks { get; set; }
+    public IEnumerable<TrackResponseModel>? Tracks { get; set; }
 }
