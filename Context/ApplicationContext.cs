@@ -38,6 +38,5 @@ public class ApplicationContext : IdentityDbContext<User, Role, long>
                 type.SetTableName(tableName.Replace("AspNet", ""));
             }
         }
-        
     }
 }
