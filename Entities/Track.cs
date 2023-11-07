@@ -25,14 +25,11 @@ public class Track
     [Max(EMaxValue.DirectoryLength)]
     public string? ArtWork { get; set; }
 
-    [NotMapped]
     public int ListenCount { get; set; } = 0;
-    [NotMapped]
     public int LikeCount { get; set; } = 0;
-    [NotMapped]
     public int CommentCount { get; set; } = 0;
     [NotMapped]
-    public User? Author { get; set; }
+    public User Author { get; set; } = null!;
 
     public ICollection<TrackCategory> Categories { get; set; } 
         = new HashSet<TrackCategory>();
