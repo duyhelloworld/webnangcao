@@ -34,7 +34,7 @@ public class Playlist
     [MaxLength]
     public string? Tags { get; set; }
 
-    public ICollection<TrackPlaylist> Tracks { get; set; } 
+    public ICollection<TrackPlaylist> TrackPlaylists { get; set; } 
         = new List<TrackPlaylist>();
     
     public ICollection<UserPlaylistAction> UserPlaylistActions { get; set; }
