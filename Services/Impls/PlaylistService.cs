@@ -8,15 +8,16 @@ namespace webnangcao.Services.Impl;
 public class PlaylistService : IPlaylistService
 {
     private readonly ApplicationContext _context;
+    private const int MaxPagePerRequest = 10;
     public PlaylistService(ApplicationContext context)
     {
         _context = context;
     }
-    public async Task<IEnumerable<PlaylistResponseModel>> GetAll()
+
+    public IEnumerable<PlaylistResponseModel> GetAll(int page)
     {
         var result = from p in _context.Playlists
-                    join tp in _context.TrackPlaylists 
-                        on p.Id equals tp.PlaylistId
+                    join tp in _context.TrackPlaylists on p.Id equals tp.PlaylistId
                     select new PlaylistResponseModel
                     {
                         Id = p.Id,
@@ -26,17 +27,31 @@ public class PlaylistService : IPlaylistService
                         LastUpdatedAt = p.LastUpdatedAt,
                         Description = p.Description,
                         ArtWork = p.ArtWork,
-                        Tracks = p.Tracks.Select(t => t.TrackId),
+                        Tracks = p.TrackPlaylists.Select(tp => new TrackResponseModel() 
+                        {
+                            Id = tp.TrackId,
+                            TrackName = tp.Track.Name,
+                            Author = tp.Track.Author.UserName!,
+                            CommentCount = tp.Track.CommentCount,
+                            LikeCount = tp.Track.LikeCount,
+                            ListenCount = tp.Track.ListenCount,
+                            ArtWork = tp.Track.ArtWork,
+                            // UploadAt = tp.Track.UserTrackActions
+                            //     .Where(uta => uta.ActionType == EUserTrackActionType.UPLOAD)
+                            //     .Select(uta => uta.ActionAt)
+                            //     .FirstOrDefault(),
+                        }),
                         Tags = p.Tags == null 
                             ? new string[] { } 
                             : p.Tags.Split(",", StringSplitOptions.RemoveEmptyEntries),
                     }; 
-        return await Task.FromResult(result);
+        return result.Skip((page - 1) * MaxPagePerRequest)
+                     .Take(MaxPagePerRequest);
     }
 
-    public async Task<PlaylistResponseModel?> GetById(int id)
+    public PlaylistResponseModel? GetById(int id)
     {
-        return await Task.FromResult(_context.Playlists
+        return _context.Playlists
             .Where(p => p.Id == id)
             .Select(p => new PlaylistResponseModel
             {
@@ -47,22 +62,12 @@ public class PlaylistService : IPlaylistService
                 LastUpdatedAt = p.LastUpdatedAt,
                 Description = p.Description,
                 ArtWork = p.ArtWork,
-                Tracks = p.Tracks.Select(t => t.TrackId),
+                // Tracks = p.TrackPlaylists.Select(t => t.TrackId),
                 Tags = p.Tags == null 
                     ? new string[] { } 
                     : p.Tags.Split(",", StringSplitOptions.RemoveEmptyEntries),
             })
-            .FirstOrDefault());
-    }
-
-    public Task<int> AddNew(PlaylistInsertModel model, string userId)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task AddNewTrackToPlaylist(int playlistId, int trackId)
-    {
-        throw new NotImplementedException();
+            .FirstOrDefault();
     }
 
     public Task UpdateInfomation(PlaylistInsertModel model, int id)
@@ -75,10 +80,38 @@ public class PlaylistService : IPlaylistService
         throw new NotImplementedException();
     }
 
-
-    public Task RemoveTrackFromPlaylist(int playlistId, int trackId)
+    public Task<IEnumerable<PlaylistResponseModel>> GetAllByUser(long userId, int page)
     {
         throw new NotImplementedException();
     }
 
+    public Task<IEnumerable<PlaylistResponseModel>> Search(string keyword)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task Play(int playlistId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task Like(int playlistId, long userId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<int> AddNew(PlaylistInsertModel model, long userId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task SaveToLibrary(int playlistId, long userId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task UpdateInfomation(PlaylistInsertModel model, int playlistId, long userId)
+    {
+        throw new NotImplementedException();
+    }
 }
