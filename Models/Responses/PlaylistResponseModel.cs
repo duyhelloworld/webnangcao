@@ -8,8 +8,6 @@ public class PlaylistResponseModel
 
     public DateTime CreatedAt { get; set; }
 
-    public DateTime LastUpdatedAt { get; set; }
-
     public string? Description { get; set; }
 
     public string? ArtWork { get; set; }
