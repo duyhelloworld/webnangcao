@@ -16,9 +16,10 @@ public class Playlist
 
     public DateTime CreatedAt { get; set; }
 
-    public DateTime LastUpdatedAt { get; set; }
-
     public bool IsPrivate { get; set; }
+
+    public int ListenCount { get; set; }
+    public int LikeCount { get; set; }
 
     public long AuthorId { get; set; }
     [ForeignKey("AuthorId")]
@@ -29,14 +30,7 @@ public class Playlist
 
     [Max(EMaxValue.DirectoryLength)]
     public string? ArtWork { get; set; }
-    
 
     [MaxLength]
     public string? Tags { get; set; }
-
-    public ICollection<TrackPlaylist> TrackPlaylists { get; set; } 
-        = new List<TrackPlaylist>();
-    
-    public ICollection<UserPlaylistAction> UserPlaylistActions { get; set; }
-        = new List<UserPlaylistAction>();
 }
