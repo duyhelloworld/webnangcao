@@ -54,7 +54,7 @@ public class TrackService : ITrackService
             TrackName = result.Name,
             Author = result.Author?.UserName!,
             ArtWork = result.ArtWork,
-            UploadAt = result.UserTrackActions.FirstOrDefault()!.ActionAt,
+            UploadAt = result.UploadAt,
             ListenCount = result.ListenCount,
             LikeCount = result.LikeCount,
             CommentCount = result.CommentCount,
@@ -63,24 +63,19 @@ public class TrackService : ITrackService
 
     public async Task AddNew(TrackInsertModel model, long userId)
     {    
+        var user = _context.Users.FirstOrDefaultAsync(u => u.Id == userId)
+            ?? throw new AppException(HttpStatusCode.NotFound, 
+                "Không tìm thấy người dùng");
         var track = new Track()
         {
             Name = model.TrackName,
             Description = model.Description,
             ArtWork = model.ArtWork
         };
-        var action = new UserTrackAction()
-        {
-            Track = track,
-            UserId = userId,
-            ActionType = EUserTrackActionType.UPLOAD,
-            ActionAt = DateTime.Now,
-        };
         try 
         {
             await _context.Database.BeginTransactionAsync();
             await _context.Tracks.AddAsync(track);
-            await _context.UserTrackActions.AddAsync(action);
             await _context.SaveChangesAsync();
         } catch (Exception)
         {
@@ -92,9 +87,6 @@ public class TrackService : ITrackService
     public async Task Remove(int id)
     {
         var track = await _context.Tracks
-            .Include(t => t.UserTrackActions)
-            .Include(t => t.Comments)
-            .Include(t => t.Categories)
             .FirstOrDefaultAsync(t => t.Id == id)
             ?? throw new AppException(HttpStatusCode.NotFound, 
                 "Không tìm thấy bài hát", 
@@ -103,9 +95,6 @@ public class TrackService : ITrackService
         using var deleteTrackTransaction = _context.Database.BeginTransaction();
         try
         {
-            _context.UserTrackActions.RemoveRange(track.UserTrackActions);
-            _context.Comments.RemoveRange(track.Comments);
-            _context.TrackCategories.RemoveRange(track.Categories);
             _context.Tracks.Remove(track);
             await _context.SaveChangesAsync();
 
