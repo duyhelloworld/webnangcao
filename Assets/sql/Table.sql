@@ -32,7 +32,7 @@ GO
 CREATE TABLE [Tracks] (
     [Id] int NOT NULL IDENTITY,
     [Name] nvarchar(40) NOT NULL,
-    [Location] nvarchar(200) NOT NULL,
+    [FileLocation] nvarchar(200) NOT NULL,
     [UploadAt] datetime2 NOT NULL,
     [Description] nvarchar(max) NULL,
     [ArtWork] nvarchar(200) NULL,
