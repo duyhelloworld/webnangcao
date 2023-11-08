@@ -6,13 +6,13 @@ namespace webnangcao.Services;
 public interface IPlaylistService
 {
     // Guest
-    public IEnumerable<PlaylistResponseModel> GetAll(int page);
+    public IEnumerable<PlaylistResponseModel> GetAllPublic();
     public PlaylistResponseModel? GetById(int playlistId);
-    public Task Play(int playlistId);
+    public Task UpdateListentCount(int playlistId);
     public Task<IEnumerable<PlaylistResponseModel>> Search(string keyword);
     
     // User
-    public Task<IEnumerable<PlaylistResponseModel>> GetAllByUser(long userId, int page);
+    public Task<IEnumerable<PlaylistResponseModel>> GetAllByUser(long userId);
     public Task Like(int playlistId, long userId);
     public Task<int> AddNew(PlaylistInsertModel model, long userId);
     public Task SaveToLibrary(int playlistId, long userId);
