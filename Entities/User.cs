@@ -13,18 +13,9 @@ public class User : IdentityUser<long>
     [Required]
     public override string? Email { get; set ; } 
 
-    public string? FirstName { get; set; }
-    public string? LastName { get; set; }
+    // public string? FirstName { get; set; }
+    // public string? LastName { get; set; }
 
     [Max(EMaxValue.DirectoryLength)]
     public string? Avatar { get; set; }
-
-    public ICollection<Comment> Comments { get; set; } 
-        = new HashSet<Comment>();
-
-    public ICollection<UserTrackAction> UserTrackActions { get; set; } 
-        = new HashSet<UserTrackAction>();
-
-    public ICollection<Playlist> Playlists { get; set; } 
-        = new HashSet<Playlist>();
 }
