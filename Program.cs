@@ -9,6 +9,7 @@ using webnangcao.Context;
 using webnangcao.Entities;
 using webnangcao.Exceptions;
 using webnangcao.Services;
+using webnangcao.Services.Impl;
 using webnangcao.Services.Impls;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,6 +20,7 @@ builder.Services.AddScoped<ErrorMiddleware>();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITrackService, TrackService>();
+builder.Services.AddScoped<IPlaylistService, PlaylistService>();
 
 builder.Services.AddDbContext<ApplicationContext>(options =>
 {
