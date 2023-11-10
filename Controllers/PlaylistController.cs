@@ -5,6 +5,8 @@ using webnangcao.Exceptions;
 using webnangcao.Services;
 using webnangcao.Tools;
 using System.Net;
+using webnangcao.Models.Inserts;
+using webnangcao.Models.Updates;
 namespace webnangcao.Controllers;
 
 [Route("[controller]")]
@@ -17,22 +19,31 @@ public class PlaylistController : ControllerBase
         _service = service;
     }
 
-    [HttpGet]
-    public IActionResult GetAllAsync()
-    {
-        return Ok(_service.GetAllPublic());
-    }
-
-    [HttpGet("{id}")]
-    public IActionResult GetById(int id)
-    {
-        var result = _service.GetById(id);
-        if (result == null)
-            return NotFound();
-        return Ok(result);
-    }
-
     [HttpGet("all")]
+    [AppAuthorize(ERole.ADMIN)]
+    public async Task<IActionResult> GetAll()
+    {
+        return Ok(await _service.GetAll());
+    }
+
+    [HttpGet("public")]
+    public async Task<IActionResult> GetAllPublic()
+    {
+        return Ok(await _service.GetAllPublic());
+    }
+
+    [HttpGet("public/{playlistId}")]
+    public async Task<IActionResult> GetPublicById(int playlistId)
+    {
+        var rs = await _service.GetPublicById(playlistId);
+        if (rs != null)
+        {
+            return Ok(rs);
+        }
+        return NotFound();
+    }
+
+    [HttpGet("user/all")]
     [AppAuthorize(ERole.USER)]
     public async Task<IActionResult> GetAllByUser()
     {
@@ -44,19 +55,53 @@ public class PlaylistController : ControllerBase
         return Forbid();
     }
 
+    [HttpGet("user/{playlistId}")]
+    [AppAuthorize(ERole.USER)]
+    public async Task<IActionResult> GetOfUserById(int playlistId)
+    {
+        var userId = User.FindFirstValue("userid");
+        if (userId != null && long.TryParse(userId, out long uid))
+        {
+            return Ok(await _service.GetOfUserById(playlistId, uid));
+        }
+        return Forbid();
+    }
+
     [HttpGet("search")]
     public async Task<IActionResult> Search([FromQuery] string keyword)
     {
-        return Ok(await _service.Search(keyword));
+        if (keyword == null)
+        {
+            return Ok(_service.GetAllPublic());
+        }
+        var userId = User.FindFirstValue("userid");
+        if (userId != null && long.TryParse(userId, out long uid))
+        {
+            return Ok(await _service.Search(keyword, uid));
+        }
+        return Ok(await _service.Search(keyword, null));
     }
 
-    [HttpGet("listen/{playlistId}")]
-    public async Task UpdateListentCount(int playlistId)
+    [HttpPut("{playlistId}/play")]
+    public async Task Play(int playlistId)
     {
-        await _service.UpdateListentCount(playlistId);
+        await _service.Play(playlistId);
     }
 
-    [HttpPost("{playlistId}/like")]
+    [HttpPost]
+    [AppAuthorize(ERole.USER)]
+    public async Task<IActionResult> AddNew([FromBody] PlaylistInsertModel model)
+    {
+        var userId = User.FindFirstValue("userid");
+        if (userId != null && long.TryParse(userId, out long uid))
+        {
+            var playlistId = await _service.AddNew(model, uid);
+            return Ok(new{playlistId});
+        }
+        return Forbid();
+    }
+
+    [HttpPut("{playlistId}/like")]
     [AppAuthorize(ERole.USER)]
     public async Task Like(int playlistId)
     {
@@ -65,8 +110,38 @@ public class PlaylistController : ControllerBase
         {
             await _service.Like(playlistId, uid);
         }
-        throw new AppException(HttpStatusCode.Forbidden, 
-            "Phải có tài khoản mới được thực hiện hành động này", 
-            "Hãy tạo tài khoản và trở lại sau");
+    }
+
+    [HttpPut("{playlistId}/save")]
+    [AppAuthorize(ERole.USER)]
+    public async Task SaveToLibrary(int playlistId)
+    {
+        var userId = User.FindFirstValue("userid");
+        if (userId != null && long.TryParse(userId, out long uid))
+        {
+            await _service.SaveToLibrary(playlistId, uid);
+        }
+    }
+
+    [HttpPut("{playlistId}/information")]
+    [AppAuthorize(ERole.USER)]
+    public async Task UpdateInfomation([FromBody] PlaylistUpdateModel model, int playlistId)
+    {
+        var userId = User.FindFirstValue("userid");
+        if (userId != null && long.TryParse(userId, out long uid))
+        {
+            await _service.UpdateInfomation(model, playlistId, uid);
+        }
+    }
+
+    [HttpDelete("{playlistId}")]
+    [AppAuthorize(ERole.USER)]
+    public async Task Delete(int playlistId)
+    {
+        var userId = User.FindFirstValue("userid");
+        if (userId != null && long.TryParse(userId, out long uid))
+        {
+            await _service.Delete(playlistId, uid);
+        }
     }
 }

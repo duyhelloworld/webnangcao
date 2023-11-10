@@ -2,5 +2,6 @@ namespace webnangcao.Enumerables;
 
 public enum EUserPlaylistActionType
 {
-    LIKE
+    LIKE,
+    SAVETOLIBRARY
 }

@@ -1,21 +1,30 @@
+using Microsoft.AspNetCore.Mvc;
 using webnangcao.Models.Inserts;
 using webnangcao.Models.Responses;
+using webnangcao.Models.Updates;
 
 namespace webnangcao.Services;
 
 public interface IPlaylistService
 {
     // Guest
-    public IEnumerable<PlaylistResponseModel> GetAllPublic();
-    public PlaylistResponseModel? GetById(int playlistId);
-    public Task UpdateListentCount(int playlistId);
-    public Task<IEnumerable<PlaylistResponseModel>> Search(string keyword);
-    
+    // - Nên để tích AI rồi generate playlist cho guest
+    Task<IEnumerable<PlaylistResponseModel>> GetAllPublic();
+    Task<PlaylistResponseModel?> GetPublicById(int playlistId);
+    Task Play(int playlistId);
+
+
     // User
-    public Task<IEnumerable<PlaylistResponseModel>> GetAllByUser(long userId);
-    public Task Like(int playlistId, long userId);
-    public Task<int> AddNew(PlaylistInsertModel model, long userId);
-    public Task SaveToLibrary(int playlistId, long userId);
-    public Task UpdateInfomation(PlaylistInsertModel model, int playlistId, long userId);
-    public Task Delete(int playlistId);
+    Task<IEnumerable<PlaylistResponseModel>> Search(string keyword, long? userId);
+    Task<IEnumerable<PlaylistResponseModel>> GetAllByUser(long userId);
+    Task<PlaylistResponseModel?> GetOfUserById(int playlistId, long userId);
+
+    Task Like(int playlistId, long userId);
+    Task<int> AddNew(PlaylistInsertModel model, long userId);
+    Task SaveToLibrary(int playlistId, long userId);
+    Task UpdateInfomation(PlaylistUpdateModel model, int playlistId, long userId);
+    Task Delete(int playlistId, long userId);
+
+    // Admin
+    Task<IEnumerable<PlaylistResponseModel>> GetAll();
 }
