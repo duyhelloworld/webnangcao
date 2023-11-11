@@ -15,7 +15,8 @@ namespace webnangcao.Services.Impl;
 public class PlaylistService : IPlaylistService
 {
     private readonly ApplicationContext _context;
-    private readonly string _artWorkPath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "images");
+    private readonly string _artWorkFolderPath = 
+        Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
     public PlaylistService(ApplicationContext context)
     {
         _context = context;
@@ -267,13 +268,13 @@ public class PlaylistService : IPlaylistService
     {
         if (string.IsNullOrWhiteSpace(artWork))
             return Stream.Null;
-        return new FileStream(Path.Combine(_artWorkPath, artWork), FileMode.Open);
+        return new FileStream(Path.Combine(_artWorkFolderPath, artWork), FileMode.Open);
     }
 
     private async Task<string> WriteToDisk(IFormFile file)
     {
         var fileName = file.FileName;
-        var filePath = Path.Combine(_artWorkPath, fileName);
+        var filePath = Path.Combine(_artWorkFolderPath, fileName);
         using var stream = new FileStream(filePath, FileMode.Create);
         await file.CopyToAsync(stream);
         return fileName;
