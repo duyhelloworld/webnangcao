@@ -9,7 +9,6 @@ public interface IPlaylistService
     public IEnumerable<PlaylistResponseModel> GetAll(int page);
     public PlaylistResponseModel? GetById(int playlistId);
     public Task Play(int playlistId);
-    public Task<IEnumerable<PlaylistResponseModel>> Search(string keyword);
     
     // User
     public Task<IEnumerable<PlaylistResponseModel>> GetAllByUser(long userId, int page);
