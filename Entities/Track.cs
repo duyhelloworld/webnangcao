@@ -30,16 +30,6 @@ public class Track
     public int CommentCount { get; set; } = 0;
     [NotMapped]
     public User Author { get; set; } = null!;
-
-    public ICollection<TrackCategory> Categories { get; set; } 
-        = new HashSet<TrackCategory>();
-    
-    public ICollection<Comment> Comments { get; set; } 
-        = new HashSet<Comment>();
-
-    public ICollection<TrackPlaylist> Playlists { get; set; } 
-        = new HashSet<TrackPlaylist>();
-        
-    public ICollection<UserTrackAction> UserTrackActions { get; set; } 
-        = new HashSet<UserTrackAction>();
+    public string AudioFile { get; set; }
+    public string ArtworkFile { get; set; }
 }

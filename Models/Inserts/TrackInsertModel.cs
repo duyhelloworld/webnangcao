@@ -6,4 +6,6 @@ public class TrackInsertModel
     public string TrackFileId { get; set; } = null!;
     public string? Description { get; set; }
     public string? ArtWork { get; set; }
+    public string CategoryName { get; set; } = null!;
+    public IEnumerable<string>? Tags { get; set; }
 }

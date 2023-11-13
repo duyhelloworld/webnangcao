@@ -79,8 +79,8 @@ builder.Services.AddScoped<FakeData>();
 var app = builder.Build();
 
 // Fake password cho user, có thể comment sau lần chạy đầu
-var scope = app.Services.CreateScope();
-await scope.ServiceProvider.GetRequiredService<FakeData>().InitDataAsync();
+// var scope = app.Services.CreateScope();
+// await scope.ServiceProvider.GetRequiredService<FakeData>().InitDataAsync();
 
 // if (app.Environment.IsDevelopment())
 // {

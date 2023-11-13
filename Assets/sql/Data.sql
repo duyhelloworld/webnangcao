@@ -1,4 +1,4 @@
--- Active: 1698578533477@@127.0.0.1@1433@webnangcao
+-- Active: 1698044165228@@127.0.0.1@1433@webnangcao
 INSERT INTO [Categories] (Name, Description)
 VALUES
     (N'Pop', N'Nhạc Pop (Popular) hợp với mọi người'),

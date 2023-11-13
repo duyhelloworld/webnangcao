@@ -32,21 +32,81 @@ public class TrackController : ControllerBase
     {
         return Ok(await _service.GetAll());
     }
-
+    [HttpGet("user/{id}")]
+    [AppAuthorize(ERole.USER)]
+    public async Task<IActionResult> GetTrackByUserId(int id)
+    {
+        return Ok(await _service.GetByUserId(id));
+    }
+    [HttpGet("name/{name}")]
+    [AppAuthorize(ERole.USER)]
+    public async Task<IActionResult> GetTrackByName(string name)
+    {
+        return Ok(await _service.GetByName(name));
+    }
+    
     [HttpPost("add")]
-    public async Task Upload([FromForm] TrackInsertModel model)
+    [AppAuthorize(ERole.USER)]
+    public async Task<IActionResult> Upload([FromForm] TrackInsertModel model)
     {
         var userId = User.FindFirstValue("userid");
         if (userId != null && long.TryParse(userId, out long id))
         {
-            await _service.AddNew(model, id);
+            await _service.UploadTrack(model, id);
+            return Ok();
         }
+        return BadRequest();
     }
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateTrack([FromBody] TrackUpdateModel model, int id)
+    [HttpPut("update/{id}")]
+    [AppAuthorize(ERole.USER)]
+    public async Task<IActionResult> Update([FromForm] TrackUpdateModel model, int id)
     {
         await _service.UpdateInfomation(model, id);
+        return Ok();
+    }
+    [HttpDelete("delete/{id}")]
+    [AppAuthorize(ERole.USER)]
+    public async Task<IActionResult> Delete(int id)
+    {
+        await _service.Remove(id);
+        return Ok();
+    }
+    [HttpPost("like/{id}")]
+    [AppAuthorize(ERole.USER)]
+    public async Task<IActionResult> Like(int id)
+    {
+        var userId = User.FindFirstValue("userid");
+        if (userId != null && int.TryParse(userId, out int uid))
+        {
+            await _service.LikeTrack(uid, id);
+            return Ok();
+        }
+        return BadRequest();
+    }
+    [HttpPost("comment/{id}")]
+    [AppAuthorize(ERole.USER)]
+    public async Task<IActionResult> Comment(int id, [FromBody] CommentInsertModel model)
+    {
+        var userId = User.FindFirstValue("userid");
+        if (userId != null && int.TryParse(userId, out int uid))
+        {
+            await _service.CommentTrack(id, uid, model.Content);
+            return Ok();
+        }
+        return BadRequest();
+    }
+    [HttpGet("comment/{id}")]
+    [AppAuthorize(ERole.USER)]
+    public async Task<IActionResult> GetComment(int id)
+    {
+        return Ok(await _service.GetComment(id));
+    }
+    [HttpPut("comment/{id}")]
+    [AppAuthorize(ERole.USER)]
+    public async Task<IActionResult> EditComment(int id, [FromBody] CommentUpdateModel model)
+    {
+        await _service.EditComment(id, model.Content);
         return Ok();
     }
 }
