@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using webnangcao.Models.Inserts;
@@ -23,19 +24,29 @@ public class TrackController : ControllerBase
     }
 
     [HttpPost("add")]
-    public async Task Upload([FromForm] TrackInsertModel model)
+    public async Task Upload([FromForm] string modelstring, [FromForm] IFormFile fileTrack, [FromForm] IFormFile fileArtwork)
     {
+        var model = JsonSerializer.Deserialize<TrackInsertModel>(modelstring);
         var userId = User.FindFirstValue("userid");
-        if (userId != null && long.TryParse(userId, out long id))
+        if (userId != null && long.TryParse(userId, out long id) && model != null)
         {
-            await _service.AddNew(model, id);
+            await _service.AddNew(model, fileTrack, fileArtwork, id);
         }
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateTrack([FromBody] TrackUpdateModel model, int id)
+    public async Task<IActionResult> UpdateTrack(
+        [FromForm] string modelstring,
+        [FromForm] IFormFile? fileArtwork,
+         int trackId)
     {
-        await _service.UpdateInfomation(model, id);
-        return Ok();
+        var model = JsonSerializer.Deserialize<TrackUpdateModel>(modelstring);
+        var userId = User.FindFirstValue("userid");
+        if (userId != null && long.TryParse(userId, out long id) && model != null)
+        {
+            await _service.UpdateInfomation(model, fileArtwork, trackId);
+            return Ok();
+        }
+        return Forbid();
     }
 }

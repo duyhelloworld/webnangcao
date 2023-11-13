@@ -13,11 +13,12 @@ public interface ITrackService
     public Task<IEnumerable<TrackResponseModel>> GetTopTrending();
 
     // Get private
-    public Task<IEnumerable<TrackResponseModel>> GetAll(long userId);
-    
+    public Task<IEnumerable<TrackResponseModel>> GetAllOfUser(long userId);
+    public Task<IEnumerable<TrackResponseModel>> GetAll();
+
     public Task<TrackResponseModel?> GetById(int id);
     
     public Task AddNew(TrackInsertModel model, IFormFile fileTrack, IFormFile fileArtwork, long userId);
-    public Task UpdateInfomation(TrackUpdateModel model, IFormFile fileArtwork, int trackId);
+    public Task UpdateInfomation(TrackUpdateModel model, IFormFile? fileArtwork, int trackId);
     public Task Remove(int trackId);
 }

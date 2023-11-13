@@ -15,7 +15,6 @@ public interface IPlaylistService
 
 
     // User
-    Task<IEnumerable<PlaylistResponseModel>> Search(string keyword, long? userId);
     Task<IEnumerable<PlaylistResponseModel>> GetAllByUser(long userId);
     Task<PlaylistResponseModel?> GetOfUserById(int playlistId, long userId);
 

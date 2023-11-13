@@ -15,8 +15,6 @@ namespace webnangcao.Services.Impl;
 public class PlaylistService : IPlaylistService
 {
     private readonly ApplicationContext _context;
-    private readonly string _artWorkFolderPath = 
-        Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
     public PlaylistService(ApplicationContext context)
     {
         _context = context;
@@ -33,7 +31,7 @@ public class PlaylistService : IPlaylistService
                 CreatedAt = p.CreatedAt,
                 Description = p.Description,
                 Tracks = GetTracks(_context.TrackPlaylists, p.Id),
-                ArtWork = ReadArtWork(p.ArtWork),
+                ArtWork = FileTool.ReadArtWork(p.ArtWork),
                 Tags = GetTags(p.Tags),
             })
             .ToListAsync();
@@ -50,7 +48,7 @@ public class PlaylistService : IPlaylistService
                 AuthorName = p.Author.UserName!,
                 CreatedAt = p.CreatedAt,
                 Description = p.Description,
-                ArtWork = ReadArtWork(p.ArtWork),
+                ArtWork = FileTool.ReadArtWork(p.ArtWork),
                 Tags = GetTags(p.Tags),
             })
             .ToListAsync();
@@ -74,7 +72,7 @@ public class PlaylistService : IPlaylistService
                 AuthorName = UserTool.GetAuthorName(playlist.Author),
                 CreatedAt = playlist.CreatedAt,
                 Description = playlist.Description,
-                ArtWork = ReadArtWork(playlist.ArtWork),
+                ArtWork = FileTool.ReadArtWork(playlist.ArtWork),
                 Tracks = GetTracks(_context.TrackPlaylists, playlistId),
                 Tags = GetTags(playlist.Tags)
             };
@@ -92,7 +90,7 @@ public class PlaylistService : IPlaylistService
                 AuthorName = p.Author.UserName!,
                 CreatedAt = p.CreatedAt,
                 Description = p.Description,
-                ArtWork = ReadArtWork(p.ArtWork),
+                ArtWork = FileTool.ReadArtWork(p.ArtWork),
                 Tags = GetTags(p.Tags),
                 Tracks = GetTracks(_context.TrackPlaylists, p.Id)
             })
@@ -115,30 +113,9 @@ public class PlaylistService : IPlaylistService
                 Tracks = GetTracks(_context.TrackPlaylists, playlistId),
                 AuthorId = result.AuthorId,
                 Description = result.Description,
-                ArtWork = ReadArtWork(result.ArtWork),
+                ArtWork = FileTool.ReadArtWork(result.ArtWork),
                 Tags = GetTags(result.Tags)
             };  
-    }
-
-    public async Task<IEnumerable<PlaylistResponseModel>> Search(string keyword, long? userId)
-    {
-        var query = from p in _context.Playlists
-            where (!p.IsPrivate || p.AuthorId == userId) &&
-                (p.Name.Contains(keyword) ||
-                (p.Tags != null && p.Tags.Contains(keyword)) ||
-                (p.Description != null && p.Description.Contains(keyword)))
-            select new PlaylistResponseModel
-            {
-                Id = p.Id,
-                PlaylistName = p.Name,
-                AuthorName = p.Author.UserName!,
-                CreatedAt = p.CreatedAt,
-                Description = p.Description,
-                ArtWork = ReadArtWork(p.ArtWork),
-                Tracks = GetTracks(_context.TrackPlaylists, p.Id),
-                Tags = GetTags(p.Tags)
-            };
-        return await query.ToListAsync();
     }
 
     public async Task Like(int playlistId, long userId)
@@ -194,7 +171,7 @@ public class PlaylistService : IPlaylistService
 
         if (model.ArtWork != null)
         {
-            var fileName = await WriteToDisk(model.ArtWork);
+            var fileName = await FileTool.SaveArtwork(model.ArtWork);
             playlist.ArtWork = fileName;
         }
         await _context.Playlists.AddAsync(playlist);
@@ -240,7 +217,7 @@ public class PlaylistService : IPlaylistService
         playlist.Tags = SetTags(model.Tags);
         if (model.ArtWork != null)
         {
-            var fileName = await WriteToDisk(model.ArtWork);
+            var fileName = await FileTool.SaveArtwork(model.ArtWork);
             playlist.ArtWork = fileName;
         }
         await _context.SaveChangesAsync();
@@ -259,25 +236,6 @@ public class PlaylistService : IPlaylistService
                 "Bạn không có quyền xóa playlist này");
         _context.Playlists.Remove(playlist);
         await _context.SaveChangesAsync();
-    }
-
-
-
-
-    private Stream ReadArtWork(string? artWork)
-    {
-        if (string.IsNullOrWhiteSpace(artWork))
-            return Stream.Null;
-        return new FileStream(Path.Combine(_artWorkFolderPath, artWork), FileMode.Open);
-    }
-
-    private async Task<string> WriteToDisk(IFormFile file)
-    {
-        var fileName = file.FileName;
-        var filePath = Path.Combine(_artWorkFolderPath, fileName);
-        using var stream = new FileStream(filePath, FileMode.Create);
-        await file.CopyToAsync(stream);
-        return fileName;
     }
 
     private static string[] GetTags(string? tags)
@@ -303,7 +261,7 @@ public class PlaylistService : IPlaylistService
                 Id = tp.Track.Id,
                 TrackName = tp.Track.Name,
                 Author = UserTool.GetAuthorName(tp.Track.Author),
-                ArtWork = tp.Track.ArtWork,
+                // ArtWork = FileTool.ReadArtWork(tp.Track.ArtWork),
                 LikeCount = tp.Track.LikeCount,
             });
     }

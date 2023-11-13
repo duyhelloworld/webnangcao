@@ -1,12 +1,11 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using webnangcao.Enumerables;
-using webnangcao.Exceptions;
 using webnangcao.Services;
 using webnangcao.Tools;
-using System.Net;
 using webnangcao.Models.Inserts;
 using webnangcao.Models.Updates;
+using System.Net.Mime;
 namespace webnangcao.Controllers;
 
 [Route("[controller]")]
@@ -26,11 +25,19 @@ public class PlaylistController : ControllerBase
         return Ok(await _service.GetAll());
     }
 
-    [HttpGet("public")]
-    public async Task<IActionResult> GetAllPublic()
+    [HttpGet]
+    public IActionResult Download()
     {
-        return Ok(await _service.GetAllPublic());
+        var stream = FileTool.ReadTrack("Buon Thi Cu Khoc Di.mp3");
+        return File(stream, "audio/mpeg",
+         "Buon Thi Cu Khoc Di.mp3");
     }
+
+    // [HttpGet]
+    // public async Task<IActionResult> GetAllPublic()
+    // {
+    //     return Ok(await _service.GetAllPublic());
+    // }
 
     [HttpGet("public/{playlistId}")]
     public async Task<IActionResult> GetPublicById(int playlistId)
@@ -65,21 +72,6 @@ public class PlaylistController : ControllerBase
             return Ok(await _service.GetOfUserById(playlistId, uid));
         }
         return Forbid();
-    }
-
-    [HttpGet("search")]
-    public async Task<IActionResult> Search([FromQuery] string keyword)
-    {
-        if (keyword == null)
-        {
-            return Ok(_service.GetAllPublic());
-        }
-        var userId = User.FindFirstValue("userid");
-        if (userId != null && long.TryParse(userId, out long uid))
-        {
-            return Ok(await _service.Search(keyword, uid));
-        }
-        return Ok(await _service.Search(keyword, null));
     }
 
     [HttpPut("{playlistId}/play")]

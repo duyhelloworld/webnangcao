@@ -15,7 +15,7 @@ public class Track
     public string Name { get; set; } = null!;
 
     [Max(EMaxValue.DirectoryLength)]
-    public string FileLocation { get; set; } = null!;
+    public string FileName { get; set; } = null!;
 
     [MaxLength]
     public string? Description { get; set; }
