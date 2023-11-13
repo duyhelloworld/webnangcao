@@ -11,8 +11,6 @@ public class PlaylistResponseModel
 
     public string? Description { get; set; }
 
-    public Stream? ArtWork { get; set; }
-
     public string[]? Tags { get; set; }
     public IEnumerable<TrackResponseModel>? Tracks { get; set; }
 }
