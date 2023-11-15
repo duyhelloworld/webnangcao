@@ -11,7 +11,6 @@ public interface IPlaylistService
     // - Nên để tích AI rồi generate playlist cho guest
     Task<IEnumerable<PlaylistResponseModel>> GetAllPublic();
     Task<PlaylistResponseModel?> GetPublicById(int playlistId);
-    Task Play(int playlistId);
 
 
     // User

@@ -31,8 +31,8 @@ public class PlaylistService : IPlaylistService
                 CreatedAt = p.CreatedAt,
                 Description = p.Description,
                 Tracks = GetTracks(_context.TrackPlaylists, p.Id),
-                ArtWork = FileTool.ReadArtWork(p.ArtWork),
-                Tags = GetTags(p.Tags),
+                ArtWork = FileTool.PlaylistArtWorkBaseUrl(p.ArtWork ?? "default.png"),
+                Tags = TagTool.GetTags(p.Tags),
             })
             .ToListAsync();
     }
@@ -48,8 +48,8 @@ public class PlaylistService : IPlaylistService
                 AuthorName = p.Author.UserName!,
                 CreatedAt = p.CreatedAt,
                 Description = p.Description,
-                ArtWork = FileTool.ReadArtWork(p.ArtWork),
-                Tags = GetTags(p.Tags),
+                ArtWork = FileTool.PlaylistArtWorkBaseUrl(p.ArtWork ?? "default.png"),
+                Tags = TagTool.GetTags(p.Tags),
             })
             .ToListAsync();
     }
@@ -72,9 +72,9 @@ public class PlaylistService : IPlaylistService
                 AuthorName = UserTool.GetAuthorName(playlist.Author),
                 CreatedAt = playlist.CreatedAt,
                 Description = playlist.Description,
-                ArtWork = FileTool.ReadArtWork(playlist.ArtWork),
+                ArtWork = FileTool.PlaylistArtWorkBaseUrl(playlist.ArtWork ?? "default.png"),
                 Tracks = GetTracks(_context.TrackPlaylists, playlistId),
-                Tags = GetTags(playlist.Tags)
+                Tags = TagTool.GetTags(playlist.Tags)
             };
     }
 
@@ -90,8 +90,8 @@ public class PlaylistService : IPlaylistService
                 AuthorName = p.Author.UserName!,
                 CreatedAt = p.CreatedAt,
                 Description = p.Description,
-                ArtWork = FileTool.ReadArtWork(p.ArtWork),
-                Tags = GetTags(p.Tags),
+                ArtWork = FileTool.PlaylistArtWorkBaseUrl(p.ArtWork ?? "default.png"),
+                Tags = TagTool.GetTags(p.Tags),
                 Tracks = GetTracks(_context.TrackPlaylists, p.Id)
             })
             .ToListAsync();
@@ -113,8 +113,8 @@ public class PlaylistService : IPlaylistService
                 Tracks = GetTracks(_context.TrackPlaylists, playlistId),
                 AuthorId = result.AuthorId,
                 Description = result.Description,
-                ArtWork = FileTool.ReadArtWork(result.ArtWork),
-                Tags = GetTags(result.Tags)
+                ArtWork = FileTool.PlaylistArtWorkBaseUrl(result.ArtWork ?? "default.png"),
+                Tags = TagTool.GetTags(result.Tags)
             };  
     }
 
@@ -140,16 +140,6 @@ public class PlaylistService : IPlaylistService
             _context.UserPlaylistActions.Remove(like);
             playlist.LikeCount--;
         }
-        await _context.SaveChangesAsync();
-    }
-
-    public async Task Play(int playlistId)
-    {
-        var playlist = await _context.Playlists.FindAsync(playlistId);
-        if (playlist == null) 
-            throw new AppException(HttpStatusCode.NotFound, 
-                "Không thấy playlist yêu cầu");
-        playlist.ListenCount++;
         await _context.SaveChangesAsync();
     }
 
@@ -236,13 +226,6 @@ public class PlaylistService : IPlaylistService
                 "Bạn không có quyền xóa playlist này");
         _context.Playlists.Remove(playlist);
         await _context.SaveChangesAsync();
-    }
-
-    private static string[] GetTags(string? tags)
-    {
-        if (string.IsNullOrWhiteSpace(tags))
-            return Array.Empty<string>();
-        return tags.Split(",", StringSplitOptions.RemoveEmptyEntries);
     }
 
     private static string? SetTags(string[]? tags)

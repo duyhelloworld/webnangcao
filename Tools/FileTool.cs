@@ -2,6 +2,11 @@ namespace webnangcao.Tools;
 
 public class FileTool
 {
+    public static string PlaylistArtWorkBaseUrl (string fileArtworkName)
+         => $"https://localhost:5271/playlist/artwork/{fileArtworkName}";
+
+    public static string TrackArtworkBaseUrl (string fileArtworkName)
+            => $"https://localhost:5271/track/artwork{fileArtworkName}";    
     private static readonly string ArtWorkFolderPath
         = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
 

@@ -5,7 +5,7 @@ using webnangcao.Services;
 using webnangcao.Tools;
 using webnangcao.Models.Inserts;
 using webnangcao.Models.Updates;
-using System.Net.Mime;
+using Microsoft.Net.Http.Headers;
 namespace webnangcao.Controllers;
 
 [Route("[controller]")]
@@ -26,18 +26,10 @@ public class PlaylistController : ControllerBase
     }
 
     [HttpGet]
-    public IActionResult Download()
+    public async Task<IActionResult> GetAllPublic()
     {
-        var stream = FileTool.ReadTrack("Buon Thi Cu Khoc Di.mp3");
-        return File(stream, "audio/mpeg",
-         "Buon Thi Cu Khoc Di.mp3");
+        return Ok(await _service.GetAllPublic());
     }
-
-    // [HttpGet]
-    // public async Task<IActionResult> GetAllPublic()
-    // {
-    //     return Ok(await _service.GetAllPublic());
-    // }
 
     [HttpGet("public/{playlistId}")]
     public async Task<IActionResult> GetPublicById(int playlistId)
@@ -48,7 +40,7 @@ public class PlaylistController : ControllerBase
             return Ok(rs);
         }
         return NotFound();
-    }
+    }    
 
     [HttpGet("user/all")]
     [AppAuthorize(ERole.USER)]
@@ -74,10 +66,12 @@ public class PlaylistController : ControllerBase
         return Forbid();
     }
 
-    [HttpPut("{playlistId}/play")]
-    public async Task Play(int playlistId)
+    [HttpGet("artwork/{filename}")]
+    public IActionResult GetArtwork(string filename)
     {
-        await _service.Play(playlistId);
+        return new FileStreamResult(
+            fileStream: FileTool.ReadArtWork(fileName: filename),
+            contentType: MediaTypeHeaderValue.Parse("image/jpeg"));        
     }
 
     [HttpPost]
