@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using webnangcao.Enumerables;
 using webnangcao.Services;
 using webnangcao.Tools;
-using webnangcao.Models.Inserts;
 using webnangcao.Models.Updates;
 using Microsoft.Net.Http.Headers;
 namespace webnangcao.Controllers;
@@ -17,21 +16,14 @@ public class PlaylistController : ControllerBase
     {
         _service = service;
     }
-
-    [HttpGet("all")]
-    [AppAuthorize(ERole.ADMIN)]
-    public async Task<IActionResult> GetAll()
-    {
-        return Ok(await _service.GetAll());
-    }
-
+    
     [HttpGet]
-    public async Task<IActionResult> GetAllPublic()
+    public async Task<IActionResult> GetRandomPlaylist()
     {
-        return Ok(await _service.GetAllPublic());
+        return Ok(await _service.GetRandom());
     }
 
-    [HttpGet("public/{playlistId}")]
+    [HttpGet("{playlistId}")]
     public async Task<IActionResult> GetPublicById(int playlistId)
     {
         var rs = await _service.GetPublicById(playlistId);
@@ -40,7 +32,14 @@ public class PlaylistController : ControllerBase
             return Ok(rs);
         }
         return NotFound();
-    }    
+    }
+
+    [HttpGet("admin/all")]
+    [AppAuthorize(ERole.ADMIN)]
+    public async Task<IActionResult> GetAll()
+    {
+        return Ok(await _service.GetAll());
+    }
 
     [HttpGet("user/all")]
     [AppAuthorize(ERole.USER)]
@@ -61,7 +60,10 @@ public class PlaylistController : ControllerBase
         var userId = User.FindFirstValue("userid");
         if (userId != null && long.TryParse(userId, out long uid))
         {
-            return Ok(await _service.GetOfUserById(playlistId, uid));
+            var result = await _service.GetOfUserById(playlistId, uid);
+            if (result == null) 
+                return NotFound();
+            return Ok(result);
         }
         return Forbid();
     }
@@ -71,18 +73,19 @@ public class PlaylistController : ControllerBase
     {
         return new FileStreamResult(
             fileStream: FileTool.ReadArtWork(fileName: filename),
-            contentType: MediaTypeHeaderValue.Parse("image/jpeg"));        
+            contentType: new MediaTypeHeaderValue("image/jpeg"));        
     }
 
     [HttpPost]
     [AppAuthorize(ERole.USER)]
-    public async Task<IActionResult> AddNew([FromBody] PlaylistInsertModel model)
+    public async Task<IActionResult> AddNew(
+        [FromForm] string playlistJson,
+        [FromForm] IFormFile? fileArtwork)
     {
         var userId = User.FindFirstValue("userid");
         if (userId != null && long.TryParse(userId, out long uid))
         {
-            var playlistId = await _service.AddNew(model, uid);
-            return Ok(new{playlistId});
+            return Ok(await _service.AddNew(playlistJson, fileArtwork, uid));
         }
         return Forbid();
     }
@@ -98,25 +101,25 @@ public class PlaylistController : ControllerBase
         }
     }
 
-    [HttpPut("{playlistId}/save")]
+    [HttpPut("{playlistId}/repost")]
     [AppAuthorize(ERole.USER)]
     public async Task SaveToLibrary(int playlistId)
     {
         var userId = User.FindFirstValue("userid");
         if (userId != null && long.TryParse(userId, out long uid))
         {
-            await _service.SaveToLibrary(playlistId, uid);
+            await _service.Repost(playlistId, uid);
         }
     }
 
     [HttpPut("{playlistId}/information")]
     [AppAuthorize(ERole.USER)]
-    public async Task UpdateInfomation([FromBody] PlaylistUpdateModel model, int playlistId)
+    public async Task UpdateInfomation([FromBody] PlaylistUpdateModel model, IFormFile? fileArtwork, int playlistId)
     {
         var userId = User.FindFirstValue("userid");
         if (userId != null && long.TryParse(userId, out long uid))
         {
-            await _service.UpdateInfomation(model, playlistId, uid);
+            await _service.UpdateInfomation(model, fileArtwork, uid);
         }
     }
 
