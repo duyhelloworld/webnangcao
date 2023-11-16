@@ -30,7 +30,7 @@ public class SearchService : ISearchService
                     AuthorName = p.Author.UserName!,
                     CreatedAt = p.CreatedAt,
                     Description = p.Description,
-                    ArtWork = FileTool.ReadArtWork(p.ArtWork),
+                    ArtWork = FileTool.PlaylistArtWorkBaseUrl(p.ArtWork),
                 };
         return await query.ToListAsync();
     }

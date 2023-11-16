@@ -89,7 +89,7 @@ public class TrackService : ITrackService
         throw new NotImplementedException();
     }
 
-    public async Task AddNew(TrackInsertModel model, IFormFile fileTrack, IFormFile fileArtwork, long userId)
+    public async Task AddNew(TrackInsertModel model, IFormFile fileTrack, IFormFile? fileArtwork, long userId)
     {    
         var user = _context.Users.FirstOrDefaultAsync(u => u.Id == userId)
             ?? throw new AppException(HttpStatusCode.NotFound, 
@@ -107,57 +107,31 @@ public class TrackService : ITrackService
                 .ToListAsync();
             foreach (var category in categories)
             {
-                _context.TrackCategories.Add(new TrackCategory()
+                await _context.TrackCategories.AddAsync(new TrackCategory()
                 {
                     CategoryId = category.Id,
                     TrackId = track.Id,
                 });
             }
         }
-        try 
+        if(fileArtwork != null)
         {
-            await _context.Database.BeginTransactionAsync();
-            var artworkName = await FileTool.SaveTrack(fileTrack);
-            var trackFileName = await FileTool.SaveArtwork(fileArtwork);
-            track.ArtWork = artworkName;
-            track.FileName = trackFileName;
-            track.UploadAt = DateTime.Now;
-            await _context.Tracks.AddAsync(track);
-            await _context.SaveChangesAsync();
-        } catch (Exception)
-        {
-            _context.Database.RollbackTransaction();
-            throw;
+            await FileTool.SaveArtwork(fileArtwork);
+            track.ArtWork = fileArtwork.FileName;
         }
+        track.FileName = await FileTool.SaveTrack(fileTrack);
+        track.UploadAt = DateTime.Now;
+        await _context.Tracks.AddAsync(track);
+        await _context.SaveChangesAsync();
     }
 
-    public async Task Remove(int id)
-    {
-        var track = await _context.Tracks
-            .FirstOrDefaultAsync(t => t.Id == id)
-            ?? throw new AppException(HttpStatusCode.NotFound, 
-                "Không tìm thấy bài hát", 
-                "Hãy thử tải lại trang. Luôn đảm bảo bạn có quyền xoá bài hát này");
-        using var deleteTrackTransaction = _context.Database.BeginTransaction();
-        try
-        {
-            _context.Tracks.Remove(track);
-            await _context.SaveChangesAsync();
-            deleteTrackTransaction.Commit();
-        } catch (Exception)
-        {
-            deleteTrackTransaction.Rollback();
-            throw;
-        }
-    }
-    
     public async Task UpdateInfomation(TrackUpdateModel model, IFormFile? fileArtwork, int trackId)
     {
-        var currentTrack = await _context.Tracks.FindAsync(trackId) 
-            ?? throw new AppException(HttpStatusCode.NotFound, 
-                "Không tìm thấy bài hát", 
+        var currentTrack = await _context.Tracks.FindAsync(trackId)
+            ?? throw new AppException(HttpStatusCode.NotFound,
+                "Không tìm thấy bài hát",
                 "Hãy thử lại");
-        
+
         currentTrack.Name = model.TrackName;
         currentTrack.Description = model.Description;
         if (fileArtwork != null && fileArtwork.FileName != currentTrack.ArtWork)
@@ -171,5 +145,18 @@ public class TrackService : ITrackService
         await _context.SaveChangesAsync();
     }
 
-
+    public async Task Remove(int id)
+    {
+        var track = await _context.Tracks
+            .FirstOrDefaultAsync(t => t.Id == id)
+            ?? throw new AppException(HttpStatusCode.NotFound, 
+                "Không tìm thấy bài hát", 
+                "Hãy thử tải lại trang. Luôn đảm bảo bạn có quyền xoá bài hát này");
+        _context.TrackPlaylists.RemoveRange(
+            _context.TrackPlaylists.Where(tp => tp.TrackId == id));
+        _context.TrackPlaylists.RemoveRange(
+            _context.TrackPlaylists.Where(tp => tp.TrackId == id));
+        _context.Tracks.Remove(track);
+        await _context.SaveChangesAsync();
+    }
 }
