@@ -1,7 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using webnangcao.Enumerables;
-using webnangcao.Entities.Joins;
 using webnangcao.Tools;
 
 namespace webnangcao.Entities;
@@ -17,9 +16,6 @@ public class Track
     [Max(EMaxValue.DirectoryLength)]
     public string FileName { get; set; } = null!;
 
-    [MaxLength]
-    public string? Description { get; set; }
-
     [Max(EMaxValue.DirectoryLength)]
     public string? ArtWork { get; set; }
 
@@ -30,6 +26,9 @@ public class Track
     public int ListenCount { get; set; }
     public int LikeCount { get; set; }
     public int CommentCount { get; set; }
+
+    [MaxLength]
+    public string? Description { get; set; }
 
     public long AuthorId { get; set; }
     [ForeignKey("AuthorId")]
