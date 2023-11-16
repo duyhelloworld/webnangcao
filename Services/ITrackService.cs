@@ -9,8 +9,8 @@ namespace webnangcao.Services;
 public interface ITrackService
 {
     // Get public
-    public Task<IEnumerable<TrackResponseModel>> GetTopNewest();
     public Task<IEnumerable<TrackResponseModel>> GetTopTrending();
+    public Task<IEnumerable<TrackResponseModel>> GetTopNewest();
 
     // Get private
     public Task<IEnumerable<TrackResponseModel>> GetAllOfUser(long userId);
