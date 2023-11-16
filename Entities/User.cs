@@ -10,6 +10,7 @@ public class User : IdentityUser<long>
 
     [Required]
     public override string? UserName  { get; set; } 
+    
     [Required]
     public override string? Email { get; set ; } 
 
