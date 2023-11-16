@@ -16,17 +16,14 @@ public class AppException : Exception
     }
 
     public AppException(HttpStatusCode statusCode, string reason, string solution)
+        : this(statusCode, reason)
     {
-        StatusCode = statusCode;
-        Reason = reason;
         RecommmendSolution = solution;
     }
 
     public AppException(HttpStatusCode statusCode, string reason, string recommendSolution, object data)
+        : this(statusCode, reason, recommendSolution)
     {
-        StatusCode = statusCode;
-        Reason = reason;
-        RecommmendSolution = recommendSolution;
         DataToFix = data;
     }
 }
