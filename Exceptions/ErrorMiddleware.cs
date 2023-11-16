@@ -1,3 +1,4 @@
+using System.Net.Mime;
 
 namespace webnangcao.Exceptions;
 
@@ -23,7 +24,7 @@ public class ErrorMiddleware : IMiddleware
         catch (Exception ex)
         {
             context.Response.StatusCode = 500;
-            context.Response.ContentType = "application/json";
+            context.Response.ContentType = MediaTypeNames.Application.Json;
             await context.Response.WriteAsJsonAsync(new ResponseError()
             {
                 Reason = "Có lỗi xảy ra với hệ thống",
