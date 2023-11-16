@@ -6,6 +6,13 @@ public class TagTool
     {
         if (string.IsNullOrWhiteSpace(tags))
             return Array.Empty<string>();
-        return tags.Split(",", StringSplitOptions.RemoveEmptyEntries);
+        return tags.Split(",", StringSplitOptions.TrimEntries);
+    }
+
+    public static string? SetTags(string[]? tags)
+    {
+        if (tags == null)
+            return null;
+        return string.Join(",", tags);
     }
 }
