@@ -1,12 +1,22 @@
+using System.Net;
+using webnangcao.Exceptions;
+
 namespace webnangcao.Tools;
 
 public class FileTool
 {
     public static string PlaylistArtWorkBaseUrl (string fileArtworkName)
-         => $"https://localhost:5271/playlist/artwork/{fileArtworkName}";
+    {
+        var fileName = Path.GetFileNameWithoutExtension(fileArtworkName);
+        return $"http://localhost:5271/playlist/artwork/{fileName}";
+    }
 
     public static string TrackArtworkBaseUrl (string fileArtworkName)
-            => $"https://localhost:5271/track/artwork{fileArtworkName}";    
+    {
+        var fileName = Path.GetFileNameWithoutExtension(fileArtworkName);
+        return $"http://localhost:5271/track/artwork/{fileName}";
+    }
+    
     private static readonly string ArtWorkFolderPath
         = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
 
@@ -27,13 +37,23 @@ public class FileTool
         return new FileStream(Path.Combine(TrackFolderPath, fileName), FileMode.Open);
     }
 
-    public static async Task<string> SaveArtwork(IFormFile file)
+    public static async Task SaveArtwork(IFormFile fileInput)
     {
-        var fileName = file.FileName;
-        var filePath = Path.Combine(ArtWorkFolderPath, fileName);
-        using var stream = new FileStream(filePath, FileMode.Create);
-        await file.CopyToAsync(stream);
-        return fileName;
+        var fileInputName = fileInput.FileName;
+        if (Path.GetExtension(fileInputName) != "jpg" || 
+            Path.GetExtension(fileInputName) != "png")
+        {
+            throw new AppException(HttpStatusCode.UnsupportedMediaType,
+                "Ảnh không đúng định dạng", "Vui lòng chọn ảnh khác");
+        }
+        var filePath = Path.Combine(ArtWorkFolderPath, fileInputName);
+        if (File.Exists(filePath))
+        {
+            throw new AppException(HttpStatusCode.BadRequest,
+                "Ảnh này đã tồn tại", "Vui lòng chọn ảnh khác");
+        }
+        using var stream = new FileStream(filePath, FileMode.Create, FileAccess.ReadWrite);
+        await fileInput.CopyToAsync(stream);
     }
 
     public static async Task<string> SaveTrack(IFormFile file)
