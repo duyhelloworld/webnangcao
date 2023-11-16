@@ -8,5 +8,5 @@ public enum EMaxValue
     NameLength_Role = 10,
     NameLength_UserName = 30,
     NumberOfTagsInCategory = 20,
-    DirectoryLength = 200
+    DirectoryLength = 100
 }
