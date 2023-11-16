@@ -8,10 +8,9 @@ VALUES
     (N'EDM', N'Những bản EDM hiện đại'),
     (N'Balad', N'Những bản Balad tình nhất'), 
     (N'Indie', N'Nơi các Indier toả sáng');
-
 INSERT INTO [Users] ([UserName], [NormalizedUserName], [Email], [NormalizedEmail], [EmailConfirmed], [SecurityStamp], [ConcurrencyStamp], [PhoneNumberConfirmed], [TwoFactorEnabled], [LockoutEnabled], [AccessFailedCount])
 VALUES ('webnangcao','webnangcao', 'webnangcao@gmail.com', 'webnangcao@gmail.com', 'True', 'security_stamp', 'concurrency_stamp', 'False', 'False', 'False', 0),
-       ('superwebnangcao', 'superwebnangcao ', 'superwebnangcao@gmail.com', 'superwebnangcao@gmail.com', 'True', 'security_stamp', 'concurrency_stamp', 'False', 'False', 'False', 0),
+       ('superwebnangcao', 'superwebnangcao', 'superwebnangcao@gmail.com', 'superwebnangcao@gmail.com', 'True', 'security_stamp', 'concurrency_stamp', 'False', 'False', 'False', 0),
        ('hiep', 'hiep', 'hiep8am@gmail.com', 'hiep8am@gmail.com', 'True', 'security_stamp', 'concurrency_stamp', 'False', 'False', 'False', 0),
        ('duy', 'duy', 'codedaovoiduy@gmail.com', 'codedaovoiduy@gmail.com', 'True', 'security_stamp', 'concurrency_stamp', 'False', 'False', 'False', 0),
        ('quang', 'quang', 'mail1@gmail.com', 'mail1@gmail.com', 'True', 'security_stamp', 'concurrency_stamp', 'False', 'False', 'False', 0),
@@ -20,12 +19,12 @@ VALUES ('webnangcao','webnangcao', 'webnangcao@gmail.com', 'webnangcao@gmail.com
 
 INSERT INTO Tracks (Name, FileName, Description, Artwork, AuthorId, UploadAt, IsPrivate, ListenCount, LikeCount, CommentCount)
 VALUES
-    (N'7 Years', N'/wwwroot/musics/7 Years.mp3', 'Lukas Graham', N'/wwwroot/images/7-Years.jpg', 4, '2023-10-10 09:10:10', 'true', 0, 0, 2),
-    (N'Buồn thì cứ khóc đi', N'/wwwroot/musics/Buon Thi Cu Khoc Di.mp3', 'Mr.Siro', N'/wwwroot/images/Buon-Thi-Cu-Khoc-Di.jpg', 4, '2023-10-10 09:11:01', 'false', 0, 1, 2),
-    (N'Đã lỡ yêu em nhiều', N'/wwwroot/musics/Da Lo Yeu Em Nhieu.mp3', 'JustaTee', N'/wwwroot/images/Da-Lo-Yeu-Em-Nhieu.jpg', 4, '2023-10-10 09:12:12', 'true', 0, 0, 0),
-    (N'Nandemonaiya ', N'/wwwroot/musics/Nandemonaiya.mp3', '1012', N'/wwwroot/images/Nandemonaiya.jpg', 4, '2023-10-10 09:13:32', 'false', 0, 0, 0),
-    (N'Rap chậm thôi', N'/wwwroot/musics/Rap Cham Thoi.mp3', 'MCK', N'/wwwroot/images/Rap-Cham-Thoi.jpg', 7, '2023-06-21 10:14:12', 'false', 0, 0, 0),
-    (N'Thủ Đô Cypher', N'/wwwroot/musics/Thu Do Cypher.mp3', 'MCK, LowG', N'/wwwroot/images/Thu-Do-Cypher.jpg', 4, '2023-10-10 09:40:12', 'false', 0, 0, 0);
+    (N'7 Years', N'7 Years.mp3', 'Lukas Graham', N'7-Years.jpg', 4, '2023-10-10 09:10:10', 'true', 0, 0, 2),
+    (N'Buồn thì cứ khóc đi', N'Buon Thi Cu Khoc Di.mp3', 'Lynk Lee', N'Buon-Thi-Cu-Khoc-Di.jpg', 4, '2023-10-10 09:11:01', 'false', 0, 1, 2),
+    (N'Đã lỡ yêu em nhiều', N'Da Lo Yeu Em Nhieu.mp3', 'JustaTee', N'Da-Lo-Yeu-Em-Nhieu.jpg', 4, '2023-10-10 09:12:12', 'true', 0, 0, 0),
+    (N'Nandemonaiya ', N'Nandemonaiya.mp3', '1012', N'default-artwork.jpg', 4, '2023-10-10 09:13:32', 'false', 0, 0, 0),
+    (N'Rap chậm thôi', N'Rap Cham Thoi.mp3', 'MCK', N'Rap-Cham-Thoi.jpg', 7, '2023-06-21 10:14:12', 'false', 0, 0, 0),
+    (N'Thủ Đô Cypher', N'Thu Do Cypher.mp3', 'MCK, LowG', N'Thu-Do-Cypher.jpg', 4, '2023-10-10 09:40:12', 'false', 0, 0, 0);
 
 INSERT INTO Tracks_Categories (TrackId, CategoryId)
 VALUES
@@ -69,15 +68,15 @@ VALUES (2, 1),
        (6, 3),
        (7, 3);
 
-INSERT INTO [Playlists] (Name, CreatedAt, IsPrivate, AuthorId, Description, ArtWork, Tags, LikeCount, ListenCount)
+INSERT INTO [Playlists] (Name, CreatedAt, IsPrivate, AuthorId, Description, ArtWork, Tags, LikeCount, RepostCount)
 VALUES 
-        ('TopBXH', '2023-10-11 10:11:00', 'false', 1, 'Playlist thịnh hành', 'image.png', '#BXH, #Top', 0, 0),
-        ('TopMoiNhat', '2023-10-11 10:11:00', 'false', 1, 'Playlist  mới nhất', 'image.png', '#Top, #MoiNhat', 0, 10),
-        ('NhacCuaHiep', '2023-10-11 10:11:00', 'true', 3, 'Playlist theo gu hiep', 'image.png', NULL, 1, 1),
-        ('NhacCuaDuy', '2023-10-11 10:11:00', 'false', 4, 'Playlist theo gu duy', 'image.png', NULL, 1, 10),
-        ('NhacCuaQuang', '2023-10-11 10:11:00', 'true', 5, 'Playlist theo gu quang', 'image.png', NULL,1, 0),
-        ('NhacCuaYouzo', '2023-10-11 10:11:00', 'true', 6, 'Playlist theo gu youzo', 'image.png', NULL, 0, 0),
-        ('NhacCuaChien', '2023-10-11 10:11:00', 'true', 7, 'Playlist theo gu chien', 'image.png', NULL, 1, 2);
+        ('TopBXH', '2023-10-11 10:11:00', 'false', 1, 'Playlist thịnh hành', 'default-artwork.jpg', '#BXH, #Top', 0, 0),
+        ('TopMoiNhat', '2023-10-11 10:11:00', 'false', 1, 'Playlist  mới nhất', 'default-artwork.jpg', '#Top, #MoiNhat', 0, 10),
+        ('NhacCuaHiep', '2023-10-11 10:11:00', 'true', 3, 'Playlist theo gu hiep', 'default-artwork.jpg', NULL, 1, 1),
+        ('NhacCuaDuy', '2023-10-11 10:11:00', 'false', 4, 'Playlist theo gu duy', 'default-artwork.jpg', NULL, 1, 10),
+        ('NhacCuaQuang', '2023-10-11 10:11:00', 'true', 5, 'Playlist theo gu quang', 'default-artwork.jpg', NULL,1, 0),
+        ('NhacCuaYouzo', '2023-10-11 10:11:00', 'true', 6, 'Playlist theo gu youzo', 'default-artwork.jpg', NULL, 0, 0),
+        ('NhacCuaChien', '2023-10-11 10:11:00', 'true', 7, 'Playlist theo gu chien', 'default-artwork.jpg', NULL, 1, 2);
 
 INSERT INTO [Tracks_Playlists] (PlaylistId, TrackId)
 VALUES 
