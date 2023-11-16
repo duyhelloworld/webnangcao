@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace webnangcao.Entities;
 
-[Index("AuthorId", "Name", IsUnique = true)]
+[Index("Name","AuthorId", IsUnique = true)]
 public class Playlist
 {
     [Key]
@@ -20,8 +20,8 @@ public class Playlist
 
     public bool IsPrivate { get; set; }
 
-    public int ListenCount { get; set; }
     public int LikeCount { get; set; }
+    public int RepostCount { get; set; }
 
     public long AuthorId { get; set; }
     [ForeignKey("AuthorId")]
@@ -31,7 +31,7 @@ public class Playlist
     public string? Description { get; set; }
 
     [Max(EMaxValue.DirectoryLength)]
-    public string? ArtWork { get; set; }
+    public string ArtWork { get; set; } = "default-artwork.jpg";
 
     [MaxLength]
     public string? Tags { get; set; }
