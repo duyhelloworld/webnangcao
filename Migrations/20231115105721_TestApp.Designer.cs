@@ -12,7 +12,7 @@ using webnangcao.Context;
 namespace webnangcao.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20231111155720_TestApp")]
+    [Migration("20231115105721_TestApp")]
     partial class TestApp
     {
         /// <inheritdoc />
@@ -238,6 +238,7 @@ namespace webnangcao.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ArtWork")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<long>("AuthorId")
@@ -255,19 +256,21 @@ namespace webnangcao.Migrations
                     b.Property<int>("LikeCount")
                         .HasColumnType("int");
 
-                    b.Property<int>("ListenCount")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("RepostCount")
+                        .HasColumnType("int");
 
                     b.Property<string>("Tags")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AuthorId", "Name")
+                    b.HasIndex("AuthorId");
+
+                    b.HasIndex("Name")
                         .IsUnique();
 
                     b.ToTable("Playlists");

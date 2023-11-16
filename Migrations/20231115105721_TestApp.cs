@@ -122,11 +122,11 @@ namespace webnangcao.Migrations
                     Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsPrivate = table.Column<bool>(type: "bit", nullable: false),
-                    ListenCount = table.Column<int>(type: "int", nullable: false),
                     LikeCount = table.Column<int>(type: "int", nullable: false),
+                    RepostCount = table.Column<int>(type: "int", nullable: false),
                     AuthorId = table.Column<long>(type: "bigint", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ArtWork = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ArtWork = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Tags = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -148,13 +148,13 @@ namespace webnangcao.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FileName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ArtWork = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UploadAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsPrivate = table.Column<bool>(type: "bit", nullable: false),
                     ListenCount = table.Column<int>(type: "int", nullable: false),
                     LikeCount = table.Column<int>(type: "int", nullable: false),
                     CommentCount = table.Column<int>(type: "int", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     AuthorId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
@@ -392,9 +392,14 @@ namespace webnangcao.Migrations
                 column: "FollowingUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Playlists_AuthorId_Name",
+                name: "IX_Playlists_AuthorId",
                 table: "Playlists",
-                columns: new[] { "AuthorId", "Name" },
+                column: "AuthorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Playlists_Name",
+                table: "Playlists",
+                column: "Name",
                 unique: true);
 
             migrationBuilder.CreateIndex(
