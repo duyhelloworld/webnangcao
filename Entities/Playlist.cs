@@ -1,7 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using webnangcao.Enumerables;
-using webnangcao.Entities.Joins;
 using webnangcao.Tools;
 using Microsoft.EntityFrameworkCore;
 
