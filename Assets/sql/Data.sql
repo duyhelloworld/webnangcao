@@ -9,20 +9,19 @@ VALUES
     (N'Balad', N'Những bản Balad "tình" nhất'), 
     (N'Indie', N'Nơi các Indier toả sáng');
 
-INSERT INTO Tracks (Name, Location, Artwork , Description)
-VALUES
-    (N'7 Years', N'/Assets/musics/"7 Years.mp3"', 'Lukas Graham', N'/Assets/images/7-Years.jpg'),
-    (N'Buồn thì cứ khóc đi', N'/Assets/musics/"Buon Thi Cu Khoc Di.mp3"', 'Mr.Siro', N'/Assets/images/Buon-Thi-Cu-Khoc-Di.jpg'),
-    (N'Đã lỡ yêu em nhiều', N'/Assets/musics/"Da Lo Yeu Em Nhieu.mp3"', 'JustaTee', N'/Assets/images/Da-Lo-Yeu-Em-Nhieu.jpg'),
-    (N'Nandemonaiya ', N'/Assets/musics/"Nandemonaiya.mp3"', '1012', N'/Assets/images/Nandemonaiya.jpg'),
-    (N'Rap chậm thôi', N'/Assets/musics/"Rap Cham Thoi.mp3"', 'MCK', N'/Assets/images/Rap-Cham-Thoi.jpg'),
-    (N'Thủ Đô Cypher', N'/Assets/musics/"Thu Do Cypher.mp3"', 'MCK, LowG', N'/Assets/images/Thu-Do-Cypher.jpg');
+INSERT INTO Tracks (Name, Description, Artwork, location, listencount, likecount, commentcount, audiofile, artworkfile)
+VALUES ('Bài hát 1', 'Mô tả bài hát 1', 'https://i.ytimg.com/vi/5qap5aO4i9A/maxresdefault.jpg', 'https://www.youtube.com/watch?v=5qap5aO4i9A', 0, 0, 0, 'https://www.youtube.com/watch?v=5qap5aO4i9A', 'https://i.ytimg.com/vi/5qap5aO4i9A/maxresdefault.jpg'),
+       ('Bài hát 2', 'Mô tả bài hát 2', 'https://i.ytimg.com/vi/5qap5aO4i9A/maxresdefault.jpg', 'https://www.youtube.com/watch?v=5qap5aO4i9A', 0, 0, 0, 'https://www.youtube.com/watch?v=5qap5aO4i9A', 'https://i.ytimg.com/vi/5qap5aO4i9A/maxresdefault.jpg'),
+       ('Bài hát 3', 'Mô tả bài hát 3', 'https://i.ytimg.com/vi/5qap5aO4i9A/maxresdefault.jpg', 'https://www.youtube.com/watch?v=5qap5aO4i9A', 0, 0, 0, 'https://www.youtube.com/watch?v=5qap5aO4i9A', 'https://i.ytimg.com/vi/5qap5aO4i9A/maxresdefault.jpg'),
+       ('Bài hát 4', 'Mô tả bài hát 4', 'https://i.ytimg.com/vi/5qap5aO4i9A/maxresdefault.jpg', 'https://www.youtube.com/watch?v=5qap5aO4i9A', 0, 0, 0, 'https://www.youtube.com/watch?v=5qap5aO4i9A', 'https://i.ytimg.com/vi/5qap5aO4i9A/maxresdefault.jpg'),
+       ('Bài hát 5', 'Mô tả bài hát 5', 'https://i.ytimg.com/vi/5qap5aO4i9A/maxresdefault.jpg', 'https://www.youtube.com/watch?v=5qap5aO4i9A', 0, 0, 0, 'https://www.youtube.com/watch?v=5qap5aO4i9A', 'https://i.ytimg.com/vi/5qap5aO4i9A/maxresdefault.jpg'),
+       ('Bài hát 6', 'Mô tả bài hát 6', 'https://i.ytimg.com/vi/5qap5aO4i9A/maxresdefault.jpg', 'https://www.youtube.com/watch?v=5qap5aO4i9A', 0, 0, 0, 'https://www.youtube.com/watch?v=5qap5aO4i9A', 'https://i.ytimg.com/vi/5qap5aO4i9A/maxresdefault.jpg');
 
 INSERT INTO Tracks_Categories (TrackId, CategoryId)
 VALUES
-    (1, 7),
-    (2, 1),
-    (2, 6),
+    (7, 7),
+    (8, 1),
+    (5, 6),
     (3, 4),
     (4, 5),
     (5, 3),

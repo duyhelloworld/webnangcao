@@ -71,7 +71,7 @@ public class TrackService : ITrackService
         {
             Name = model.TrackName,
             Description = model.Description,
-            ArtWork = model.ArtWork,
+            // ArtWork = model.ArtWork,
             // AudioFile = model.AudioFile.FileName,
             // ArtworkFile = model.ArtorkFile.FileName,
         };
