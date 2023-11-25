@@ -9,10 +9,5 @@ public enum EMaxValue
     NameLength_Role = 10,
     NameLength_UserName = 30,
     NumberOfTagsInCategory = 20,
-    DirectoryLength = 200,
-    LimitNumberOfTrack = 100000,
-    LimitNumberOfPlaylist = 100000,
-    LimitNumberOfCategory = 100000,
-    LimitNumberOfComment = 100000,
-    LimitNumberOfUser = 100000
+    DirectoryLength = 100
 }

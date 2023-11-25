@@ -2,15 +2,12 @@ using System.Net;
 using Microsoft.EntityFrameworkCore;
 using webnangcao.Context;
 using webnangcao.Entities;
-using webnangcao.Enumerables;
 using webnangcao.Entities.Joins;
 using webnangcao.Exceptions;
-using webnangcao.Models;
 using webnangcao.Models.Inserts;
 using webnangcao.Models.Responses;
 using webnangcao.Models.Updates;
-using Microsoft.AspNetCore.Http.HttpResults;
-using System.Text.Json;
+using webnangcao.Tools;
 
 namespace webnangcao.Services.Impls;
 
@@ -23,9 +20,10 @@ public class TrackService : ITrackService
         _context = context;
     }
 
-    public async Task<IEnumerable<TrackResponseModel>> GetAll()
-    {
+    public async Task<IEnumerable<TrackResponseModel>> GetAllOfUser(long userId)
+    {   
         var result = from track in _context.Tracks
+            where track.Author.Id == userId
             join userTrackAction in _context.UserTrackActions
                 on track.Id equals userTrackAction.TrackId
             join user in _context.Users
@@ -35,13 +33,32 @@ public class TrackService : ITrackService
             Id = track.Id,
             Author = user.UserName!,
             TrackName = track.Name,
-            ArtWork = track.ArtWork,
             UploadAt = userTrackAction.ActionAt,
             ListenCount = track.ListenCount,
             LikeCount = track.LikeCount,
             CommentCount = track.CommentCount,
         };
-        return await Task.FromResult(result);
+        return await result.ToListAsync();
+    }
+
+    public async Task<IEnumerable<TrackResponseModel>> GetAll()
+    {
+        var result = from track in _context.Tracks
+            join userTrackAction in _context.UserTrackActions
+                on track.Id equals userTrackAction.TrackId
+            join user in _context.Users
+                on userTrackAction.UserId equals user.Id
+            select new TrackResponseModel()
+            {
+                Id = track.Id,
+                Author = user.UserName!,
+                TrackName = track.Name,
+                UploadAt = userTrackAction.ActionAt,
+                ListenCount = track.ListenCount,
+                LikeCount = track.LikeCount,
+                CommentCount = track.CommentCount,
+            };
+        return await result.ToListAsync();
     }
     public async Task<IEnumerable<TrackResponseModel>> GetByUserId(int id)
     {
@@ -71,18 +88,50 @@ public class TrackService : ITrackService
         {
             Name = model.TrackName,
             Description = model.Description,
-            // ArtWork = model.ArtWork,
-            // AudioFile = model.AudioFile.FileName,
-            // ArtworkFile = model.ArtorkFile.FileName,
+            IsPrivate = model.IsPrivate,
         };
-        var userTrackAction = new UserTrackAction()
+        if (model.Categories != null)
         {
-            UserId = userId,
-            Track = track,
-            ActionAt = DateTime.Now,
-        };
-        _context.Tracks.Add(track);
-        _context.UserTrackActions.Add(userTrackAction);
+            var categories = await _context.Categories
+                .Where(c => model.Categories.Contains(c.Name))
+                .ToListAsync();
+            foreach (var category in categories)
+            {
+                await _context.TrackCategories.AddAsync(new TrackCategory()
+                {
+                    CategoryId = category.Id,
+                    TrackId = track.Id,
+                });
+            }
+        }
+        if(fileArtwork != null)
+        {
+            await FileTool.SaveArtwork(fileArtwork);
+            track.ArtWork = fileArtwork.FileName;
+        }
+        track.FileName = await FileTool.SaveTrack(fileTrack);
+        track.UploadAt = DateTime.Now;
+        await _context.Tracks.AddAsync(track);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task UpdateInfomation(TrackUpdateModel model, IFormFile? fileArtwork, int trackId)
+    {
+        var currentTrack = await _context.Tracks.FindAsync(trackId)
+            ?? throw new AppException(HttpStatusCode.NotFound,
+                "Không tìm thấy bài hát",
+                "Hãy thử lại");
+
+        currentTrack.Name = model.TrackName;
+        currentTrack.Description = model.Description;
+        if (fileArtwork != null && fileArtwork.FileName != currentTrack.ArtWork)
+        {
+            await FileTool.SaveArtwork(fileArtwork);
+        }
+        var currentCategories = await _context.TrackCategories
+            .Where(tc => tc.TrackId == trackId)
+            .ToListAsync();
+        _context.TrackCategories.RemoveRange(currentCategories);
         await _context.SaveChangesAsync();
     }
 

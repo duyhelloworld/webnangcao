@@ -1,11 +1,12 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using webnangcao.Enumerables;
-using webnangcao.Entities.Joins;
 using webnangcao.Tools;
+using Microsoft.EntityFrameworkCore;
 
 namespace webnangcao.Entities;
 
+[Index("Name","AuthorId", IsUnique = true)]
 public class Playlist
 {
     [Key]
@@ -16,9 +17,10 @@ public class Playlist
 
     public DateTime CreatedAt { get; set; }
 
-    public DateTime LastUpdatedAt { get; set; }
-
     public bool IsPrivate { get; set; }
+
+    public int LikeCount { get; set; }
+    public int RepostCount { get; set; }
 
     public long AuthorId { get; set; }
     [ForeignKey("AuthorId")]
@@ -28,15 +30,8 @@ public class Playlist
     public string? Description { get; set; }
 
     [Max(EMaxValue.DirectoryLength)]
-    public string? ArtWork { get; set; }
-    
+    public string ArtWork { get; set; } = "default-artwork.jpg";
 
     [MaxLength]
     public string? Tags { get; set; }
-
-    public ICollection<TrackPlaylist> TrackPlaylists { get; set; } 
-        = new List<TrackPlaylist>();
-    
-    public ICollection<UserPlaylistAction> UserPlaylistActions { get; set; }
-        = new List<UserPlaylistAction>();
 }

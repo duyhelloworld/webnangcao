@@ -10,7 +10,6 @@ public class UserPlaylistAction
     [Key]
     public string Id { get; set; } = Guid.NewGuid().ToString();
 
-    // [EnumDataType(typeof(EUserPlaylistActionType))]
     [Column(TypeName = "varchar(10)")]
     public EUserPlaylistActionType ActionType { get; set; }
 

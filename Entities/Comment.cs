@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace webnangcao.Entities;
 
@@ -12,13 +13,14 @@ public class Comment
     public string Content { get; set; } = null!;
 
     public DateTime CommentAt { get; set; }
-    public DateTime LastEditAt { get; set; }
+    
+    public bool IsEdited { get; set; }
 
     public int TrackId { get; set; }
-    [ForeignKey("TrackId")]
+    [DeleteBehavior(DeleteBehavior.NoAction)]
     public Track Track { get; set; } = null!;
 
     public long UserId { get; set; }
-    [ForeignKey("UserId")]
+    [DeleteBehavior(DeleteBehavior.NoAction)]
     public User User { get; set; } = null!;
 }

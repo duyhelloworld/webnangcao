@@ -9,6 +9,6 @@ public class TrackUpdateModel
     public string TrackName { get; set; } = null!;
 
     public string? Description { get; set; }
-    
-    public string? ArtWork { get; set; }
+
+    public IEnumerable<string>? Tags { get; set; }
 }

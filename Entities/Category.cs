@@ -15,7 +15,4 @@ public class Category
     
     [MaxLength]
     public string? Description { get; set; }
-
-    public ICollection<TrackCategory> TrackCategories { get; set; } 
-        = new List<TrackCategory>();
 }

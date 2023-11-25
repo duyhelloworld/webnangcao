@@ -1,7 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using webnangcao.Enumerables;
-using webnangcao.Entities.Joins;
 using webnangcao.Tools;
 
 namespace webnangcao.Entities;
@@ -15,21 +14,23 @@ public class Track
     public string Name { get; set; } = null!;
 
     [Max(EMaxValue.DirectoryLength)]
-    public string Location { get; set; } = null!;
-
-    // Dùng UploadAt ở UserTrackAction
-
-    [MaxLength]
-    public string? Description { get; set; }
+    public string FileName { get; set; } = null!;
 
     [Max(EMaxValue.DirectoryLength)]
     public string? ArtWork { get; set; }
 
-    public int ListenCount { get; set; } = 0;
-    public int LikeCount { get; set; } = 0;
-    public int CommentCount { get; set; } = 0;
-    [NotMapped]
+    public DateTime UploadAt { get; set; }
+
+    public bool IsPrivate { get; set; }
+
+    public int ListenCount { get; set; }
+    public int LikeCount { get; set; }
+    public int CommentCount { get; set; }
+
+    [MaxLength]
+    public string? Description { get; set; }
+
+    public long AuthorId { get; set; }
+    [ForeignKey("AuthorId")]
     public User Author { get; set; } = null!;
-    public string AudioFile { get; set; }
-    public string ArtworkFile { get; set; }
 }

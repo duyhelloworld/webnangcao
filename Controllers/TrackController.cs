@@ -1,16 +1,9 @@
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text;
 using System.Text.Json;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using webnangcao.Entities;
+using Microsoft.Net.Http.Headers;
 using webnangcao.Enumerables;
-using webnangcao.Models;
 using webnangcao.Models.Inserts;
-using webnangcao.Models.Securities;
 using webnangcao.Models.Updates;
 using webnangcao.Services;
 using webnangcao.Tools;
@@ -27,7 +20,6 @@ public class TrackController : ControllerBase
     }
 
     [HttpGet]
-    [AppAuthorize(ERole.USER)]
     public async Task<IActionResult> GetAllTrack()
     {
         return Ok(await _service.GetAll());
@@ -49,8 +41,9 @@ public class TrackController : ControllerBase
     [AppAuthorize(ERole.USER)]
     public async Task<IActionResult> Upload([FromForm] TrackInsertModel model)
     {
+        var model = JsonSerializer.Deserialize<TrackInsertModel>(modelstring);
         var userId = User.FindFirstValue("userid");
-        if (userId != null && long.TryParse(userId, out long id))
+        if (userId != null && long.TryParse(userId, out long id) && model != null)
         {
             await _service.UploadTrack(model, id);
             return Ok();
@@ -62,8 +55,39 @@ public class TrackController : ControllerBase
     [AppAuthorize(ERole.USER)]
     public async Task<IActionResult> Update([FromForm] TrackUpdateModel model, int id)
     {
-        await _service.UpdateInfomation(model, id);
-        return Ok();
+        var track = await _service.GetById(trackId);
+        var stream = FileTool.ReadTrack(track?.FileName);
+        return new FileStreamResult(
+            fileStream: stream,
+            contentType: MediaTypeHeaderValue.Parse("audio/mpeg"));
+    }
+
+    [HttpGet("artwork/{filename}")]
+    public IActionResult GetArtworkTrack([FromRoute] string filename)
+    {
+        var stream = FileTool.ReadTrack(filename);
+        return new FileStreamResult(
+            fileStream: stream,
+            contentType: MediaTypeHeaderValue.Parse("audio/mpeg"));
+    }
+
+
+
+    [HttpPut("{id}")]
+    [AppAuthorize(ERole.USER)]
+    public async Task<IActionResult> UpdateTrack(
+        [FromForm] string modelstring,
+        [FromForm] IFormFile? fileArtwork,
+         int trackId)
+    {
+        var model = JsonSerializer.Deserialize<TrackUpdateModel>(modelstring);
+        var userId = User.FindFirstValue("userid");
+        if (userId != null && long.TryParse(userId, out long id) && model != null)
+        {
+            await _service.UpdateInfomation(model, fileArtwork, trackId);
+            return Ok();
+        }
+        return Forbid();
     }
     [HttpDelete("delete/{id}")]
     [AppAuthorize(ERole.USER)]

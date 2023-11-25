@@ -99,7 +99,7 @@ public class AuthService : IAuthService
             new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(_config["JwtInfo:Key"]!)),
                 SecurityAlgorithms.HmacSha512Signature);
-        var expireTime = DateTime.Now.AddDays(
+        var expireTime = DateTime.UtcNow.AddDays(
             _config.GetSection("JwtInfo:ExpireDays").Get<int>());
         var tokenDescriptor = new SecurityTokenDescriptor
         {
