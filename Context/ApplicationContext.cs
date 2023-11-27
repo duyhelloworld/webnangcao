@@ -20,12 +20,12 @@ public class ApplicationContext : IdentityDbContext<User, Role, long>
     // Bảng quan hệ
     public DbSet<Follow> Follows { get; set; } = null!;
     public DbSet<Comment> Comments { get; set; } = null!;
-    public DbSet<UserTrackAction> UserTrackActions { get; set; } = null!;
-    public DbSet<UserPlaylistAction> UserPlaylistActions { get; set; } = null!;
 
     // Bảng liên kết n-n
     public DbSet<TrackPlaylist> TrackPlaylists { get; set; } = null!;
     public DbSet<TrackCategory> TrackCategories { get; set; } = null!;
+    public DbSet<LikePlaylist> LikePlaylists { get; set; } = null!;
+    public DbSet<LikeTrack> LikeTracks { get; set; } = null!;
     // public DbSet<Like> Likes { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder builder)

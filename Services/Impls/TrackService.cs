@@ -20,53 +20,38 @@ public class TrackService : ITrackService
         _context = context;
     }
 
-    public async Task<IEnumerable<TrackResponseModel>> GetAllOfUser(long userId)
-    {   
-        var result = from track in _context.Tracks
-            where track.Author.Id == userId
-            join userTrackAction in _context.UserTrackActions
-                on track.Id equals userTrackAction.TrackId
-            join user in _context.Users
-                on userTrackAction.UserId equals user.Id
-        select new TrackResponseModel()
-        {
-            Id = track.Id,
-            Author = user.UserName!,
-            TrackName = track.Name,
-            UploadAt = userTrackAction.ActionAt,
-            ListenCount = track.ListenCount,
-            LikeCount = track.LikeCount,
-            CommentCount = track.CommentCount,
-        };
-        return await result.ToListAsync();
-    }
-
     public async Task<IEnumerable<TrackResponseModel>> GetAll()
     {
         var result = from track in _context.Tracks
-            join userTrackAction in _context.UserTrackActions
-                on track.Id equals userTrackAction.TrackId
+            join LikeTrack in _context.LikeTracks
+                on track.Id equals LikeTrack.TrackId
             join user in _context.Users
-                on userTrackAction.UserId equals user.Id
+                on LikeTrack.UserId equals user.Id
+                join Comment in _context.Comments
+                on track.Id equals Comment.TrackId
+                join TrackCategory in _context.TrackCategories
+                on track.Id equals TrackCategory.TrackId
+                join Category in _context.Categories
+                on TrackCategory.CategoryId equals Category.Id
             select new TrackResponseModel()
             {
                 Id = track.Id,
                 Author = user.UserName!,
                 TrackName = track.Name,
-                UploadAt = userTrackAction.ActionAt,
+                ArtWork = track.ArtWork,
                 ListenCount = track.ListenCount,
                 LikeCount = track.LikeCount,
                 CommentCount = track.CommentCount,
+                Category = Category.Name,
+                Comment = Comment.Content,
             };
         return await result.ToListAsync();
     }
     public async Task<IEnumerable<TrackResponseModel>> GetByUserId(int id)
     {
         var result = from track in _context.Tracks
-            join userTrackAction in _context.UserTrackActions
-                on track.Id equals userTrackAction.TrackId
             join user in _context.Users
-                on userTrackAction.UserId equals user.Id
+                on track.Id equals user.Id
             where user.Id == id
             select new TrackResponseModel()
             {
@@ -74,46 +59,45 @@ public class TrackService : ITrackService
                 Author = user.UserName!,
                 TrackName = track.Name,
                 ArtWork = track.ArtWork,
-                UploadAt = userTrackAction.ActionAt,
                 ListenCount = track.ListenCount,
                 LikeCount = track.LikeCount,
                 CommentCount = track.CommentCount,
             };
-        return await Task.FromResult(result);
+        return await result.ToListAsync();
     }
-    public async Task UploadTrack(TrackInsertModel model, long userId)
-    {
-        // JsonSerializer.Deserialize<TrackInsertModel>("");
-        var track = new Track()
-        {
-            Name = model.TrackName,
-            Description = model.Description,
-            IsPrivate = model.IsPrivate,
-        };
-        if (model.Categories != null)
-        {
-            var categories = await _context.Categories
-                .Where(c => model.Categories.Contains(c.Name))
-                .ToListAsync();
-            foreach (var category in categories)
-            {
-                await _context.TrackCategories.AddAsync(new TrackCategory()
-                {
-                    CategoryId = category.Id,
-                    TrackId = track.Id,
-                });
-            }
-        }
-        if(fileArtwork != null)
-        {
-            await FileTool.SaveArtwork(fileArtwork);
-            track.ArtWork = fileArtwork.FileName;
-        }
-        track.FileName = await FileTool.SaveTrack(fileTrack);
-        track.UploadAt = DateTime.Now;
-        await _context.Tracks.AddAsync(track);
-        await _context.SaveChangesAsync();
-    }
+    // public async Task UploadTrack(TrackInsertModel model, long userId)
+    // {
+    //     // JsonSerializer.Deserialize<TrackInsertModel>("");
+    //     var track = new Track()
+    //     {
+    //         Name = model.TrackName,
+    //         Description = model.Description,
+    //         IsPrivate = model.IsPrivate,
+    //     };
+    //     if (model.Categories != null)
+    //     {
+    //         var categories = await _context.Categories
+    //             .Where(c => model.Categories.Contains(c.Name))
+    //             .ToListAsync();
+    //         foreach (var category in categories)
+    //         {
+    //             await _context.TrackCategories.AddAsync(new TrackCategory()
+    //             {
+    //                 CategoryId = category.Id,
+    //                 TrackId = track.Id,
+    //             });
+    //         }
+    //     }
+    //     if(fileArtwork != null)
+    //     {
+    //         await FileTool.SaveArtwork(fileArtwork);
+    //         track.ArtWork = fileArtwork.FileName;
+    //     }
+    //     track.FileName = await FileTool.SaveTrack(fileTrack);
+    //     track.UploadAt = DateTime.Now;
+    //     await _context.Tracks.AddAsync(track);
+    //     await _context.SaveChangesAsync();
+    // }
 
     public async Task UpdateInfomation(TrackUpdateModel model, IFormFile? fileArtwork, int trackId)
     {
@@ -144,26 +128,14 @@ public class TrackService : ITrackService
         _context.Tracks.Remove(track);
         await _context.SaveChangesAsync();
     }
-    
-    public async Task UpdateInfomation(TrackUpdateModel model, int id)
-    {
-        var currentTrack = await _context.Tracks.FindAsync(id) 
-            ?? throw new AppException(HttpStatusCode.NotFound, 
-                "Không tìm thấy bài hát", 
-                "Hãy thử lại");
-        currentTrack.Name = model.TrackName;
-        currentTrack.Description = model.Description;
-        currentTrack.ArtWork = model.ArtWork;
-        await _context.SaveChangesAsync();
-    }
 
     public async Task<IEnumerable<TrackResponseModel>> GetByName(string name)
     {
         var result = from track in _context.Tracks
-            join userTrackAction in _context.UserTrackActions
-                on track.Id equals userTrackAction.TrackId
+            join LikeTrack in _context.LikeTracks
+                on track.Id equals LikeTrack.TrackId
             join user in _context.Users
-                on userTrackAction.UserId equals user.Id
+                on LikeTrack.UserId equals user.Id
             where track.Name.Contains(name)
             select new TrackResponseModel()
             {
@@ -171,12 +143,11 @@ public class TrackService : ITrackService
                 Author = user.UserName!,
                 TrackName = track.Name,
                 ArtWork = track.ArtWork,
-                UploadAt = userTrackAction.ActionAt,
                 ListenCount = track.ListenCount,
                 LikeCount = track.LikeCount,
                 CommentCount = track.CommentCount,
             };
-        return await Task.FromResult(result);
+        return await result.ToListAsync();
     }
     // public async Task PlayTrack(int id)
     // {
@@ -189,22 +160,22 @@ public class TrackService : ITrackService
     // }
     public async Task LikeTrack(int userId, int trackId)
     {
-        // Kiểm tra xem người dùng đã like bài hát này chưa
-        bool isLiked = _context.UserTrackActions.Any(l => l.UserId == userId && l.TrackId == trackId);
-
-        if (!isLiked)
+        var like = await _context.LikeTracks
+            .FirstOrDefaultAsync(l => l.UserId == userId && l.TrackId == trackId);
+        if (like == null)
         {
-            // Nếu chưa like, thêm dữ liệu like vào database
-            var like = new UserTrackAction { UserId = userId, TrackId = trackId };
-            _context.UserTrackActions.Add(like);
+            await _context.LikeTracks.AddAsync(new LikeTrack()
+            {
+                UserId = userId,
+                TrackId = trackId,
+            });
+            await _context.SaveChangesAsync();
         }
         else
         {
-            // Nếu đã like, xóa dữ liệu like khỏi database
-            var like = _context.UserTrackActions.FirstOrDefault(l => l.UserId == userId && l.TrackId == trackId);
-            _context.UserTrackActions.Remove(like);
+            _context.LikeTracks.Remove(like);
+            await _context.SaveChangesAsync();
         }
-        await _context.SaveChangesAsync();
     }
     public async Task CommentTrack(int userId, int trackId, string content)
     {
@@ -225,5 +196,26 @@ public class TrackService : ITrackService
         var comment = await _context.Comments.FindAsync(id);
         comment.Content = content;
         await _context.SaveChangesAsync();
+    }
+
+    public async Task<TrackResponseModel> GetById(int id)
+    {
+        var result = from track in _context.Tracks
+            join LikeTrack in _context.LikeTracks
+                on track.Id equals LikeTrack.TrackId
+            join user in _context.Users
+                on LikeTrack.UserId equals user.Id
+            where track.Id == id
+            select new TrackResponseModel()
+            {
+                Id = track.Id,
+                Author = user.UserName!,
+                TrackName = track.Name,
+                ArtWork = track.ArtWork,
+                ListenCount = track.ListenCount,
+                LikeCount = track.LikeCount,
+                CommentCount = track.CommentCount,
+            };
+        return await result.FirstOrDefaultAsync();
     }
 }

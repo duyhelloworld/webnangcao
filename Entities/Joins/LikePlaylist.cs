@@ -2,17 +2,17 @@ using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
 namespace webnangcao.Entities.Joins;
-[Table("LikeTrack")]
+[Table("LikePlaylist")]
 [PrimaryKey("Id")]
-public class LikeTrack
-{
+public class LikePlaylist
+{    
     public int Id { get; set; }
     public long UserId { get; set; }
-    public int TrackId { get; set; }
+    public int PlaylistId { get; set; }
     [ForeignKey("UserId")]
     [DeleteBehavior(DeleteBehavior.NoAction)]
     public virtual User User { get; set; }
-    [ForeignKey("TrackId")]
+    [ForeignKey("PlaylistId")]
     [DeleteBehavior(DeleteBehavior.NoAction)]
-    public virtual Track Track { get; set; }
+    public virtual Playlist Playlist { get; set; }
 }

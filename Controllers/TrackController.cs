@@ -24,42 +24,49 @@ public class TrackController : ControllerBase
     {
         return Ok(await _service.GetAll());
     }
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetTrackById(int id)
+    {
+        return Ok(await _service.GetById(id));
+    }
     [HttpGet("user/{id}")]
-    [AppAuthorize(ERole.USER)]
+    // [AppAuthorize(ERole.USER)]
     public async Task<IActionResult> GetTrackByUserId(int id)
     {
         return Ok(await _service.GetByUserId(id));
     }
     [HttpGet("name/{name}")]
-    [AppAuthorize(ERole.USER)]
+    // [AppAuthorize(ERole.USER)]
     public async Task<IActionResult> GetTrackByName(string name)
     {
         return Ok(await _service.GetByName(name));
     }
     
-    [HttpPost("add")]
-    [AppAuthorize(ERole.USER)]
-    public async Task<IActionResult> Upload([FromForm] TrackInsertModel model)
-    {
-        var model = JsonSerializer.Deserialize<TrackInsertModel>(modelstring);
-        var userId = User.FindFirstValue("userid");
-        if (userId != null && long.TryParse(userId, out long id) && model != null)
-        {
-            await _service.UploadTrack(model, id);
-            return Ok();
-        }
-        return BadRequest();
-    }
+    // [HttpPost("add")]
+    // [AppAuthorize(ERole.USER)]
+    // public async Task<IActionResult> Upload([FromForm] TrackInsertModel model)
+    // {
+    //     var model = JsonSerializer.Deserialize<TrackInsertModel>(modelstring);
+    //     var userId = User.FindFirstValue("userid");
+    //     if (userId != null && long.TryParse(userId, out long id) && model != null)
+    //     {
+    //         await _service.UploadTrack(model, id);
+    //         return Ok();
+    //     }
+    //     return BadRequest();
+    // }
 
     [HttpPut("update/{id}")]
     [AppAuthorize(ERole.USER)]
-    public async Task<IActionResult> Update([FromForm] TrackUpdateModel model, int id)
+    public async Task<IActionResult> Update(TrackUpdateModel model, IFormFile? fileArtwork, int trackId)
     {
-        var track = await _service.GetById(trackId);
-        var stream = FileTool.ReadTrack(track?.FileName);
-        return new FileStreamResult(
-            fileStream: stream,
-            contentType: MediaTypeHeaderValue.Parse("audio/mpeg"));
+        var userId = User.FindFirstValue("userid");
+        if (userId != null && long.TryParse(userId, out long id) && model != null)
+        {
+            await _service.UpdateInfomation(model, fileArtwork, trackId);
+            return Ok();
+        }
+        return BadRequest();
     }
 
     [HttpGet("artwork/{filename}")]
@@ -73,22 +80,22 @@ public class TrackController : ControllerBase
 
 
 
-    [HttpPut("{id}")]
-    [AppAuthorize(ERole.USER)]
-    public async Task<IActionResult> UpdateTrack(
-        [FromForm] string modelstring,
-        [FromForm] IFormFile? fileArtwork,
-         int trackId)
-    {
-        var model = JsonSerializer.Deserialize<TrackUpdateModel>(modelstring);
-        var userId = User.FindFirstValue("userid");
-        if (userId != null && long.TryParse(userId, out long id) && model != null)
-        {
-            await _service.UpdateInfomation(model, fileArtwork, trackId);
-            return Ok();
-        }
-        return Forbid();
-    }
+    // [HttpPut("{id}")]
+    // [AppAuthorize(ERole.USER)]
+    // public async Task<IActionResult> UpdateTrack(
+    //     [FromForm] string modelstring,
+    //     [FromForm] IFormFile? fileArtwork,
+    //      int trackId)
+    // {
+    //     var model = JsonSerializer.Deserialize<TrackUpdateModel>(modelstring);
+    //     var userId = User.FindFirstValue("userid");
+    //     if (userId != null && long.TryParse(userId, out long id) && model != null)
+    //     {
+    //         await _service.UpdateInfomation(model, fileArtwork, trackId);
+    //         return Ok();
+    //     }
+    //     return Forbid();
+    // }
     [HttpDelete("delete/{id}")]
     [AppAuthorize(ERole.USER)]
     public async Task<IActionResult> Delete(int id)

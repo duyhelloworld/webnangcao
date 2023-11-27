@@ -28,24 +28,24 @@ VALUES
 
 INSERT INTO Tracks_Categories (TrackId, CategoryId)
 VALUES
-    (7, 7),
-    (8, 1),
-    (5, 6),
+    (1, 7),
+    (2, 1),
+    (3, 6),
     (3, 4),
     (4, 5),
     (5, 3),
     (6, 3);
 
 
-INSERT INTO UserTrackActions ([Id], [UserId], [TrackId], [ActionType], [ActionAt])
-VALUES ('384-43423-243', 1, 1, 'LIKE', '2023-10-10 09:10:10'),
-        ('210-543-1243', 1, 2, 'LIKE', '2023-10-10 09:12:42'),
-        ('549e8645-123', 1, 2, 'LIKE', '2023-10-10 09:12:45'),
-        ('32393gijf-324', 2, 1, 'LIKE', '2023-10-11 09:10:12'),
-        ('384-43423-244', 2, 3, 'LIKE', '2023-10-11 10:10:10'),
-        ('210-543-1244', 3, 2, 'LIKE', '2023-10-12 09:12:42'),
-        ('549e8645-124', 3, 2, 'LIKE', '2023-10-12 09:12:45'),
-        ('32393gijf-325', 4, 1, 'LIKE', '2023-10-13 09:10:12');
+INSERT INTO LikeTrack ( [UserId], [TrackId])
+VALUES (1, 1),
+        (1, 2),
+        (1, 2),
+        (2, 1),
+        (2, 3),
+        (3, 2),
+        (3, 2),
+        (4, 1);
 
 INSERT INTO Comments ([Content], [CommentAt], [IsEdited], [TrackId], [UserId]) 
 VALUES ('Hay quá', '2023-10-10 09:10:12', 'true', 2, 1),
@@ -67,7 +67,6 @@ VALUES (2, 1),
        (5, 3),
        (6, 3),
        (7, 3);
-
 INSERT INTO [Playlists] (Name, CreatedAt, IsPrivate, AuthorId, Description, ArtWork, Tags, LikeCount, RepostCount)
 VALUES 
         ('TopBXH', '2023-10-11 10:11:00', 'false', 1, 'Playlist thịnh hành', 'default-artwork.jpg', '#BXH, #Top', 0, 0),
@@ -77,18 +76,68 @@ VALUES
         ('NhacCuaQuang', '2023-10-11 10:11:00', 'true', 5, 'Playlist theo gu quang', 'default-artwork.jpg', NULL,1, 0),
         ('NhacCuaYouzo', '2023-10-11 10:11:00', 'true', 6, 'Playlist theo gu youzo', 'default-artwork.jpg', NULL, 0, 0),
         ('NhacCuaChien', '2023-10-11 10:11:00', 'true', 7, 'Playlist theo gu chien', 'default-artwork.jpg', NULL, 1, 2);
-
-INSERT INTO [Tracks_Playlists] (PlaylistId, TrackId)
+INSERT INTO LikePlaylist (UserId, PlaylistId)
 VALUES 
-        (1, 1),
-        (1, 2),
+        (1, 8),
+        (1, 9),
+        (1, 10),
+        (1, 4),
         (1, 5),
         (1, 6),
-        (2, 1),
-        (2, 2),
-        (2, 3),
-        (3, 2),
-        (3, 3),
+        (1, 7),
+        (2, 8),
+        (2, 9),
+        (2, 10),
+        (2, 4),
+        (2, 5),
+        (2, 6),
+        (2, 7),
+        (3, 8),
+        (3, 9),
+        (3, 10),
+        (3, 4),
+        (3, 5),
+        (3, 6),
+        (3, 7),
+        (4, 8),
+        (4, 9),
+        (4, 10),
+        (4, 4),
+        (4, 5),
+        (4, 6),
+        (4, 7),
+        (5, 8),
+        (5, 9),
+        (5, 10),
+        (5, 4),
+        (5, 5),
+        (5, 6),
+        (5, 7),
+        (6, 8),
+        (6, 9),
+        (6, 10),
+        (6, 4),
+        (6, 5),
+        (6, 6),
+        (6, 7),
+        (7, 8),
+        (7, 9),
+        (7, 10),
+        (7, 4),
+        (7, 5),
+        (7, 6),
+        (7, 7);
+INSERT INTO [Tracks_Playlists] (PlaylistId, TrackId)
+VALUES 
+        (8, 1),
+        (8, 2),
+        (8, 5),
+        (8, 6),
+        (9, 1),
+        (9, 2),
+        (9, 3),
+        (10, 2),
+        (10, 3),
         (4, 2),
         (4, 3),
         (4, 4),

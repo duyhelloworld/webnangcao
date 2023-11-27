@@ -9,8 +9,7 @@ public class User : IdentityUser<long>
     public override long Id { get; set; }
 
     [Required]
-    public override string? UserName  { get; set; } 
-    
+    public override string? UserName  { get; set; }     
     [Required]
     public override string? Email { get; set ; } 
 

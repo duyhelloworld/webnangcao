@@ -12,4 +12,6 @@ public class TrackResponseModel
     public int CommentCount { get; set; }
     public string? ArtWork { get; set; }
     public string? Description { get; set; }
+    public string? Category { get; set; }
+    public string? Comment { get; set; }
 }

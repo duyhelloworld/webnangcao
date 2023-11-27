@@ -142,27 +142,30 @@ public class PlaylistService : IPlaylistService
 
     public async Task Like(int playlistId, long userId)
     {
-        var playlist = await _context.Playlists.FindAsync(playlistId) 
-            ?? throw new AppException(HttpStatusCode.NotFound, 
-                "Không thấy playlist yêu cầu");
-        var like = await _context.UserPlaylistActions.FindAsync(playlistId, userId);
-        if (like == null)
-        {
-            await _context.UserPlaylistActions.AddAsync(new UserPlaylistAction
-            {
-                PlaylistId = playlistId,
-                UserId = userId,
-                ActionType = EUserPlaylistActionType.LIKE,
-                ActionAt = DateTime.UtcNow
-            });
-            playlist.LikeCount++;
-        }
-        else
-        {
-            _context.UserPlaylistActions.Remove(like);
-            playlist.LikeCount--;
-        }
-        await _context.SaveChangesAsync();
+        // var playlist = await _context.Playlists.FindAsync(playlistId) 
+        //     ?? throw new AppException(HttpStatusCode.NotFound, 
+        //         "Không tìm thấy playlist yêu cầu");
+        // var like = await _context.UserPlaylistActions
+        //     .FirstOrDefaultAsync(l => l.UserId == userId && l.PlaylistId == playlistId);
+        // if (like == null)
+        // {
+        //     playlist.LikeCount++;
+        //     await _context.UserPlaylistActions.AddAsync(new UserPlaylistAction
+        //     {
+        //         PlaylistId = playlistId,
+        //         UserId = userId,
+        //         ActionType = EUserPlaylistActionType.LIKE,
+        //         ActionAt = DateTime.UtcNow
+        //     });
+        //     await _context.SaveChangesAsync();
+        // }
+        // else
+        // {
+        //     playlist.LikeCount--;
+        //     _context.UserPlaylistActions.Remove(like);
+        //     await _context.SaveChangesAsync();
+        // }
+        
     }
 
     public async Task<int> AddNew(string playlistJson, IFormFile? artwork, long userId)
@@ -197,28 +200,28 @@ public class PlaylistService : IPlaylistService
 
     public async Task Repost(int playlistId, long userId)
     {
-        var playlist = await _context.Playlists.FindAsync(playlistId)
-             ?? throw new AppException(HttpStatusCode.NotFound, 
-            "Không thấy playlist yêu cầu");
-        playlist.RepostCount++;
-        var playlistCopy = new Playlist
-        {
-            Name = playlist.Name,
-            Description = playlist.Description,
-            CreatedAt = DateTime.Now,
-            AuthorId = userId,
-            IsPrivate = playlist.IsPrivate,
-            Tags = playlist.Tags,
-        };
-        await _context.Playlists.AddAsync(playlistCopy);
-        await _context.UserPlaylistActions.AddAsync(new UserPlaylistAction
-        {
-            PlaylistId = playlistCopy.Id,
-            UserId = userId,
-            ActionType = EUserPlaylistActionType.SAVETOLIBRARY,
-            ActionAt = DateTime.UtcNow
-        });
-        await _context.SaveChangesAsync();
+        // var playlist = await _context.Playlists.FindAsync(playlistId)
+        //      ?? throw new AppException(HttpStatusCode.NotFound, 
+        //     "Không thấy playlist yêu cầu");
+        // playlist.RepostCount++;
+        // var playlistCopy = new Playlist
+        // {
+        //     Name = playlist.Name,
+        //     Description = playlist.Description,
+        //     CreatedAt = DateTime.Now,
+        //     AuthorId = userId,
+        //     IsPrivate = playlist.IsPrivate,
+        //     Tags = playlist.Tags,
+        // };
+        // await _context.Playlists.AddAsync(playlistCopy);
+        // await _context.UserPlaylistActions.AddAsync(new UserPlaylistAction
+        // {
+        //     PlaylistId = playlistCopy.Id,
+        //     UserId = userId,
+        //     ActionType = EUserPlaylistActionType.SAVETOLIBRARY,
+        //     ActionAt = DateTime.UtcNow
+        // });
+        // await _context.SaveChangesAsync();
     }
 
     public async Task UpdateInfomation(PlaylistUpdateModel model, IFormFile? artwork, long userId)

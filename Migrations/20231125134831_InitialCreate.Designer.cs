@@ -12,7 +12,7 @@ using webnangcao.Context;
 namespace webnangcao.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20231113091940_InitialCreate")]
+    [Migration("20231125134831_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -163,8 +163,8 @@ namespace webnangcao.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("LastEditAt")
-                        .HasColumnType("datetime2");
+                    b.Property<bool>("IsEdited")
+                        .HasColumnType("bit");
 
                     b.Property<int>("TrackId")
                         .HasColumnType("int");
@@ -197,6 +197,52 @@ namespace webnangcao.Migrations
                     b.HasIndex("FollowingUserId");
 
                     b.ToTable("Follows");
+                });
+
+            modelBuilder.Entity("webnangcao.Entities.Joins.LikePlaylist", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("PlaylistId")
+                        .HasColumnType("int");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PlaylistId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("LikePlaylist");
+                });
+
+            modelBuilder.Entity("webnangcao.Entities.Joins.LikeTrack", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("TrackId")
+                        .HasColumnType("int");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TrackId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("LikeTrack");
                 });
 
             modelBuilder.Entity("webnangcao.Entities.Joins.TrackCategory", b =>
@@ -238,6 +284,7 @@ namespace webnangcao.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ArtWork")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<long>("AuthorId")
@@ -252,19 +299,28 @@ namespace webnangcao.Migrations
                     b.Property<bool>("IsPrivate")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime>("LastUpdatedAt")
-                        .HasColumnType("datetime2");
+                    b.Property<int>("LikeCount")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("RepostCount")
+                        .HasColumnType("int");
 
                     b.Property<string>("Tags")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("TrackCount")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AuthorId");
+
+                    b.HasIndex("Name", "AuthorId")
+                        .IsUnique();
 
                     b.ToTable("Playlists");
                 });
@@ -311,13 +367,8 @@ namespace webnangcao.Migrations
                     b.Property<string>("ArtWork")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ArtworkFile")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AudioFile")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<long>("AuthorId")
+                        .HasColumnType("bigint");
 
                     b.Property<int>("CommentCount")
                         .HasColumnType("int");
@@ -325,21 +376,29 @@ namespace webnangcao.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsPrivate")
+                        .HasColumnType("bit");
+
                     b.Property<int>("LikeCount")
                         .HasColumnType("int");
 
                     b.Property<int>("ListenCount")
                         .HasColumnType("int");
 
-                    b.Property<string>("Location")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("UploadAt")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("AuthorId");
 
                     b.ToTable("Tracks");
                 });
@@ -423,60 +482,6 @@ namespace webnangcao.Migrations
                     b.ToTable("Users", (string)null);
                 });
 
-            modelBuilder.Entity("webnangcao.Entities.UserPlaylistAction", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("ActionAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ActionType")
-                        .IsRequired()
-                        .HasColumnType("varchar(10)");
-
-                    b.Property<int>("PlaylistId")
-                        .HasColumnType("int");
-
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PlaylistId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserPlaylistActions");
-                });
-
-            modelBuilder.Entity("webnangcao.Entities.UserTrackAction", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("ActionAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ActionType")
-                        .IsRequired()
-                        .HasColumnType("varchar(10)");
-
-                    b.Property<int>("TrackId")
-                        .HasColumnType("int");
-
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TrackId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserTrackActions");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<long>", b =>
                 {
                     b.HasOne("webnangcao.Entities.Role", null)
@@ -533,13 +538,13 @@ namespace webnangcao.Migrations
                     b.HasOne("webnangcao.Entities.Track", "Track")
                         .WithMany()
                         .HasForeignKey("TrackId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("webnangcao.Entities.User", "User")
-                        .WithMany("Comments")
+                        .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Track");
@@ -566,10 +571,48 @@ namespace webnangcao.Migrations
                     b.Navigation("FollowingUser");
                 });
 
+            modelBuilder.Entity("webnangcao.Entities.Joins.LikePlaylist", b =>
+                {
+                    b.HasOne("webnangcao.Entities.Playlist", "Playlist")
+                        .WithMany()
+                        .HasForeignKey("PlaylistId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("webnangcao.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Playlist");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("webnangcao.Entities.Joins.LikeTrack", b =>
+                {
+                    b.HasOne("webnangcao.Entities.Track", "Track")
+                        .WithMany()
+                        .HasForeignKey("TrackId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("webnangcao.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Track");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("webnangcao.Entities.Joins.TrackCategory", b =>
                 {
                     b.HasOne("webnangcao.Entities.Category", "Category")
-                        .WithMany("TrackCategories")
+                        .WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -588,15 +631,15 @@ namespace webnangcao.Migrations
             modelBuilder.Entity("webnangcao.Entities.Joins.TrackPlaylist", b =>
                 {
                     b.HasOne("webnangcao.Entities.Playlist", "Playlist")
-                        .WithMany("TrackPlaylists")
+                        .WithMany()
                         .HasForeignKey("PlaylistId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("webnangcao.Entities.Track", "Track")
                         .WithMany()
                         .HasForeignKey("TrackId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Playlist");
@@ -607,7 +650,7 @@ namespace webnangcao.Migrations
             modelBuilder.Entity("webnangcao.Entities.Playlist", b =>
                 {
                     b.HasOne("webnangcao.Entities.User", "Author")
-                        .WithMany("Playlists")
+                        .WithMany()
                         .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -615,63 +658,15 @@ namespace webnangcao.Migrations
                     b.Navigation("Author");
                 });
 
-            modelBuilder.Entity("webnangcao.Entities.UserPlaylistAction", b =>
+            modelBuilder.Entity("webnangcao.Entities.Track", b =>
                 {
-                    b.HasOne("webnangcao.Entities.Playlist", "Playlist")
-                        .WithMany("UserPlaylistActions")
-                        .HasForeignKey("PlaylistId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("webnangcao.Entities.User", "User")
+                    b.HasOne("webnangcao.Entities.User", "Author")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Playlist");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("webnangcao.Entities.UserTrackAction", b =>
-                {
-                    b.HasOne("webnangcao.Entities.Track", "Track")
-                        .WithMany()
-                        .HasForeignKey("TrackId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("webnangcao.Entities.User", "User")
-                        .WithMany("UserTrackActions")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Track");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("webnangcao.Entities.Category", b =>
-                {
-                    b.Navigation("TrackCategories");
-                });
-
-            modelBuilder.Entity("webnangcao.Entities.Playlist", b =>
-                {
-                    b.Navigation("TrackPlaylists");
-
-                    b.Navigation("UserPlaylistActions");
-                });
-
-            modelBuilder.Entity("webnangcao.Entities.User", b =>
-                {
-                    b.Navigation("Comments");
-
-                    b.Navigation("Playlists");
-
-                    b.Navigation("UserTrackActions");
+                    b.Navigation("Author");
                 });
 #pragma warning restore 612, 618
         }

@@ -27,6 +27,7 @@ public class AuthService : IAuthService
 
     public async Task<ResponseModel> SignInAsync(SigninModel model)
     {
+        System.Console.WriteLine("Signin: " + model.UserName + " " + model.Password);
         var user = await _userManager.FindByNameAsync(model.UserName) 
             ?? throw new AppException(HttpStatusCode.NotFound, 
                 "Tài khoản không tồn tại", "Hãy đăng kí trước");

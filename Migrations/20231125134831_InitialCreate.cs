@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace webnangcao.Migrations
 {
     /// <inheritdoc />
-    public partial class TestApp : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -120,6 +120,7 @@ namespace webnangcao.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    TrackCount = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsPrivate = table.Column<bool>(type: "bit", nullable: false),
                     LikeCount = table.Column<int>(type: "int", nullable: false),
@@ -254,25 +255,24 @@ namespace webnangcao.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserPlaylistActions",
+                name: "LikePlaylist",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ActionType = table.Column<string>(type: "varchar(10)", nullable: false),
-                    ActionAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<long>(type: "bigint", nullable: false),
                     PlaylistId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserPlaylistActions", x => x.Id);
+                    table.PrimaryKey("PK_LikePlaylist", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_UserPlaylistActions_Playlists_PlaylistId",
+                        name: "FK_LikePlaylist_Playlists_PlaylistId",
                         column: x => x.PlaylistId,
                         principalTable: "Playlists",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_UserPlaylistActions_Users_UserId",
+                        name: "FK_LikePlaylist_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id");
@@ -300,6 +300,30 @@ namespace webnangcao.Migrations
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Comments_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "LikeTrack",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<long>(type: "bigint", nullable: false),
+                    TrackId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LikeTrack", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_LikeTrack_Tracks_TrackId",
+                        column: x => x.TrackId,
+                        principalTable: "Tracks",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_LikeTrack_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id");
@@ -351,31 +375,6 @@ namespace webnangcao.Migrations
                         principalColumn: "Id");
                 });
 
-            migrationBuilder.CreateTable(
-                name: "UserTrackActions",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ActionType = table.Column<string>(type: "varchar(10)", nullable: false),
-                    ActionAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UserId = table.Column<long>(type: "bigint", nullable: false),
-                    TrackId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UserTrackActions", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_UserTrackActions_Tracks_TrackId",
-                        column: x => x.TrackId,
-                        principalTable: "Tracks",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_UserTrackActions_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "Id");
-                });
-
             migrationBuilder.CreateIndex(
                 name: "IX_Comments_TrackId",
                 table: "Comments",
@@ -392,14 +391,34 @@ namespace webnangcao.Migrations
                 column: "FollowingUserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_LikePlaylist_PlaylistId",
+                table: "LikePlaylist",
+                column: "PlaylistId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LikePlaylist_UserId",
+                table: "LikePlaylist",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LikeTrack_TrackId",
+                table: "LikeTrack",
+                column: "TrackId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LikeTrack_UserId",
+                table: "LikeTrack",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Playlists_AuthorId",
                 table: "Playlists",
                 column: "AuthorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Playlists_Name",
+                name: "IX_Playlists_Name_AuthorId",
                 table: "Playlists",
-                column: "Name",
+                columns: new[] { "Name", "AuthorId" },
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -440,16 +459,6 @@ namespace webnangcao.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserPlaylistActions_PlaylistId",
-                table: "UserPlaylistActions",
-                column: "PlaylistId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UserPlaylistActions_UserId",
-                table: "UserPlaylistActions",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_UserRoles_RoleId",
                 table: "UserRoles",
                 column: "RoleId");
@@ -465,16 +474,6 @@ namespace webnangcao.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UserTrackActions_TrackId",
-                table: "UserTrackActions",
-                column: "TrackId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UserTrackActions_UserId",
-                table: "UserTrackActions",
-                column: "UserId");
         }
 
         /// <inheritdoc />
@@ -485,6 +484,12 @@ namespace webnangcao.Migrations
 
             migrationBuilder.DropTable(
                 name: "Follows");
+
+            migrationBuilder.DropTable(
+                name: "LikePlaylist");
+
+            migrationBuilder.DropTable(
+                name: "LikeTrack");
 
             migrationBuilder.DropTable(
                 name: "RoleClaims");
@@ -502,16 +507,10 @@ namespace webnangcao.Migrations
                 name: "UserLogins");
 
             migrationBuilder.DropTable(
-                name: "UserPlaylistActions");
-
-            migrationBuilder.DropTable(
                 name: "UserRoles");
 
             migrationBuilder.DropTable(
                 name: "UserTokens");
-
-            migrationBuilder.DropTable(
-                name: "UserTrackActions");
 
             migrationBuilder.DropTable(
                 name: "Categories");
@@ -520,10 +519,10 @@ namespace webnangcao.Migrations
                 name: "Playlists");
 
             migrationBuilder.DropTable(
-                name: "Roles");
+                name: "Tracks");
 
             migrationBuilder.DropTable(
-                name: "Tracks");
+                name: "Roles");
 
             migrationBuilder.DropTable(
                 name: "Users");
