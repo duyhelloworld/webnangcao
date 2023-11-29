@@ -57,7 +57,7 @@ public class TrackController : ControllerBase
     // }
 
     [HttpPut("update/{id}")]
-    [AppAuthorize(ERole.USER)]
+    // [AppAuthorize(ERole.USER)]
     public async Task<IActionResult> Update(TrackUpdateModel model, IFormFile? fileArtwork, int trackId)
     {
         var userId = User.FindFirstValue("userid");
@@ -97,14 +97,14 @@ public class TrackController : ControllerBase
     //     return Forbid();
     // }
     [HttpDelete("delete/{id}")]
-    [AppAuthorize(ERole.USER)]
+    // [AppAuthorize(ERole.USER)]
     public async Task<IActionResult> Delete(int id)
     {
         await _service.Remove(id);
         return Ok();
     }
     [HttpPost("like/{id}")]
-    [AppAuthorize(ERole.USER)]
+    // [AppAuthorize(ERole.USER)]
     public async Task<IActionResult> Like(int id)
     {
         var userId = User.FindFirstValue("userid");
@@ -116,7 +116,7 @@ public class TrackController : ControllerBase
         return BadRequest();
     }
     [HttpPost("comment/{id}")]
-    [AppAuthorize(ERole.USER)]
+    // [AppAuthorize(ERole.USER)]
     public async Task<IActionResult> Comment(int id, [FromBody] CommentInsertModel model)
     {
         var userId = User.FindFirstValue("userid");
@@ -128,13 +128,13 @@ public class TrackController : ControllerBase
         return BadRequest();
     }
     [HttpGet("comment/{id}")]
-    [AppAuthorize(ERole.USER)]
+    // [AppAuthorize(ERole.USER)]
     public async Task<IActionResult> GetComment(int id)
     {
         return Ok(await _service.GetComment(id));
     }
     [HttpPut("comment/{id}")]
-    [AppAuthorize(ERole.USER)]
+    // [AppAuthorize(ERole.USER)]
     public async Task<IActionResult> EditComment(int id, [FromBody] CommentUpdateModel model)
     {
         await _service.EditComment(id, model.Content);

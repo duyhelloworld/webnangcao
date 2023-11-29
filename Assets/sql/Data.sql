@@ -1,30 +1,50 @@
 -- Active: 1698044165228@@127.0.0.1@1433@webnangcao
-INSERT INTO [Categories] (Name, Description)
+INSERT INTO Categories (Name, Description)
 VALUES
-    (N'Pop', NULL),
-    (N'Remix', N'Những bản mix hay nhất'),
-    (N'Rap', N'Những track Rap huyền thoại'),
-    (N'R&B', N'Các ca khúc Rock & Ballad đặc sắc'),
-    (N'EDM', N'Những bản EDM hiện đại'),
-    (N'Balad', N'Những bản Balad tình nhất'), 
-    (N'Indie', N'Nơi các Indier toả sáng');
-INSERT INTO [Users] ([UserName], [NormalizedUserName], [Email], [NormalizedEmail], [EmailConfirmed], [SecurityStamp], [ConcurrencyStamp], [PhoneNumberConfirmed], [TwoFactorEnabled], [LockoutEnabled], [AccessFailedCount])
-VALUES ('webnangcao','webnangcao', 'webnangcao@gmail.com', 'webnangcao@gmail.com', 'True', 'security_stamp', 'concurrency_stamp', 'False', 'False', 'False', 0),
-       ('superwebnangcao', 'superwebnangcao', 'superwebnangcao@gmail.com', 'superwebnangcao@gmail.com', 'True', 'security_stamp', 'concurrency_stamp', 'False', 'False', 'False', 0),
-       ('hiep', 'hiep', 'hiep8am@gmail.com', 'hiep8am@gmail.com', 'True', 'security_stamp', 'concurrency_stamp', 'False', 'False', 'False', 0),
-       ('duy', 'duy', 'codedaovoiduy@gmail.com', 'codedaovoiduy@gmail.com', 'True', 'security_stamp', 'concurrency_stamp', 'False', 'False', 'False', 0),
-       ('quang', 'quang', 'mail1@gmail.com', 'mail1@gmail.com', 'True', 'security_stamp', 'concurrency_stamp', 'False', 'False', 'False', 0),
-       ('youzo', 'quan', 'mail2@gmail.com', 'mail2@gmail.com', 'True', 'security_stamp', 'concurrency_stamp', 'False', 'False', 'False', 0),
-       ('chien', 'chien','mail3@gmail.com', 'mail3@gmail.com', 'True', 'security_stamp', 'concurrency_stamp', 'False', 'False', 'False', 0);
+('Rock', 'Nhạc rock là một thể loại nhạc có nguồn gốc từ Hoa Kỳ vào cuối những năm 1940 và đầu những năm 1950. Nhạc rock thường được kết hợp với các nhạc cụ điện tử như guitar điện, bass điện và trống điện.'),
+('Pop', 'Nhạc pop là một thể loại nhạc phổ biến với giai điệu dễ nghe và lời bài hát dễ nhớ. Nhạc pop thường được kết hợp với các nhạc cụ như guitar, trống, piano và keyboard.'),
+('Hip hop', 'Nhạc hip hop là một thể loại nhạc có nguồn gốc từ Hoa Kỳ vào cuối những năm 1970. Nhạc hip hop thường được kết hợp với các nhạc cụ như trống, DJ và rap.'),
+('R&B', 'Nhạc R&B là một thể loại nhạc kết hợp giữa nhạc pop và nhạc blues. Nhạc R&B thường được kết hợp với các nhạc cụ như guitar, piano, trống và giọng hát.'),
+('Country', 'Nhạc đồng quê là một thể loại nhạc có nguồn gốc từ Hoa Kỳ vào cuối những năm 1800. Nhạc đồng quê thường được kết hợp với các nhạc cụ như guitar, banjo, mandolin và fiddle.'),
+('Classical', 'Nhạc cổ điển là một thể loại nhạc có nguồn gốc từ châu Âu vào thế kỷ 17. Nhạc cổ điển thường được kết hợp với các nhạc cụ như violin, cello, piano và dàn nhạc giao hưởng.'),
+('Jazz', 'Nhạc jazz là một thể loại nhạc có nguồn gốc từ Hoa Kỳ vào đầu những năm 1900. Nhạc jazz thường được kết hợp với các nhạc cụ như kèn saxophone, kèn trumpet, piano và trống.'),
+('Latin', 'Nhạc Latin là một thể loại nhạc có nguồn gốc từ châu Mỹ Latin. Nhạc Latin thường được kết hợp với các nhạc cụ như guitar, bongos, timbales và maracas.'),
+('Electronic', 'Nhạc điện tử là một thể loại nhạc sử dụng các nhạc cụ điện tử. Nhạc điện tử thường được kết hợp với các nhạc cụ như synthesizer, drum machine và sequencer.'),
+('Metal', 'Nhạc metal là một thể loại nhạc có nguồn gốc từ Hoa Kỳ vào cuối những năm 1960. Nhạc metal thường được kết hợp với các nhạc cụ như guitar điện, bass điện, trống và giọng hát mạnh mẽ.'),
+('Folk', 'Nhạc folk là một thể loại nhạc truyền thống thường được hát với guitar hoặc các nhạc cụ dân gian khác. Nhạc folk thường được kết hợp với các bài hát về tình yêu, thiên nhiên và cuộc sống.'),
+('Opera', 'Opera là một thể loại nhạc kịch có nguồn gốc từ Ý vào thế kỷ 16. Opera thường được kết hợp với các ca sĩ, vũ công và dàn nhạc.'),
+('Musical', 'Musical là một thể loại nhạc kịch có nguồn gốc từ Hoa Kỳ vào thế kỷ 19. Musical thường được kết hợp với các ca sĩ, vũ công, dàn nhạc và kịch bản.'),
+('Soundtrack', 'Soundtrack là một album nhạc được sáng tác cho một bộ phim hoặc chương trình truyền hình. Soundtrack thường được kết hợp với các bài hát gốc và các bài hát cover.'),
+('World music', 'World music là một thể loại nhạc bao gồm các thể loại nhạc từ khắp nơi trên thế giới. World music thường được kết hợp với các nhạc cụ và phong cách hát từ các nền văn hóa khác nhau.');
 
-INSERT INTO Tracks (Name, FileName, Description, Artwork, AuthorId, UploadAt, IsPrivate, ListenCount, LikeCount, CommentCount)
+INSERT INTO users (UserName, Email, firstname, lastname, avatar, NormalizedUserName, NormalizedEmail, EmailConfirmed, SecurityStamp, ConcurrencyStamp, PhoneNumber, PhoneNumberConfirmed, TwoFactorEnabled, LockoutEnabled, AccessFailedCount)
+VALUES 
+        ('hiepnopro', 'hiep8ams@gmail.com', 'Hiep', 'Nguyen', 'default-avatar.jpg', 'hiepnopro', 'hiep8ams@gmail.com', 1, 'security_stamp', 'concurrency_stamp', '0123456789', 0, 0, 0, 0),
+        ('user1', 'user1@example.com', 'User1', 'Lastname1', 'avatar1.jpg', 'user1', 'user1@example.com', 1, 'security_stamp1', 'concurrency_stamp1', '0123456789', 0, 0, 0, 0),
+        ('user2', 'user2@example.com', 'User2', 'Lastname2', 'avatar2.jpg', 'user2', 'user2@example.com', 1, 'security_stamp2', 'concurrency_stamp2', '0123456780', 0, 0, 0, 0),
+        ('user3', 'user3@example.com', 'User3', 'Lastname3', 'avatar3.jpg', 'user3', 'user3@example.com', 1, 'security_stamp3', 'concurrency_stamp3', '0123456781', 0, 0, 0, 0),
+        ('user4', 'user4@example.com', 'User4', 'Lastname4', 'avatar4.jpg', 'user4', 'user4@example.com', 1, 'security_stamp4', 'concurrency_stamp4', '0123456782', 0, 0, 0, 0),
+        ('user5', 'user5@example.com', 'User5', 'Lastname5', 'avatar5.jpg', 'user5', 'user5@example.com', 1, 'security_stamp5', 'concurrency_stamp5', '0123456783', 0, 0, 0, 0),
+        ('user6', 'user6@example.com', 'User6', 'Lastname6', 'avatar6.jpg', 'user6', 'user6@example.com', 1, 'security_stamp6', 'concurrency_stamp6', '0123456784', 0, 0, 0, 0),
+        ('user7', 'user7@example.com', 'User7', 'Lastname7', 'avatar7.jpg', 'user7', 'user7@example.com', 1, 'security_stamp7', 'concurrency_stamp7', '0123456785', 0, 0, 0, 0),
+        ('user8', 'user8@example.com', 'User8', 'Lastname8', 'avatar8.jpg', 'user8', 'user8@example.com', 1, 'security_stamp8', 'concurrency_stamp8', '0123456786', 0, 0, 0, 0),
+        ('user9', 'user9@example.com', 'User9', 'Lastname9', 'avatar9.jpg', 'user9', 'user9@example.com', 1, 'security_stamp9', 'concurrency_stamp9', '0123456787', 0, 0, 0, 0),
+        ('user10', 'user10@example.com', 'User10', 'Lastname10', 'avatar10.jpg', 'user10', 'user10@example.com', 1, 'security_stamp10', 'concurrency_stamp10', '0123456788', 0, 0, 0, 0);
+
+INSERT INTO Tracks (Name, FileName, Artwork, UploadAt, IsPrivate, ListenCount, LikeCount, CommentCount, Description, AuthorId)
 VALUES
-    (N'7 Years', N'7 Years.mp3', 'Lukas Graham', N'7-Years.jpg', 4, '2023-10-10 09:10:10', 'true', 0, 0, 2),
-    (N'Buồn thì cứ khóc đi', N'Buon Thi Cu Khoc Di.mp3', 'Lynk Lee', N'Buon-Thi-Cu-Khoc-Di.jpg', 4, '2023-10-10 09:11:01', 'false', 0, 1, 2),
-    (N'Đã lỡ yêu em nhiều', N'Da Lo Yeu Em Nhieu.mp3', 'JustaTee', N'Da-Lo-Yeu-Em-Nhieu.jpg', 4, '2023-10-10 09:12:12', 'true', 0, 0, 0),
-    (N'Nandemonaiya ', N'Nandemonaiya.mp3', '1012', N'default-artwork.jpg', 4, '2023-10-10 09:13:32', 'false', 0, 0, 0),
-    (N'Rap chậm thôi', N'Rap Cham Thoi.mp3', 'MCK', N'Rap-Cham-Thoi.jpg', 7, '2023-06-21 10:14:12', 'false', 0, 0, 0),
-    (N'Thủ Đô Cypher', N'Thu Do Cypher.mp3', 'MCK, LowG', N'Thu-Do-Cypher.jpg', 4, '2023-10-10 09:40:12', 'false', 0, 0, 0);
+('Bài hát 1', '1.mp3', 'default-artwork.jpg', '2023-10-10 09:10:12', 'false', 0, 0, 0, 'Bài hát 1', 1),
+('Bài hát 2', '2.mp3', 'default-artwork.jpg', '2023-10-10 09:10:12', 'false', 0, 0, 0, 'Bài hát 2', 2),
+('Bài hát 3', '3.mp3', 'default-artwork.jpg', '2023-10-10 09:10:12', 'false', 0, 0, 0, 'Bài hát 3', 3),
+('Bài hát 4', '4.mp3', 'default-artwork.jpg', '2023-10-10 09:10:12', 'false', 0, 0, 0, 'Bài hát 4', 4),
+('Bài hát 5', '5.mp3', 'default-artwork.jpg', '2023-10-10 09:10:12', 'false', 0, 0, 0, 'Bài hát 5', 5),
+('Bài hát 6', '6.mp3', 'default-artwork.jpg', '2023-10-10 09:10:12', 'false', 0, 0, 0, 'Bài hát 6', 6),
+('Bài hát 7', '7.mp3', 'default-artwork.jpg', '2023-10-10 09:10:12', 'false', 0, 0, 0, 'Bài hát 7', 7),
+('Bài hát 8', '8.mp3', 'default-artwork.jpg', '2023-10-10 09:10:12', 'false', 0, 0, 0, 'Bài hát 8', 8),
+('Bài hát 9', '9.mp3', 'default-artwork.jpg', '2023-10-10 09:10:12', 'false', 0, 0, 0, 'Bài hát 9', 9),
+('Bài hát 10', '10.mp3', 'default-artwork.jpg', '2023-10-10 09:10:12', 'false', 0, 0, 0, 'Bài hát 10', 10);
+
+
 
 INSERT INTO Tracks_Categories (TrackId, CategoryId)
 VALUES
@@ -40,10 +60,8 @@ VALUES
 INSERT INTO LikeTrack ( [UserId], [TrackId])
 VALUES (1, 1),
         (1, 2),
-        (1, 2),
         (2, 1),
         (2, 3),
-        (3, 2),
         (3, 2),
         (4, 1);
 
