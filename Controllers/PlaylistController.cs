@@ -5,6 +5,10 @@ using webnangcao.Services;
 using webnangcao.Tools;
 using webnangcao.Models.Updates;
 using Microsoft.Net.Http.Headers;
+using System.Text.Json;
+using webnangcao.Exceptions;
+using System.Net;
+using webnangcao.Models.Inserts;
 namespace webnangcao.Controllers;
 
 [Route("[controller]")]
@@ -18,9 +22,9 @@ public class PlaylistController : ControllerBase
     }
     
     [HttpGet]
-    public async Task<IActionResult> GetRandomPlaylist()
+    public async Task<IActionResult> GetPublic([FromQuery] int page)
     {
-        return Ok(await _service.GetRandom());
+        return Ok(await _service.GetAllPublic(page));
     }
 
     [HttpGet("{playlistId}")]
@@ -38,7 +42,7 @@ public class PlaylistController : ControllerBase
     [AppAuthorize(ERole.ADMIN)]
     public async Task<IActionResult> GetAll()
     {
-        return Ok(await _service.GetAll());
+        return Ok(await _service.GetAllPublicAndPrivate());
     }
 
     [HttpGet("user/all")]
@@ -48,7 +52,7 @@ public class PlaylistController : ControllerBase
         var userId = User.FindFirstValue("userid");
         if (userId != null && long.TryParse(userId, out long uid))
         {
-            return Ok(await _service.GetAllByUser(uid));
+            return Ok(await _service.GetAllPlaylistCreatedByUser(uid));
         }
         return Forbid();
     }
@@ -60,7 +64,7 @@ public class PlaylistController : ControllerBase
         var userId = User.FindFirstValue("userid");
         if (userId != null && long.TryParse(userId, out long uid))
         {
-            var result = await _service.GetOfUserById(playlistId, uid);
+            var result = await _service.GetByIdInUserCreatedPlaylist(playlistId, uid);
             if (result == null) 
                 return NotFound();
             return Ok(result);
@@ -82,10 +86,12 @@ public class PlaylistController : ControllerBase
         [FromForm] string playlistJson,
         [FromForm] IFormFile? fileArtwork)
     {
+        var model = JsonSerializer.Deserialize<PlaylistInsertModel>(playlistJson)
+            ?? throw new AppException(HttpStatusCode.BadRequest, "Dữ liệu không hợp lệ");
         var userId = User.FindFirstValue("userid");
         if (userId != null && long.TryParse(userId, out long uid))
         {
-            return Ok(await _service.AddNew(playlistJson, fileArtwork, uid));
+            return Ok(await _service.AddNew(model, fileArtwork, uid));
         }
         return Forbid();
     }
@@ -114,8 +120,10 @@ public class PlaylistController : ControllerBase
 
     [HttpPut("{playlistId}/information")]
     [AppAuthorize(ERole.USER)]
-    public async Task UpdateInfomation([FromBody] PlaylistUpdateModel model, IFormFile? fileArtwork, int playlistId)
+    public async Task UpdateInfomation([FromForm] string jsonModel, IFormFile? fileArtwork, int playlistId)
     {
+        var model = JsonSerializer.Deserialize<PlaylistUpdateModel>(jsonModel)
+            ?? throw new AppException(HttpStatusCode.BadRequest, "Dữ liệu không hợp lệ");
         var userId = User.FindFirstValue("userid");
         if (userId != null && long.TryParse(userId, out long uid))
         {

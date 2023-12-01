@@ -22,15 +22,15 @@ public class Playlist
     public int LikeCount { get; set; }
     public int RepostCount { get; set; }
 
+    [Max(EMaxValue.DirectoryLength)]
+    public string ArtWork { get; set; } = null!;
+
     public long AuthorId { get; set; }
     [ForeignKey("AuthorId")]
     public User Author { get; set; } = null!;
 
     [MaxLength]
     public string? Description { get; set; }
-
-    [Max(EMaxValue.DirectoryLength)]
-    public string ArtWork { get; set; } = "default-artwork.jpg";
 
     [MaxLength]
     public string? Tags { get; set; }
