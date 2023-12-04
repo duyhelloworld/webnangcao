@@ -163,6 +163,9 @@ namespace webnangcao.Migrations
                     b.Property<bool>("IsEdited")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsReported")
+                        .HasColumnType("bit");
+
                     b.Property<int>("TrackId")
                         .HasColumnType("int");
 
@@ -308,9 +311,6 @@ namespace webnangcao.Migrations
 
                     b.Property<string>("Tags")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("TrackCount")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
