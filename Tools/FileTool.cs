@@ -17,11 +17,11 @@ public class FileTool
         return $"http://localhost:5271/track/artwork/{fileName}";
     }
     
-    private static readonly string ArtWorkFolderPath
-        = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
-
     private static readonly string TrackFolderPath
         = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "musics");
+
+    private static readonly string ArtWorkFolderPath
+        = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
 
     public static Stream ReadArtWork(string? fileName)
     {

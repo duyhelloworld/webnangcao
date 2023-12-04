@@ -12,7 +12,7 @@ using webnangcao.Context;
 namespace webnangcao.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20231125134831_InitialCreate")]
+    [Migration("20231201050225_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -166,6 +166,9 @@ namespace webnangcao.Migrations
                     b.Property<bool>("IsEdited")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsReported")
+                        .HasColumnType("bit");
+
                     b.Property<int>("TrackId")
                         .HasColumnType("int");
 
@@ -311,9 +314,6 @@ namespace webnangcao.Migrations
 
                     b.Property<string>("Tags")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("TrackCount")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

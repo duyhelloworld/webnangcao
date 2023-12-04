@@ -120,7 +120,6 @@ namespace webnangcao.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    TrackCount = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsPrivate = table.Column<bool>(type: "bit", nullable: false),
                     LikeCount = table.Column<int>(type: "int", nullable: false),
@@ -287,6 +286,7 @@ namespace webnangcao.Migrations
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CommentAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsEdited = table.Column<bool>(type: "bit", nullable: false),
+                    IsReported = table.Column<bool>(type: "bit", nullable: false),
                     TrackId = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<long>(type: "bigint", nullable: false)
                 },
