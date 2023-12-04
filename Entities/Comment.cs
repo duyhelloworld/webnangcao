@@ -15,7 +15,7 @@ public class Comment
     public DateTime CommentAt { get; set; }
     
     public bool IsEdited { get; set; }
-
+    public bool IsReported { get; set; }
     public int TrackId { get; set; }
     [DeleteBehavior(DeleteBehavior.NoAction)]
     public Track Track { get; set; } = null!;
