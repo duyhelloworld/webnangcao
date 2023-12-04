@@ -5,7 +5,6 @@ using webnangcao.Services;
 
 namespace webnangcao.Controllers;
 
-[AllowAnonymous]
 [ApiController]
 [Route("[controller]")]
 public class AuthController : ControllerBase
