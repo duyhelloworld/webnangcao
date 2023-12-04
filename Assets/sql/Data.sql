@@ -17,20 +17,14 @@ VALUES
 ('Soundtrack', 'Soundtrack là một album nhạc được sáng tác cho một bộ phim hoặc chương trình truyền hình. Soundtrack thường được kết hợp với các bài hát gốc và các bài hát cover.'),
 ('World music', 'World music là một thể loại nhạc bao gồm các thể loại nhạc từ khắp nơi trên thế giới. World music thường được kết hợp với các nhạc cụ và phong cách hát từ các nền văn hóa khác nhau.');
 
-INSERT INTO users (UserName, Email, firstname, lastname, avatar, NormalizedUserName, NormalizedEmail, EmailConfirmed, SecurityStamp, ConcurrencyStamp, PhoneNumber, PhoneNumberConfirmed, TwoFactorEnabled, LockoutEnabled, AccessFailedCount)
-VALUES 
-        ('hiepnopro', 'hiep8ams@gmail.com', 'Hiep', 'Nguyen', 'default-avatar.jpg', 'hiepnopro', 'hiep8ams@gmail.com', 1, 'security_stamp', 'concurrency_stamp', '0123456789', 0, 0, 0, 0),
-        ('user1', 'user1@example.com', 'User1', 'Lastname1', 'avatar1.jpg', 'user1', 'user1@example.com', 1, 'security_stamp1', 'concurrency_stamp1', '0123456789', 0, 0, 0, 0),
-        ('user2', 'user2@example.com', 'User2', 'Lastname2', 'avatar2.jpg', 'user2', 'user2@example.com', 1, 'security_stamp2', 'concurrency_stamp2', '0123456780', 0, 0, 0, 0),
-        ('user3', 'user3@example.com', 'User3', 'Lastname3', 'avatar3.jpg', 'user3', 'user3@example.com', 1, 'security_stamp3', 'concurrency_stamp3', '0123456781', 0, 0, 0, 0),
-        ('user4', 'user4@example.com', 'User4', 'Lastname4', 'avatar4.jpg', 'user4', 'user4@example.com', 1, 'security_stamp4', 'concurrency_stamp4', '0123456782', 0, 0, 0, 0),
-        ('user5', 'user5@example.com', 'User5', 'Lastname5', 'avatar5.jpg', 'user5', 'user5@example.com', 1, 'security_stamp5', 'concurrency_stamp5', '0123456783', 0, 0, 0, 0),
-        ('user6', 'user6@example.com', 'User6', 'Lastname6', 'avatar6.jpg', 'user6', 'user6@example.com', 1, 'security_stamp6', 'concurrency_stamp6', '0123456784', 0, 0, 0, 0),
-        ('user7', 'user7@example.com', 'User7', 'Lastname7', 'avatar7.jpg', 'user7', 'user7@example.com', 1, 'security_stamp7', 'concurrency_stamp7', '0123456785', 0, 0, 0, 0),
-        ('user8', 'user8@example.com', 'User8', 'Lastname8', 'avatar8.jpg', 'user8', 'user8@example.com', 1, 'security_stamp8', 'concurrency_stamp8', '0123456786', 0, 0, 0, 0),
-        ('user9', 'user9@example.com', 'User9', 'Lastname9', 'avatar9.jpg', 'user9', 'user9@example.com', 1, 'security_stamp9', 'concurrency_stamp9', '0123456787', 0, 0, 0, 0),
-        ('user10', 'user10@example.com', 'User10', 'Lastname10', 'avatar10.jpg', 'user10', 'user10@example.com', 1, 'security_stamp10', 'concurrency_stamp10', '0123456788', 0, 0, 0, 0);
-
+INSERT INTO [Users] ([UserName], [NormalizedUserName], [Email], [NormalizedEmail], [EmailConfirmed], [SecurityStamp], [ConcurrencyStamp], [PhoneNumberConfirmed], [TwoFactorEnabled], [LockoutEnabled], [AccessFailedCount])
+VALUES ('webnangcao','webnangcao', 'webnangcao@gmail.com', 'webnangcao@gmail.com', 'True', 'security_stamp', 'concurrency_stamp', 'False', 'False', 'False', 0),
+       ('superwebnangcao', 'superwebnangcao', 'superwebnangcao@gmail.com', 'superwebnangcao@gmail.com', 'True', 'security_stamp', 'concurrency_stamp', 'False', 'False', 'False', 0),
+       ('hiep', 'hiep', 'hiep8am@gmail.com', 'hiep8am@gmail.com', 'True', 'security_stamp', 'concurrency_stamp', 'False', 'False', 'False', 0),
+       ('duy', 'duy', 'codedaovoiduy@gmail.com', 'codedaovoiduy@gmail.com', 'True', 'security_stamp', 'concurrency_stamp', 'False', 'False', 'False', 0),
+       ('quang', 'quang', 'mail1@gmail.com', 'mail1@gmail.com', 'True', 'security_stamp', 'concurrency_stamp', 'False', 'False', 'False', 0),
+       ('youzo', 'quan', 'mail2@gmail.com', 'mail2@gmail.com', 'True', 'security_stamp', 'concurrency_stamp', 'False', 'False', 'False', 0),
+       ('chien', 'chien','mail3@gmail.com', 'mail3@gmail.com', 'True', 'security_stamp', 'concurrency_stamp', 'False', 'False', 'False', 0);
 INSERT INTO Tracks (Name, FileName, Artwork, UploadAt, IsPrivate, ListenCount, LikeCount, CommentCount, Description, AuthorId)
 VALUES
 ('Bài hát 1', '1.mp3', 'default-artwork.jpg', '2023-10-10 09:10:12', 'false', 0, 0, 0, 'Bài hát 1', 1),
@@ -40,9 +34,9 @@ VALUES
 ('Bài hát 5', '5.mp3', 'default-artwork.jpg', '2023-10-10 09:10:12', 'false', 0, 0, 0, 'Bài hát 5', 5),
 ('Bài hát 6', '6.mp3', 'default-artwork.jpg', '2023-10-10 09:10:12', 'false', 0, 0, 0, 'Bài hát 6', 6),
 ('Bài hát 7', '7.mp3', 'default-artwork.jpg', '2023-10-10 09:10:12', 'false', 0, 0, 0, 'Bài hát 7', 7),
-('Bài hát 8', '8.mp3', 'default-artwork.jpg', '2023-10-10 09:10:12', 'false', 0, 0, 0, 'Bài hát 8', 8),
-('Bài hát 9', '9.mp3', 'default-artwork.jpg', '2023-10-10 09:10:12', 'false', 0, 0, 0, 'Bài hát 9', 9),
-('Bài hát 10', '10.mp3', 'default-artwork.jpg', '2023-10-10 09:10:12', 'false', 0, 0, 0, 'Bài hát 10', 10);
+('Bài hát 8', '8.mp3', 'default-artwork.jpg', '2023-10-10 09:10:12', 'false', 0, 0, 0, 'Bài hát 8', 1),
+('Bài hát 9', '9.mp3', 'default-artwork.jpg', '2023-10-10 09:10:12', 'false', 0, 0, 0, 'Bài hát 9', 2),
+('Bài hát 10', '10.mp3', 'default-artwork.jpg', '2023-10-10 09:10:12', 'false', 0, 0, 0, 'Bài hát 10', 3);
 
 
 
@@ -65,12 +59,12 @@ VALUES (1, 1),
         (3, 2),
         (4, 1);
 
-INSERT INTO Comments ([Content], [CommentAt], [IsEdited], [TrackId], [UserId]) 
-VALUES ('Hay quá', '2023-10-10 09:10:12', 'true', 2, 1),
-('Tuyệt vời ạ', '2023-10-10 09:11:42', 'false', 2, 1), 
-('This song is make my childhoods back. Thank you sir!', '2023-10-10 10:24:20', 'false', 2, 2), 
-('Bài này hay quá, yeah yeah', '2023-10-10 10:11:20', 'false', 1, 1), 
-('Nhạc này còn hơi kén người nghe quá bro', '2023-10-10 19:50:12', 'true', 2 , 3);
+INSERT INTO Comments ([Content], [CommentAt], [IsEdited], [TrackId], [UserId], [IsReported]) 
+VALUES ('Hay quá', '2023-10-10 09:10:12', 'true', 2, 1, 0),
+('Tuyệt vời ạ', '2023-10-10 09:11:42', 'false', 2, 1, 0),
+('This song is make my childhoods back. Thank you sir!', '2023-10-10 10:24:20', 'false', 2, 2, 0),
+('Bài này hay quá, yeah yeah', '2023-10-10 10:11:20', 'false', 1, 1, 0),
+('Nhạc này còn hơi kén người nghe quá bro', '2023-10-10 19:50:12', 'true', 2 , 3, 0);
 
 INSERT INTO [Roles] ([Name], [NormalizedName])
 VALUES ('Admin', 'admin'),
@@ -96,66 +90,66 @@ VALUES
         ('NhacCuaChien', '2023-10-11 10:11:00', 'true', 7, 'Playlist theo gu chien', 'default-artwork.jpg', NULL, 1, 2);
 INSERT INTO LikePlaylist (UserId, PlaylistId)
 VALUES 
-        (1, 8),
-        (1, 9),
-        (1, 10),
+        (1, 1),
+        (1, 2),
+        (1, 3),
         (1, 4),
         (1, 5),
         (1, 6),
         (1, 7),
-        (2, 8),
-        (2, 9),
-        (2, 10),
+        (2, 1),
+        (2, 2),
+        (2, 3),
         (2, 4),
         (2, 5),
         (2, 6),
         (2, 7),
-        (3, 8),
-        (3, 9),
-        (3, 10),
+        (3, 1),
+        (3, 2),
+        (3, 3),
         (3, 4),
         (3, 5),
         (3, 6),
         (3, 7),
-        (4, 8),
-        (4, 9),
-        (4, 10),
+        (4, 1),
+        (4, 2),
+        (4, 3),
         (4, 4),
         (4, 5),
         (4, 6),
         (4, 7),
-        (5, 8),
-        (5, 9),
-        (5, 10),
+        (5, 1),
+        (5, 2),
+        (5, 3),
         (5, 4),
         (5, 5),
         (5, 6),
         (5, 7),
-        (6, 8),
-        (6, 9),
-        (6, 10),
+        (6, 1),
+        (6, 2),
+        (6, 3),
         (6, 4),
         (6, 5),
         (6, 6),
         (6, 7),
-        (7, 8),
-        (7, 9),
-        (7, 10),
+        (7, 1),
+        (7, 2),
+        (7, 3),
         (7, 4),
         (7, 5),
         (7, 6),
         (7, 7);
 INSERT INTO [Tracks_Playlists] (PlaylistId, TrackId)
 VALUES 
-        (8, 1),
-        (8, 2),
-        (8, 5),
-        (8, 6),
-        (9, 1),
-        (9, 2),
-        (9, 3),
-        (10, 2),
-        (10, 3),
+        (1, 1),
+        (1, 2),
+        (1, 5),
+        (1, 6),
+        (2, 1),
+        (2, 2),
+        (2, 3),
+        (3, 2),
+        (3, 3),
         (4, 2),
         (4, 3),
         (4, 4),
