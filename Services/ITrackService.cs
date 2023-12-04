@@ -14,11 +14,9 @@ public interface ITrackService
     public Task<IEnumerable<TrackResponseModel>> GetByUserId(int id);
     // public Task UploadTrack(TrackInsertModel model, long userId);
     public Task UpdateInfomation(TrackUpdateModel model, IFormFile? fileArtwork, int trackId);
+    public Task UploadTrack(TrackInsertModel model, long userId, IFormFile fileAudio, IFormFile? fileArtwork);
     public Task Remove(int id);
     public Task LikeTrack(int userId, int trackId);
-    public Task CommentTrack(int id, int userId, string content);
-    public Task<IEnumerable<Comment>> GetComment(int trackId);
-    public Task EditComment(int id, string content);
     // public Task PlayTrack(int id);
 
 }

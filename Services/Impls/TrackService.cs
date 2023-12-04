@@ -71,39 +71,37 @@ public class TrackService : ITrackService
                      };
         return await result.ToListAsync();
     }
-    // public async Task UploadTrack(TrackInsertModel model, long userId)
-    // {
-    //     // JsonSerializer.Deserialize<TrackInsertModel>("");
-    //     var track = new Track()
-    //     {
-    //         Name = model.TrackName,
-    //         Description = model.Description,
-    //         IsPrivate = model.IsPrivate,
-    //     };
-    //     if (model.Categories != null)
-    //     {
-    //         var categories = await _context.Categories
-    //             .Where(c => model.Categories.Contains(c.Name))
-    //             .ToListAsync();
-    //         foreach (var category in categories)
-    //         {
-    //             await _context.TrackCategories.AddAsync(new TrackCategory()
-    //             {
-    //                 CategoryId = category.Id,
-    //                 TrackId = track.Id,
-    //             });
-    //         }
-    //     }
-    //     if(fileArtwork != null)
-    //     {
-    //         await FileTool.SaveArtwork(fileArtwork);
-    //         track.ArtWork = fileArtwork.FileName;
-    //     }
-    //     track.FileName = await FileTool.SaveTrack(fileTrack);
-    //     track.UploadAt = DateTime.Now;
-    //     await _context.Tracks.AddAsync(track);
-    //     await _context.SaveChangesAsync();
-    // }
+    public async Task UploadTrack(TrackInsertModel model, long userId, IFormFile fileTrack, IFormFile? fileArtwork)
+    {
+        var track = new Track()
+        {
+            Name = model.TrackName,
+            Description = model.Description,
+            FileName = await FileTool.SaveTrack(fileTrack),
+            AuthorId = userId,
+        };
+        if (fileArtwork != null)
+        {
+            await FileTool.SaveArtwork(fileArtwork);
+            track.ArtWork = fileArtwork.FileName;
+        }
+        else {
+            track.ArtWork = "default-artwork.jpg";
+        }
+        await _context.Tracks.AddAsync(track);
+        await _context.SaveChangesAsync();
+        if (model.CategoryIds != null)
+        {
+            foreach (var item in model.CategoryIds)
+            {
+                if (_context.Categories.Any(p => p.Id == item))
+                {
+                    await _context.TrackCategories.AddAsync(new TrackCategory(){ CategoryId = item, TrackId = track.Id});
+                }
+            }
+            await _context.SaveChangesAsync();
+        }
+    }
 
     public async Task UpdateInfomation(TrackUpdateModel model, IFormFile? fileArtwork, int trackId)
     {
@@ -183,26 +181,6 @@ public class TrackService : ITrackService
             await _context.SaveChangesAsync();
         }
     }
-    public async Task CommentTrack(int userId, int trackId, string content)
-    {
-        var comment = new Comment { UserId = userId, TrackId = trackId, Content = content };
-        _context.Comments.Add(comment);
-        await _context.SaveChangesAsync();
-    }
-    public async Task<IEnumerable<Comment>> GetComment(int trackId)
-    {
-        var comments = await _context.Comments
-            .Include(c => c.User)
-            .Where(c => c.TrackId == trackId)
-            .ToListAsync();
-        return comments;
-    }
-    public async Task EditComment(int id, string content)
-    {
-        var comment = await _context.Comments.FindAsync(id);
-        comment.Content = content;
-        await _context.SaveChangesAsync();
-    }
 
     public async Task<TrackResponseModel> GetById(int id)
     {
@@ -222,6 +200,8 @@ public class TrackService : ITrackService
                          LikeCount = track.LikeCount,
                          CommentCount = track.CommentCount,
                      };
-        return await result.FirstOrDefaultAsync();
+        return await result.FirstOrDefaultAsync()?? throw new AppException(HttpStatusCode.NotFound,
+                "Không tìm thấy bài hát",
+                "Hãy thử lại");
     }
 }
