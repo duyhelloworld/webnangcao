@@ -68,7 +68,20 @@ public class TrackController : ControllerBase
         }
         return BadRequest();
     }
-
+    [HttpPost("upload")]
+    [AppAuthorize(ERole.USER)]
+    public async Task<IActionResult> Upload([FromForm] string model, IFormFile fileTrack, IFormFile? fileArtwork)
+    {
+        var userId = User.FindFirstValue("userid");
+        if (userId != null && long.TryParse(userId, out long id) && model != null)
+        {
+            var insertModel = JsonSerializer.Deserialize<TrackInsertModel>(model);
+            await _service.UploadTrack(insertModel, id, fileTrack, fileArtwork);
+            return Ok();
+        }
+        return Unauthorized();
+    }
+    
     [HttpGet("artwork/{filename}")]
     public IActionResult GetArtworkTrack([FromRoute] string filename)
     {
@@ -114,30 +127,5 @@ public class TrackController : ControllerBase
             return Ok();
         }
         return BadRequest();
-    }
-    [HttpPost("comment/{id}")]
-    // [AppAuthorize(ERole.USER)]
-    public async Task<IActionResult> Comment(int id, [FromBody] CommentInsertModel model)
-    {
-        var userId = User.FindFirstValue("userid");
-        if (userId != null && int.TryParse(userId, out int uid))
-        {
-            await _service.CommentTrack(id, uid, model.Content);
-            return Ok();
-        }
-        return BadRequest();
-    }
-    [HttpGet("comment/{id}")]
-    // [AppAuthorize(ERole.USER)]
-    public async Task<IActionResult> GetComment(int id)
-    {
-        return Ok(await _service.GetComment(id));
-    }
-    [HttpPut("comment/{id}")]
-    // [AppAuthorize(ERole.USER)]
-    public async Task<IActionResult> EditComment(int id, [FromBody] CommentUpdateModel model)
-    {
-        await _service.EditComment(id, model.Content);
-        return Ok();
     }
 }
