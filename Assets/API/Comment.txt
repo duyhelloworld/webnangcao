@@ -13,7 +13,7 @@ http://localhost:5271/comment/violation
     usecase: lấy tất cả comment bị report/vi phạm
     body: {}
     auth: true
-http://localhost:5271/comment/5
+http://localhost:5271/comment/5 (bug k lấy đc userId)
     method: PUT
     usecase: sửa comment (ví dụ commentId = 5)
     body: 
@@ -21,17 +21,17 @@ http://localhost:5271/comment/5
     "Content": "test đổi cmt"
     }
     auth: true
-http://localhost:5271/comment/report/4
+http://localhost:5271/comment/report/4 (bug k lấy đc userId)
     method: PUT
     usecase: report comment (ví dụ commentId = 4)
     body: {}
     auth: true
-http://localhost:5271/comment/1002
+http://localhost:5271/comment/1002 (bug jj đó unauthorized)
     method: DELETE
     usecase: xóa comment (ví dụ commentId = 1002)
     body: {}
     auth: true
-http://localhost:5271/comment/track/2
+http://localhost:5271/comment/track/2 (cũng bug)
     method: POST
     usecase: tạo comment cho track (ví dụ trackId = 2)
     body: 
