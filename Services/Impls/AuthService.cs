@@ -33,7 +33,7 @@ public class AuthService : IAuthService
         var result = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe, true);
         if (!result.Succeeded)
         {
-            Console.WriteLine("Error: " + result.ToString());
+            Console.WriteLine("Error: " + result);
             return new ResponseModel()
             {
                 IsSucceed = false,

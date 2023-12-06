@@ -21,6 +21,7 @@ public class Playlist
 
     public int LikeCount { get; set; }
     public int RepostCount { get; set; }
+    public int TrackCount { get; set; }
 
     [Max(EMaxValue.DirectoryLength)]
     public string ArtWork { get; set; } = null!;

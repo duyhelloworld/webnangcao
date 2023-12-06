@@ -12,8 +12,8 @@ using webnangcao.Context;
 namespace webnangcao.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20231125134831_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20231206091652_TestApp")]
+    partial class TestApp
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -311,9 +311,6 @@ namespace webnangcao.Migrations
 
                     b.Property<string>("Tags")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("TrackCount")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

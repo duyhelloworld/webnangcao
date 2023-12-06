@@ -44,13 +44,14 @@ public class PlaylistService : IPlaylistService
 
     public async Task<PlaylistResponseModel?> GetPublicById(int playlistId)
     {
-        var playlist = await _context.Playlists.FindAsync(playlistId)
+        var playlist = await _context.Playlists
+                .Include(p => p.Author)
+                .FirstOrDefaultAsync(p => p.Id == playlistId)
             ?? throw new AppException(HttpStatusCode.NotFound,
                 "Không tìm thấy playlist yêu cầu");
         if (playlist.IsPrivate)
             throw new AppException(HttpStatusCode.Forbidden,
                 "Chủ sở hữu đã tắt hiển thị playlist này");
-
         return new PlaylistResponseModel
         {
             Id = playlistId,
@@ -78,6 +79,7 @@ public class PlaylistService : IPlaylistService
             {
                 Id = p.Id,
                 PlaylistName = p.Name,
+                AuthorId = p.AuthorId,
                 AuthorName = p.Author.UserName!,
                 CreatedAt = p.CreatedAt,
                 Description = p.Description,
@@ -201,10 +203,17 @@ public class PlaylistService : IPlaylistService
              ?? throw new AppException(HttpStatusCode.NotFound, 
             "Không thấy playlist yêu cầu");
         playlist.RepostCount++;
-        await _context.Reposts.AddAsync(new Repost
+        await _context.Playlists.AddAsync(new Playlist
         {
-            PlaylistId = playlistId,
-            UserId = userId,
+            Name = playlist.Name,
+            Description = playlist.Description,
+            IsPrivate = playlist.IsPrivate,
+            Tags = playlist.Tags,
+            AuthorId = userId,
+            CreatedAt = DateTime.UtcNow,
+            ArtWork = playlist.ArtWork,
+            LikeCount = playlist.LikeCount,
+            RepostCount = playlist.RepostCount,
         });
         await _context.SaveChangesAsync();
     }
@@ -243,10 +252,6 @@ public class PlaylistService : IPlaylistService
             .Where(tp => tp.PlaylistId == playlistId).ToListAsync();
         if (trackPlaylists != null)
             _context.TrackPlaylists.RemoveRange(trackPlaylists);
-        var reposts = await _context.Reposts
-            .Where(r => r.PlaylistId == playlistId).ToListAsync();
-        if (reposts != null)
-            _context.Reposts.RemoveRange(reposts);
         var likes = await _context.LikePlaylists
             .Where(l => l.PlaylistId == playlistId).ToListAsync();
         if (likes != null)
@@ -264,10 +269,6 @@ public class PlaylistService : IPlaylistService
             .Where(tp => tp.PlaylistId == playlistId).ToListAsync();
         if (trackPlaylists != null)
             _context.TrackPlaylists.RemoveRange(trackPlaylists);
-        var reposts = await _context.Reposts
-            .Where(r => r.PlaylistId == playlistId).ToListAsync();
-        if (reposts != null)
-            _context.Reposts.RemoveRange(reposts);
         var likes = await _context.LikePlaylists
             .Where(l => l.PlaylistId == playlistId).ToListAsync();
         if (likes != null)

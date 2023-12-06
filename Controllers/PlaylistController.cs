@@ -39,7 +39,7 @@ public class PlaylistController : ControllerBase
         {
             return Ok(rs);
         }
-        return NotFound();
+        return NotFound("Không tìm thấy playlist này");
     }
 
     [HttpGet("admin/all")]
@@ -101,25 +101,29 @@ public class PlaylistController : ControllerBase
     }
 
     [HttpPut("{playlistId}/like")]
-    [AppAuthorize(ERole.USER)]
+    [AppAuthorize(ERole.USER, ERole.ADMIN, ERole.SUPERADMIN)]
     public async Task Like(int playlistId)
     {
         var userId = User.FindFirstValue("userid");
         if (userId != null && long.TryParse(userId, out long uid))
         {
             await _service.Like(playlistId, uid);
+            return;
         }
+        throw new AppException(HttpStatusCode.Forbidden, "Bạn không có quyền thực hiện hành động này");
     }
 
-    [HttpPut("{playlistId}/repost")]
+    [HttpPost("{playlistId}/repost")]
     [AppAuthorize(ERole.USER)]
-    public async Task SaveToLibrary(int playlistId)
+    public async Task Repost(int playlistId)
     {
         var userId = User.FindFirstValue("userid");
         if (userId != null && long.TryParse(userId, out long uid))
         {
             await _service.Repost(playlistId, uid);
+            return;
         }
+        throw new AppException(HttpStatusCode.Forbidden, "Bạn không có quyền thực hiện hành động này");
     }
 
     [HttpPut("{playlistId}/information")]
