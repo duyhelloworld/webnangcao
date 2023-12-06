@@ -84,6 +84,12 @@ public class PlaylistController : ControllerBase
             contentType: new MediaTypeHeaderValue("image/jpeg"));        
     }
 
+    [HttpGet("search")]
+    public async Task<IActionResult> Search([FromQuery] string keyword)
+    {
+        return Ok(await _service.Search(keyword));
+    }
+
     [HttpPost]
     [AppAuthorize(ERole.USER)]
     public async Task<IActionResult> AddNew(

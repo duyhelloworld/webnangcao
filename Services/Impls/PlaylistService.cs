@@ -76,7 +76,8 @@ public class PlaylistService : IPlaylistService
         return await _context.Playlists
             .Where(p => !p.IsPrivate
                 && (p.Name.Contains(keyword)
-                    || UserTool.GetAuthorName(p.Author).Contains(keyword)
+                    || (p.Tags != null && p.Tags.Contains(keyword)) 
+                    || p.Author.UserName!.Contains(keyword)
                     || (p.Description != null && p.Description.Contains(keyword))))
             .Select(p => new PlaylistResponseModel
             {
@@ -163,6 +164,9 @@ public class PlaylistService : IPlaylistService
         var playlist = await _context.Playlists.FindAsync(playlistId) 
             ?? throw new AppException(HttpStatusCode.NotFound, 
                 "Không tìm thấy playlist yêu cầu");
+        if (playlist.IsPrivate)
+            throw new AppException(HttpStatusCode.Forbidden, 
+                "Playlist này đã bị chủ sở hữu tắt hiển thị");
         var like = await _context.LikePlaylists
             .FirstOrDefaultAsync(l => l.UserId == userId && l.PlaylistId == playlistId);
         if (like == null)
