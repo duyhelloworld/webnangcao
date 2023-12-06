@@ -14,7 +14,7 @@
 
 - Mở project bằng Visual Studio Code
 
-- Mở terminal
+- Mở terminal bằng cách nhấn tổ hợp phím `Ctrl + Shift + ~` hoặc `View > Terminal`
 ![](/.github/images/terminal.png)
 
 - Chạy lệnh `cd ClientApp;` để vào thư mục ClientApp (sau này code FE ở đây tất)
