@@ -92,13 +92,13 @@ public class FileTool
 
     public static async Task SaveTrack(IFormFile file)
     {
-        if (file.ContentType != "audio/mpeg" || !file.FileName.EndsWith(".mp3"))
+        if (!file.FileName.EndsWith(".mp3"))
         {
             throw new AppException(HttpStatusCode.UnsupportedMediaType,
                 "File không đúng định dạng", "Vui lòng chọn file đuôi .mp3");
         }
         using var stream = new FileStream(
-            Path.Combine(ArtWorkFolderPath, file.FileName), FileMode.Create);
+            Path.Combine(TrackFolderPath, file.FileName), FileMode.Create);
         await file.CopyToAsync(stream);
     }
 
