@@ -27,5 +27,5 @@ public interface ICommentService
     //Sửa comment của mình
     Task UpdateCommentByCreator(int commentId, long userid, CommentUpdateModel model);
     //Thêm comment vào track
-    Task Comment(CommentInsertModel model, long userid);
+    Task Comment(CommentInsertModel model, long userid, int trackId);
 }

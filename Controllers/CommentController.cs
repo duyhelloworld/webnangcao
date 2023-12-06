@@ -40,33 +40,34 @@ public class CommentController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    // [AppAuthorize(ERole.USER)]
-    public async Task<IActionResult> UpdateCommentByCreator(int commentId, long userId, CommentUpdateModel model)
+    [AppAuthorize(ERole.USER)]
+    public async Task<IActionResult> UpdateCommentByCreator(int id, long userId, CommentUpdateModel model)
     {
-        await _service.UpdateCommentByCreator(commentId, userId, model);
+        System.Console.WriteLine("User id: " + userId);
+        await _service.UpdateCommentByCreator(id, userId, model);
         return Ok();
     }
     [HttpPut("report/{id}")]
-    public async Task<IActionResult> ReportComment(int commentId, long userId)
+    public async Task<IActionResult> ReportComment(int id, long userId)
     {
-        await _service.ReportComment(commentId, userId);
+        await _service.ReportComment(id, userId);
         return Ok();
     }
 
     [HttpDelete("{id}")]
     // [AppAuthorize(ERole.USER)]
-    public async Task<IActionResult> DeleteCommentByCreator(int commentId)
+    public async Task<IActionResult> DeleteCommentByCreator(int id)
     {
         var role = User.FindFirstValue("role");
-        if(role == "Admin")
+        if(role == "ADMIN")
         {
-            await _service.DeleteCommentByAdmin(commentId);
+            await _service.DeleteCommentByAdmin(id);
             return Ok();
         }
         else if(role == "User")
         {
             var userid = long.Parse(User.FindFirstValue("userid")!);
-            await _service.DeleteCommentByCreator(commentId, userid);
+            await _service.DeleteCommentByCreator(id, userid);
             return Ok();
         }
         else
@@ -74,12 +75,11 @@ public class CommentController : ControllerBase
             return Unauthorized();
         }
     }
-    [HttpPost]
+    [HttpPost("track/{id}")]
     // [AppAuthorize(ERole.USER)]
-    public async Task<IActionResult> Comment([FromBody] CommentInsertModel model)
+    public async Task<IActionResult> Comment([FromBody] CommentInsertModel model, long userId, int id)
     {
-        var userid = long.Parse(User.FindFirstValue("userid")!);
-        await _service.Comment(model, userid);
+        await _service.Comment(model, userId, id);
         return Ok();
     }
 }
