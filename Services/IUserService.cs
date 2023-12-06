@@ -15,7 +15,7 @@ public interface IUserService
     
     // User
     // sửa thông tin user
-    Task<bool> Update(long uid, UserUpdateModel model, IFormFile? avatar);
+    Task Update(long uid, UserUpdateModel model, IFormFile? avatar);
 
     // Đổi mật khẩu ở bên AuthService
 }

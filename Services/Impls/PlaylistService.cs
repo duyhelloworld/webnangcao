@@ -26,6 +26,7 @@ public class PlaylistService : IPlaylistService
     public async Task<IEnumerable<PlaylistResponseModel>> GetAllPublic(int page)
     {
         return await _context.Playlists
+            .OrderBy(p => p.Id)
             .Skip((page - 1) * PAGE_SIZE)
             .Take(PAGE_SIZE)
             .Select(p => new PlaylistResponseModel

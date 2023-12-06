@@ -52,7 +52,7 @@ public class UserService : IUserService
         };
     }
 
-    public async Task<bool> Update(long uid, UserUpdateModel model, IFormFile? avatar)
+    public async Task Update(long uid, UserUpdateModel model, IFormFile? avatar)
     {
         var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == uid);
         if (user == null)
@@ -64,14 +64,22 @@ public class UserService : IUserService
         user.PhoneNumber = model.PhoneNumber;
         if (avatar != null)
         {
-            user.Avatar = await FileTool.(avatar, "users");
+            await FileTool.SaveAvatar(avatar);
+            user.Avatar = avatar.FileName;
         }
-        _dbContext.Users.Update(user);
         await _dbContext.SaveChangesAsync();
-        return true;
     }
-    public Task Disable(long uid)
-    {
 
+    public async Task Disable(long uid)
+    {
+        var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == uid);
+        if (user == null)
+        {
+            throw new AppException(HttpStatusCode.NotFound, "Không tồn tại user này");
+        }
+        // Khoá 1 tháng
+        user.LockoutEnabled = true;
+        user.LockoutEnd = DateTime.Now.AddDays(30);
+        await _dbContext.SaveChangesAsync();
     }
 }

@@ -18,7 +18,6 @@ public class ErrorMiddleware : IMiddleware
             {
                 Reason = ex.Reason,
                 RecommmendSolution = ex.RecommmendSolution,
-                DataToFix = ex.DataToFix
             });
         }
         catch (Exception ex)

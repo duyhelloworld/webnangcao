@@ -7,13 +7,13 @@ public class FileTool
 {
     public static string PlaylistArtWorkBaseUrl (string fileArtworkName)
     {
-        var fileName = Path.GetFileNameWithoutExtension(fileArtworkName);
+        var fileName = Path.GetFileName(fileArtworkName);
         return $"http://localhost:5271/playlist/artwork/{fileName}";
     }
 
     public static string TrackArtworkBaseUrl (string fileArtworkName)
     {
-        var fileName = Path.GetFileNameWithoutExtension(fileArtworkName);
+        var fileName = Path.GetFileName(fileArtworkName);
         return $"http://localhost:5271/track/artwork/{fileName}";
     }
     
@@ -25,43 +25,37 @@ public class FileTool
 
     private static readonly string AvatarFolderPath
         = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "avatars");
-    public static readonly string DefaultAvatar = "defaultAvatar.png";
-    public static readonly string DefaultArtWork = "defaultArtwork.png";
-    public static Stream ReadArtWork(string? fileName)
+
+    public static readonly string DefaultAvatar = "default-avatar.jpg";
+    public static readonly string DefaultArtWork = "default-artwork.jpg";
+    private static Stream ReadFile(string? fileName, string folder, string? defaultFile)
     {
-        if (string.IsNullOrWhiteSpace(fileName))
+        try
         {
-            if(Path.Exists(Path.Combine(ArtWorkFolderPath, DefaultArtWork)))
-                return new FileStream(
-                    Path.Combine(ArtWorkFolderPath, DefaultArtWork),FileMode.Open);
-            return Stream.Null;
+            if (string.IsNullOrWhiteSpace(fileName))
+            {
+                // Nếu server có ảnh default
+                if (defaultFile != null && Path.Exists(Path.Combine(folder, defaultFile)))
+                    return new FileStream(
+                        Path.Combine(folder, defaultFile), FileMode.Open);
+                return Stream.Null;
+            }
+            return new FileStream(
+                Path.Combine(folder, fileName), FileMode.Open);
         }
-        return new FileStream(
-            Path.Combine(ArtWorkFolderPath, fileName), FileMode.Open);
-    }
-
-    public static Stream ReadAvatar(string? fileName)
-    {
-        if (string.IsNullOrWhiteSpace(fileName))
+        catch (FileNotFoundException)
         {
-            if (Path.Exists(Path.Combine(AvatarFolderPath, DefaultAvatar)))
-                return new FileStream(
-                    Path.Combine(AvatarFolderPath, DefaultAvatar), FileMode.Open);
-            return Stream.Null;
+            throw new AppException(HttpStatusCode.NotFound,
+                "Không tìm thấy ảnh", "Vui lòng kiểm tra lại tên ảnh");
         }
-        return new FileStream(
-            Path.Combine(AvatarFolderPath, fileName), FileMode.Open);
     }
 
-    public static Stream ReadTrack(string? fileName)
+    private static async Task SaveImage(IFormFile? fileInput, string folder)
     {
-        if (string.IsNullOrWhiteSpace(fileName))
-            return Stream.Null;
-        return new FileStream(Path.Combine(TrackFolderPath, fileName), FileMode.Open);
-    }
-
-    public static async Task SaveArtwork(IFormFile fileInput)
-    {
+        if (fileInput == null)
+        {
+            return;
+        }
         var fileInputName = fileInput.FileName;
         if (Path.GetExtension(fileInputName) != "jpg" || 
             Path.GetExtension(fileInputName) != "png")
@@ -69,7 +63,7 @@ public class FileTool
             throw new AppException(HttpStatusCode.UnsupportedMediaType,
                 "Ảnh không đúng định dạng", "Vui lòng chọn ảnh đuôi .png hoặc .jpg");
         }
-        var filePath = Path.Combine(ArtWorkFolderPath, fileInputName);
+        var filePath = Path.Combine(folder, fileInputName);
         if (File.Exists(filePath))
         {
             throw new AppException(HttpStatusCode.BadRequest,
@@ -79,30 +73,41 @@ public class FileTool
         await fileInput.CopyToAsync(stream);
     }
 
+    public static Stream ReadAvatar(string? fileName)
+    {
+        return ReadFile(fileName, AvatarFolderPath, DefaultAvatar);
+    }
+
+    public static Stream ReadArtwork(string? fileName)
+    {
+        return ReadFile(fileName, ArtWorkFolderPath, DefaultArtWork);
+    }
+
+    public static Stream ReadTrack(string? fileName)
+    {
+        return ReadFile(fileName, TrackFolderPath, null);
+    }
+
+
     public static async Task SaveTrack(IFormFile file)
     {
+        if (file.ContentType != "audio/mpeg")
+        {
+            throw new AppException(HttpStatusCode.UnsupportedMediaType,
+                "File không đúng định dạng", "Vui lòng chọn file đuôi .mp3");
+        }
         using var stream = new FileStream(
             Path.Combine(ArtWorkFolderPath, file.FileName), FileMode.Create);
         await file.CopyToAsync(stream);
     }
 
-    public static async Task SaveAvatar(IFormFile file)
+    public static async Task SaveAvatar(IFormFile? file)
     {
-        var fileInputName = file.FileName;
-        if (Path.GetExtension(fileInputName) != "jpg" ||
-            Path.GetExtension(fileInputName) != "png")
-        {
-            throw new AppException(HttpStatusCode.UnsupportedMediaType,
-                "Ảnh không đúng định dạng", "Vui lòng chọn ảnh đuôi .png hoặc .jpg");
-        }
-        var filePath = Path.Combine(AvatarFolderPath, fileInputName);
-        if (Path.Exists(filePath))
-        {
-            throw new AppException(HttpStatusCode.BadRequest,
-                "Ảnh này đã tồn tại", "Vui lòng chọn ảnh khác");   
-        }
-        using var stream = new FileStream(
-            Path.Combine(AvatarFolderPath, fileInputName), FileMode.Create);
-        await file.CopyToAsync(stream);
+        await SaveImage(file, AvatarFolderPath);
+    }
+
+    public static async Task SaveArtwork(IFormFile? file)
+    {
+        await SaveImage(file, ArtWorkFolderPath);
     }
 }

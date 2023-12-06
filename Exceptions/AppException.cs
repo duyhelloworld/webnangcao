@@ -5,9 +5,8 @@ namespace webnangcao.Exceptions;
 public class AppException : Exception
 {
     public HttpStatusCode StatusCode { get; set; } = HttpStatusCode.InternalServerError;
-    public string Reason { get; set; } = "";
-    public string? RecommmendSolution { get; set; } = "";
-    public object? DataToFix { get; set; }
+    public string Reason { get; set; } = null!;
+    public string? RecommmendSolution { get; set; }
 
     public AppException(HttpStatusCode statusCode, string reason)
     {
@@ -19,11 +18,5 @@ public class AppException : Exception
         : this(statusCode, reason)
     {
         RecommmendSolution = solution;
-    }
-
-    public AppException(HttpStatusCode statusCode, string reason, string recommendSolution, object data)
-        : this(statusCode, reason, recommendSolution)
-    {
-        DataToFix = data;
     }
 }

@@ -24,6 +24,10 @@ public class PlaylistController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetPublic([FromQuery] int page)
     {
+        if (page < 1)
+        {
+            page = 1;
+        }
         return Ok(await _service.GetAllPublic(page));
     }
 
@@ -76,7 +80,7 @@ public class PlaylistController : ControllerBase
     public IActionResult GetArtwork(string filename)
     {
         return new FileStreamResult(
-            fileStream: FileTool.ReadArtWork(fileName: filename),
+            fileStream: FileTool.ReadArtwork(filename),
             contentType: new MediaTypeHeaderValue("image/jpeg"));        
     }
 
@@ -138,7 +142,7 @@ public class PlaylistController : ControllerBase
         var userId = User.FindFirstValue("userid");
         if (userId != null && long.TryParse(userId, out long uid))
         {
-            await _service.Delete(playlistId, uid);
+            await _service.DeleteByCreator(playlistId, uid);
         }
     }
 }
