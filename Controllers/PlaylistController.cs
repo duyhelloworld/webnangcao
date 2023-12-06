@@ -68,13 +68,13 @@ public class PlaylistController : ControllerBase
         return Forbid();
     }
 
-    [HttpGet("artwork/{filename}")]
-    public IActionResult GetArtwork(string filename)
-    {
-        return new FileStreamResult(
-            fileStream: FileTool.ReadArtWork(fileName: filename),
-            contentType: new MediaTypeHeaderValue("image/jpeg"));        
-    }
+    // [HttpGet("artwork/{filename}")]
+    // public IActionResult GetArtwork(string filename)
+    // {
+    //     return new FileStreamResult(
+    //         fileStream: FileTool.ReadArtWork(fileName: filename),
+    //         contentType: new MediaTypeHeaderValue("image/jpeg"));        
+    // }
 
     [HttpPost]
     [AppAuthorize(ERole.USER)]
