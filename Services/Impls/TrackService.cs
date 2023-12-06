@@ -1,4 +1,5 @@
 using System.Net;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using webnangcao.Context;
 using webnangcao.Entities;
@@ -77,7 +78,7 @@ public class TrackService : ITrackService
         {
             Name = model.TrackName,
             Description = model.Description,
-            FileName = await FileTool.SaveTrack(fileTrack),
+            FileName = fileTrack.FileName,
             AuthorId = userId,
         };
         if (fileArtwork != null)
@@ -85,7 +86,8 @@ public class TrackService : ITrackService
             await FileTool.SaveArtwork(fileArtwork);
             track.ArtWork = fileArtwork.FileName;
         }
-        else {
+        else
+        {
             track.ArtWork = "default-artwork.jpg";
         }
         await _context.Tracks.AddAsync(track);
@@ -96,7 +98,7 @@ public class TrackService : ITrackService
             {
                 if (_context.Categories.Any(p => p.Id == item))
                 {
-                    await _context.TrackCategories.AddAsync(new TrackCategory(){ CategoryId = item, TrackId = track.Id});
+                    await _context.TrackCategories.AddAsync(new TrackCategory() { CategoryId = item, TrackId = track.Id });
                 }
             }
             await _context.SaveChangesAsync();
@@ -153,15 +155,7 @@ public class TrackService : ITrackService
                      };
         return await result.ToListAsync();
     }
-    // public async Task PlayTrack(int id)
-    // {
-    //     var track = await _context.Tracks.FindAsync(id) 
-    //         ?? throw new AppException(HttpStatusCode.NotFound, 
-    //             "Không tìm thấy bài hát", 
-    //             "Hãy thử lại");
-    //     track.ListenCount++;
-    //     await _context.SaveChangesAsync();
-    // }
+
     public async Task LikeTrack(int userId, int trackId)
     {
         var like = await _context.LikeTracks
@@ -200,8 +194,32 @@ public class TrackService : ITrackService
                          LikeCount = track.LikeCount,
                          CommentCount = track.CommentCount,
                      };
-        return await result.FirstOrDefaultAsync()?? throw new AppException(HttpStatusCode.NotFound,
+        return await result.FirstOrDefaultAsync() ?? throw new AppException(HttpStatusCode.NotFound,
                 "Không tìm thấy bài hát",
                 "Hãy thử lại");
     }
+    public async Task<IActionResult> PlayTrack(int id)
+        {
+            var track = await _context.Tracks.FindAsync(id)
+                ?? throw new AppException(HttpStatusCode.NotFound,
+                    "Không tìm thấy bài hát",
+                    "Hãy thử lại");
+
+            var filePath = Path.Combine("wwwroot/musics", track.FileName);
+
+            if (!File.Exists(filePath))
+            {
+                throw new AppException(HttpStatusCode.NotFound,
+                    "Không tìm thấy tệp âm thanh",
+                    "Hãy thử lại");
+            }
+
+            var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+
+            return new FileStreamResult(fileStream, "audio/mpeg")
+            {
+                EnableRangeProcessing = true
+            };
+        }
+
 }

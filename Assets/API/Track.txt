@@ -1,0 +1,36 @@
+http://localhost:5271/track
+    method: GET
+    usecase: lấy tất cả track trong database
+    body: {}
+    auth: false
+http://localhost:5271/track/2
+    method: GET
+    usecase: lấy track theo id (như ví dụ là id = 2)
+    body: {}
+    auth: false
+http://localhost:5271/track/user/2
+    method: GET
+    usecase: lấy tất cả track được upload bởi user (như ví dụ là userid = 2)
+    body: {}
+    auth: false
+http://localhost:5271/track/name/em
+    method: GET
+    usecase: lấy tất cả track có tên chứa chuỗi (như ví dụ là em)
+    body: {}
+    auth: false
+http://localhost:5271/track/update/3
+    method: PUT
+    usecase: update track theo id (như ví dụ là id = 3)
+    body: {
+        "name": "em",
+        "description": "em",
+        "url": "em",
+        "thumbnail": "em",
+        "userId": 2
+    }
+    auth: true
+http://localhost:5271/track/10
+    method: DELETE
+    usecase: xóa track theo id (như ví dụ là id = 10)
+    body: {}
+    auth: true

@@ -41,6 +41,18 @@ public class TrackController : ControllerBase
     {
         return Ok(await _service.GetByName(name));
     }
+    [HttpGet("play/{id}")]
+    // [AppAuthorize(ERole.USER)]
+    public async Task<IActionResult> PlayTrack(int id)
+    {
+        var userId = User.FindFirstValue("userid");
+        if (userId != null && int.TryParse(userId, out int uid))
+        {
+            await _service.PlayTrack(id);
+            return Ok();
+        }
+        return BadRequest();
+    }
     
     // [HttpPost("add")]
     // [AppAuthorize(ERole.USER)]
@@ -57,7 +69,7 @@ public class TrackController : ControllerBase
     // }
 
     [HttpPut("update/{id}")]
-    // [AppAuthorize(ERole.USER)]
+    [AppAuthorize(ERole.USER)]
     public async Task<IActionResult> Update(TrackUpdateModel model, IFormFile? fileArtwork, int trackId)
     {
         var userId = User.FindFirstValue("userid");
@@ -109,7 +121,7 @@ public class TrackController : ControllerBase
     //     }
     //     return Forbid();
     // }
-    [HttpDelete("delete/{id}")]
+    [HttpDelete("{id}")]
     // [AppAuthorize(ERole.USER)]
     public async Task<IActionResult> Delete(int id)
     {
@@ -128,4 +140,5 @@ public class TrackController : ControllerBase
         }
         return BadRequest();
     }
+    
 }

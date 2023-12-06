@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using webnangcao.Entities;
 using webnangcao.Models;
 using webnangcao.Models.Inserts;
@@ -18,5 +19,5 @@ public interface ITrackService
     public Task Remove(int id);
     public Task LikeTrack(int userId, int trackId);
     // public Task PlayTrack(int id);
-
+    public Task<IActionResult> PlayTrack(int trackId);
 }

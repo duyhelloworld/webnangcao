@@ -9,6 +9,4 @@ public class TrackUpdateModel
     public string TrackName { get; set; } = null!;
 
     public string? Description { get; set; }
-
-    public IEnumerable<string>? Tags { get; set; }
 }
