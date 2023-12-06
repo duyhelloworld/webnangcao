@@ -68,14 +68,15 @@ public class TrackController : ControllerBase
     //     return BadRequest();
     // }
 
-    [HttpPut("update/{id}")]
+    [HttpPut("update/{trackId}")]
     [AppAuthorize(ERole.USER)]
-    public async Task<IActionResult> Update(TrackUpdateModel model, IFormFile? fileArtwork, int trackId)
+    public async Task<IActionResult> Update([FromForm] string model, IFormFile? fileArtwork, int trackId)
     {
         var userId = User.FindFirstValue("userid");
         if (userId != null && long.TryParse(userId, out long id) && model != null)
         {
-            await _service.UpdateInfomation(model, fileArtwork, trackId);
+            var updateModel = JsonSerializer.Deserialize<TrackUpdateModel>(model);
+            await _service.UpdateInfomation(updateModel, fileArtwork, trackId);
             return Ok();
         }
         return BadRequest();

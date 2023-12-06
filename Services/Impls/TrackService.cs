@@ -80,7 +80,10 @@ public class TrackService : ITrackService
             Description = model.Description,
             FileName = fileTrack.FileName,
             AuthorId = userId,
+            UploadAt = DateTime.Now,
+            IsPrivate = model.IsPrivate,
         };
+        await FileTool.SaveTrack(fileTrack);
         if (fileArtwork != null)
         {
             await FileTool.SaveArtwork(fileArtwork);
@@ -117,6 +120,7 @@ public class TrackService : ITrackService
         if (fileArtwork != null && fileArtwork.FileName != currentTrack.ArtWork)
         {
             await FileTool.SaveArtwork(fileArtwork);
+            currentTrack.ArtWork = fileArtwork.FileName;
         }
         var currentCategories = await _context.TrackCategories
             .Where(tc => tc.TrackId == trackId)
