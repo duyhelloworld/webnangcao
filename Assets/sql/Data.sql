@@ -64,7 +64,9 @@ VALUES ('Hay quá', '2023-10-10 09:10:12', 'true', 2, 1, 0),
 ('Tuyệt vời ạ', '2023-10-10 09:11:42', 'false', 2, 1, 0),
 ('This song is make my childhoods back. Thank you sir!', '2023-10-10 10:24:20', 'false', 2, 2, 0),
 ('Bài này hay quá, yeah yeah', '2023-10-10 10:11:20', 'false', 1, 1, 0),
-('Nhạc này còn hơi kén người nghe quá bro', '2023-10-10 19:50:12', 'true', 2 , 3, 0);
+('Nhạc này còn hơi kén người nghe quá bro', '2023-10-10 19:50:12', 'true', 2 , 3, 0),
+('như c', '2023-10-10 10:11:20', 'false', 1, 3, 1),
+('report tôi đi', '2023-10-10 19:50:12', 'true', 2 , 3, 1);
 
 INSERT INTO [Roles] ([Name], [NormalizedName])
 VALUES ('Admin', 'admin'),
