@@ -12,15 +12,17 @@ public interface IPlaylistService
     Task<IEnumerable<PlaylistResponseModel>> GetAllPublic(int page);
     //  Lấy playlist có id = playlistId nếu được đặt public
     Task<PlaylistResponseModel?> GetPublicById(int playlistId);
+    // Tìm kiếm theo tên playlist/tên người tạo/mô tả
+    Task<IEnumerable<PlaylistResponseModel>> Search(string keyword);
 
     // Admin
     // Lấy tất cả playlist của tất cả user
     Task<IEnumerable<PlaylistResponseModel>> GetAllPublicAndPrivate();
 
 
-// User
-// Lấy tất cả playlist của user đăng nhập
-Task<IEnumerable<PlaylistResponseModel>> GetAllPlaylistCreatedByUser(long userId);
+    // User
+    // Lấy tất cả playlist của user đăng nhập
+    Task<IEnumerable<PlaylistResponseModel>> GetAllPlaylistCreatedByUser(long userId);
     // Lấy playlist trong danh sách playlist của user đăng nhập
     Task<PlaylistResponseModel?> GetByIdInUserCreatedPlaylist(int playlistId, long userId);
 
@@ -34,7 +36,7 @@ Task<IEnumerable<PlaylistResponseModel>> GetAllPlaylistCreatedByUser(long userId
     Task Repost(int playlistId, long userId);
 
     // User cập nhật thông tin 1 playlist (cả danh sách bài hát trong đó)
-    Task UpdateInfomation(PlaylistUpdateModel model, IFormFile? artwork, long userId);
+    Task UpdateInfomation(int playlistId, PlaylistUpdateModel model, IFormFile? artwork, long userId);
     
     // User xóa 1 playlist
     Task DeleteByCreator(int playlistId, long userId);

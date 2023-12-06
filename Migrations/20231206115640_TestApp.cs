@@ -124,6 +124,7 @@ namespace webnangcao.Migrations
                     IsPrivate = table.Column<bool>(type: "bit", nullable: false),
                     LikeCount = table.Column<int>(type: "int", nullable: false),
                     RepostCount = table.Column<int>(type: "int", nullable: false),
+                    TrackCount = table.Column<int>(type: "int", nullable: false),
                     ArtWork = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     AuthorId = table.Column<long>(type: "bigint", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),

@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using System.Net;
-using System.Text.Json;
 using webnangcao.Context;
 using webnangcao.Entities;
 using webnangcao.Entities.Joins;
@@ -70,6 +69,27 @@ public class PlaylistService : IPlaylistService
                     .Select(tp => tp.TrackId)
                     .ToList()
         };
+    }
+
+    public async Task<IEnumerable<PlaylistResponseModel>> Search(string keyword)
+    {
+        return await _context.Playlists
+            .Where(p => !p.IsPrivate
+                && (p.Name.Contains(keyword)
+                    || UserTool.GetAuthorName(p.Author).Contains(keyword)
+                    || (p.Description != null && p.Description.Contains(keyword))))
+            .Select(p => new PlaylistResponseModel
+            {
+                Id = p.Id,
+                PlaylistName = p.Name,
+                AuthorName = UserTool.GetAuthorName(p.Author),
+                CreatedAt = p.CreatedAt,
+                Description = p.Description,
+                ArtWork = FileTool.PlaylistArtWorkBaseUrl(p.ArtWork),
+                Tags = TagTool.GetTags(p.Tags),
+                IsPrivate = false
+            })
+            .ToListAsync();
     }
 
     public async Task<IEnumerable<PlaylistResponseModel>> GetAllPublicAndPrivate()
@@ -167,6 +187,13 @@ public class PlaylistService : IPlaylistService
         if (string.IsNullOrEmpty(model.Name)) 
             throw new AppException(HttpStatusCode.BadRequest, 
                 "Tên playlist không được để trống");
+        if (model.TrackIds == null || !model.TrackIds.Any())
+            throw new AppException(HttpStatusCode.BadRequest,
+                "Phải có ít nhất 1 track để tạo được playlist");
+        // Chống việc 1 user tạo playlist trùng tên
+        if (_context.Playlists.Any(p => p.AuthorId == userId && p.Name == model.Name))
+            throw new AppException(HttpStatusCode.BadRequest, 
+                $"Đã tồn tại playlist tên {model.Name}");
         var playlist = new Playlist
         {
             Name = model.Name,
@@ -176,10 +203,6 @@ public class PlaylistService : IPlaylistService
             AuthorId = userId,
             CreatedAt = DateTime.UtcNow,
         };
-        // Chống việc tạo playlist trùng tên
-        if (_context.Playlists.Any(p => p.AuthorId == userId && p.Name == playlist.Name))
-            throw new AppException(HttpStatusCode.BadRequest, 
-                $"Đã tồn tại playlist tên {playlist.Name}");
         if (artwork != null)
         {
             await FileTool.SaveArtwork(artwork);
@@ -203,6 +226,7 @@ public class PlaylistService : IPlaylistService
              ?? throw new AppException(HttpStatusCode.NotFound, 
             "Không thấy playlist yêu cầu");
         playlist.RepostCount++;
+        await _context.SaveChangesAsync();
         await _context.Playlists.AddAsync(new Playlist
         {
             Name = playlist.Name,
@@ -218,9 +242,15 @@ public class PlaylistService : IPlaylistService
         await _context.SaveChangesAsync();
     }
 
-    public async Task UpdateInfomation(PlaylistUpdateModel model, IFormFile? artwork, long userId)
+    public async Task UpdateInfomation(int playlistId, PlaylistUpdateModel model, IFormFile? artwork, long userId)
     {
-        var playlist = await _context.Playlists.FindAsync(model.Id) 
+        if (await _context.Playlists.AnyAsync(p => p.Author.Id == userId && p.Name == model.Name))
+        {
+            throw new AppException(HttpStatusCode.BadRequest, 
+                $"Bạn đã tạo playlist có tên {model.Name} rồi",
+                "Vui lòng sửa tên playlist này");
+        }
+        var playlist = await _context.Playlists.FindAsync(playlistId) 
             ?? throw new AppException(HttpStatusCode.NotFound, 
                 "Không thấy playlist yêu cầu");
         if (playlist.AuthorId != userId)

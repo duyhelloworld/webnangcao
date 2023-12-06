@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using webnangcao.Enumerables;
 using webnangcao.Tools;
 
@@ -19,6 +20,5 @@ public class PlaylistInsertModel
     public string[]? Tags { get; set; }
 
     // Phải có ít nhất 1 bài hát mới tạo được playlist
-    [MinLength(1)]
     public IEnumerable<int> TrackIds { get; set; } = null!;
 }

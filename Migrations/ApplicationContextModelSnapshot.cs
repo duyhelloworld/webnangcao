@@ -309,6 +309,9 @@ namespace webnangcao.Migrations
                     b.Property<string>("Tags")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("TrackCount")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AuthorId");

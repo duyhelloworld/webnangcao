@@ -87,30 +87,17 @@ public class PlaylistController : ControllerBase
     [HttpPost]
     [AppAuthorize(ERole.USER)]
     public async Task<IActionResult> AddNew(
-        [FromForm] string playlistJson,
-        [FromForm] IFormFile? fileArtwork)
+        [FromForm] string model,
+        [FromForm] IFormFile? artwork)
     {
-        var model = JsonSerializer.Deserialize<PlaylistInsertModel>(playlistJson)
+        var playlistInsertModel = JsonSerializer.Deserialize<PlaylistInsertModel>(model)
             ?? throw new AppException(HttpStatusCode.BadRequest, "Dữ liệu không hợp lệ");
         var userId = User.FindFirstValue("userid");
         if (userId != null && long.TryParse(userId, out long uid))
         {
-            return Ok(await _service.AddNew(model, fileArtwork, uid));
+            return Ok(await _service.AddNew(playlistInsertModel, artwork, uid));
         }
         return Forbid();
-    }
-
-    [HttpPut("{playlistId}/like")]
-    [AppAuthorize(ERole.USER, ERole.ADMIN, ERole.SUPERADMIN)]
-    public async Task Like(int playlistId)
-    {
-        var userId = User.FindFirstValue("userid");
-        if (userId != null && long.TryParse(userId, out long uid))
-        {
-            await _service.Like(playlistId, uid);
-            return;
-        }
-        throw new AppException(HttpStatusCode.Forbidden, "Bạn không có quyền thực hiện hành động này");
     }
 
     [HttpPost("{playlistId}/repost")]
@@ -126,27 +113,55 @@ public class PlaylistController : ControllerBase
         throw new AppException(HttpStatusCode.Forbidden, "Bạn không có quyền thực hiện hành động này");
     }
 
+    [HttpPut("{playlistId}/like")]
+    [AppAuthorize(ERole.USER, ERole.ADMIN)]
+    public async Task Like(int playlistId)
+    {
+        var userId = User.FindFirstValue("userid");
+        if (userId != null && long.TryParse(userId, out long uid))
+        {
+            await _service.Like(playlistId, uid);
+            return;
+        }
+        throw new AppException(HttpStatusCode.Forbidden, "Bạn không có quyền thực hiện hành động này");
+    }
+
+
     [HttpPut("{playlistId}/information")]
     [AppAuthorize(ERole.USER)]
-    public async Task UpdateInfomation([FromForm] string jsonModel, IFormFile? fileArtwork, int playlistId)
+    public async Task UpdateInfomation(
+        [FromForm] string model,
+        IFormFile? artwork, 
+        [FromRoute] int playlistId)
     {
-        var model = JsonSerializer.Deserialize<PlaylistUpdateModel>(jsonModel)
+        var playlistUpdateModel = JsonSerializer.Deserialize<PlaylistUpdateModel>(model)
             ?? throw new AppException(HttpStatusCode.BadRequest, "Dữ liệu không hợp lệ");
         var userId = User.FindFirstValue("userid");
         if (userId != null && long.TryParse(userId, out long uid))
         {
-            await _service.UpdateInfomation(model, fileArtwork, uid);
+            await _service.UpdateInfomation(playlistId, playlistUpdateModel, artwork, uid);
+            return;
         }
+        throw new AppException(HttpStatusCode.Forbidden, "Bạn không có quyền thực hiện hành động này");
     }
 
-    [HttpDelete("{playlistId}")]
+    [HttpDelete("user/{playlistId}")]
     [AppAuthorize(ERole.USER)]
-    public async Task Delete(int playlistId)
+    public async Task DeleteByCreator(int playlistId)
     {
         var userId = User.FindFirstValue("userid");
         if (userId != null && long.TryParse(userId, out long uid))
         {
             await _service.DeleteByCreator(playlistId, uid);
+            return;
         }
+        throw new AppException(HttpStatusCode.Forbidden, "Bạn không có quyền thực hiện hành động này");
+    }
+
+    [HttpDelete("admin/{playlistId}")]
+    [AppAuthorize(ERole.ADMIN)]
+    public async Task DeleteByAdmin(int playlistId)
+    {
+        await _service.DeleteByAdmin(playlistId);
     }
 }

@@ -57,20 +57,21 @@ public class FileTool
             return;
         }
         var fileInputName = fileInput.FileName;
-        if (Path.GetExtension(fileInputName) != "jpg" || 
-            Path.GetExtension(fileInputName) != "png")
+        if (Path.GetExtension(fileInputName) == ".jpg" ||
+            Path.GetExtension(fileInputName) == ".png")
         {
-            throw new AppException(HttpStatusCode.UnsupportedMediaType,
-                "Ảnh không đúng định dạng", "Vui lòng chọn ảnh đuôi .png hoặc .jpg");
+            var filePath = Path.Combine(folder, fileInputName);
+            if (File.Exists(filePath))
+            {
+                throw new AppException(HttpStatusCode.BadRequest,
+                    "Ảnh này đã tồn tại", "Vui lòng chọn ảnh khác");
+            }
+            using var stream = new FileStream(filePath, FileMode.Create);
+            await fileInput.CopyToAsync(stream);
+            return;
         }
-        var filePath = Path.Combine(folder, fileInputName);
-        if (File.Exists(filePath))
-        {
-            throw new AppException(HttpStatusCode.BadRequest,
-                "Ảnh này đã tồn tại", "Vui lòng chọn ảnh khác");
-        }
-        using var stream = new FileStream(filePath, FileMode.Create);
-        await fileInput.CopyToAsync(stream);
+        throw new AppException(HttpStatusCode.UnsupportedMediaType,
+            "Ảnh không đúng định dạng", "Vui lòng chọn ảnh đuôi .png hoặc .jpg");
     }
 
     public static Stream ReadAvatar(string? fileName)
@@ -91,7 +92,7 @@ public class FileTool
 
     public static async Task SaveTrack(IFormFile file)
     {
-        if (file.ContentType != "audio/mpeg")
+        if (file.ContentType != "audio/mpeg" || !file.FileName.EndsWith(".mp3"))
         {
             throw new AppException(HttpStatusCode.UnsupportedMediaType,
                 "File không đúng định dạng", "Vui lòng chọn file đuôi .mp3");
