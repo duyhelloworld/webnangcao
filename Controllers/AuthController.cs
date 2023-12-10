@@ -1,13 +1,12 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using webnangcao.Entities.Enumerables;
 using webnangcao.Models.Securities;
 using webnangcao.Services;
 
 namespace webnangcao.Controllers;
 
-[Route("[controller]")]
 [ApiController]
+[Route("[controller]")]
 public class AuthController : ControllerBase
 {
     private readonly IAuthService _service;
@@ -17,27 +16,38 @@ public class AuthController : ControllerBase
     }
 
     [HttpGet]
-    public IActionResult Get()
+    public IActionResult GetRoot()
     {
-        return BadRequest("Truy cập postman.com để dùng POST");
+        return BadRequest("Truy cập <a href=\"postman.com\">Postman</a> để dùng API");
     }
 
     [HttpPost("signup")]
-    public async Task<IActionResult> SignUp([FromBody] SignupModel model)
+    public async Task<IActionResult> Signup([FromBody] SignupModel model)
     {
-        return Ok(await _service.SignUpAsync(model, "User"));
+        return Ok(await _service.SignUpAsync(model));
     }
 
-    [Authorize(Roles = nameof(ERole.Admin) + "," + nameof(ERole.SuperAdmin))]
-    [HttpPost("signup/{role:minlength(1)}")]
-    public async Task<IActionResult> SignUp([FromBody] SignupModel model, [FromRoute] string role)
-    {
-        return Ok(await _service.SignUpAsync(model, role));
-    }
-
-    [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody] LoginModel model)
+    [HttpPost("signin")]
+    public async Task<IActionResult> Signin([FromBody] SigninModel model)
     {
         return Ok(await _service.SignInAsync(model));
+    }
+
+    [HttpPost("validate")]
+    public async Task<bool> Validate()
+    {
+        if (Request.Headers.ContainsKey("Authorization"))
+        {
+            return await _service.ValidateToken(
+                Request.Headers["Authorization"]!.First(au => au!.StartsWith("Bearer"))!
+                .Replace("Bearer ", ""));     
+        }
+        return false;
+    }
+
+    [HttpGet("signout")]
+    public async Task Signout()
+    {
+        await _service.SignOutAsync();
     }
 }

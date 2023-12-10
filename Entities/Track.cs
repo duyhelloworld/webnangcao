@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
-using webnangcao.Entities.Enumerables;
-using webnangcao.Entities.Joins;
+using System.ComponentModel.DataAnnotations.Schema;
+using webnangcao.Enumerables;
+using webnangcao.Tools;
 
 namespace webnangcao.Entities;
 
@@ -9,32 +10,27 @@ public class Track
     [Key]
     public int Id { get; set; }
 
-    [StringLength((int)EMaxValue.TrackNameLength)]
+    [Max(EMaxValue.NameLength_Track)]
     public string Name { get; set; } = null!;
 
-    [StringLength((int)EMaxValue.DirectoryLength)]
-    public string Directory { get; set; } = null!;
+    [Max(EMaxValue.DirectoryLength)]
+    public string FileName { get; set; } = null!;
 
+    [Max(EMaxValue.DirectoryLength)]
+    public string? ArtWork { get; set; }
 
-    [DataType(DataType.DateTime)]
-    public DateTime UploadAt { get; set; } = DateTime.Now;
+    public DateTime UploadAt { get; set; }
+
+    public bool IsPrivate { get; set; }
+
+    public int ListenCount { get; set; }
+    public int LikeCount { get; set; }
+    public int CommentCount { get; set; }
 
     [MaxLength]
     public string? Description { get; set; }
 
-
-    [StringLength((int)EMaxValue.DirectoryLength)]
-    public string? ArtWorkDirectory { get; set; }
-
-
-    public ICollection<Track_Category> Categories { get; set; } 
-        = new HashSet<Track_Category>();
-    
-    public ICollection<Comment> Comments { get; set; } 
-        = new HashSet<Comment>();
-
-    public ICollection<Track_Playlist> Playlists { get; set; } 
-        = new HashSet<Track_Playlist>();
-    public ICollection<UserTrackAction> UserActions { get; set; } 
-        = new HashSet<UserTrackAction>();
+    public long AuthorId { get; set; }
+    [ForeignKey("AuthorId")]
+    public User Author { get; set; } = null!;
 }

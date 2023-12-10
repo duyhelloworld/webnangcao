@@ -1,38 +1,37 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using webnangcao.Entities.Enumerables;
-using webnangcao.Entities.Joins;
+using webnangcao.Enumerables;
+using webnangcao.Tools;
+using Microsoft.EntityFrameworkCore;
 
 namespace webnangcao.Entities;
 
+[Index("Name","AuthorId", IsUnique = true)]
 public class Playlist
 {
     [Key]
     public int Id { get; set; }
 
-    [StringLength((int) EMaxValue.PlaylistNameLength)]
+    [Max(EMaxValue.NameLength_Playlist)]
     public string Name { get; set; } = null!;
 
     public DateTime CreatedAt { get; set; }
 
-    public DateTime LastUpdatedAt { get; set; } = DateTime.Now;
+    public bool IsPrivate { get; set; }
+
+    public int LikeCount { get; set; }
+    public int RepostCount { get; set; }
+
+    public long AuthorId { get; set; }
+    [ForeignKey("AuthorId")]
+    public User Author { get; set; } = null!;
 
     [MaxLength]
     public string? Description { get; set; }
 
-    [StringLength((int)EMaxValue.DirectoryLength)]
-    public string? ArtWorkDirectory { get; set; }
-
-    public string CreateUserId { get; set; } = null!;
-    [ForeignKey("CreateUserId")]
-    public User CreateUser { get; set; } = null!;
+    [Max(EMaxValue.DirectoryLength)]
+    public string ArtWork { get; set; } = "default-artwork.jpg";
 
     [MaxLength]
     public string? Tags { get; set; }
-
-    public ICollection<Track_Playlist> Tracks { get; set; } 
-        = new HashSet<Track_Playlist>();
-
-    public ICollection<UserPlaylistAction> Users { get; set; } 
-        = new HashSet<UserPlaylistAction>();
 }

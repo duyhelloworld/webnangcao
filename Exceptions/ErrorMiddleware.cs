@@ -1,3 +1,4 @@
+using System.Net.Mime;
 
 namespace webnangcao.Exceptions;
 
@@ -15,19 +16,19 @@ public class ErrorMiddleware : IMiddleware
             context.Response.ContentType = "application/json";
             await context.Response.WriteAsJsonAsync(new ResponseError()
             {
-                Reasons = ex.Reasons,
-                RecommmendSolutions = ex.RecommmendSolutions,
+                Reason = ex.Reason,
+                RecommmendSolution = ex.RecommmendSolution,
                 DataToFix = ex.DataToFix
             });
         }
         catch (Exception ex)
         {
             context.Response.StatusCode = 500;
-            context.Response.ContentType = "application/json";
+            context.Response.ContentType = MediaTypeNames.Application.Json;
             await context.Response.WriteAsJsonAsync(new ResponseError()
             {
-                Reasons = new List<string>() {"Có lỗi xảy ra với hệ thống"},
-                RecommmendSolutions = new List<string>() { "Vui lòng liên hệ admin để biết thêm chi tiết." }
+                Reason = "Có lỗi xảy ra với hệ thống",
+                RecommmendSolution = "Vui lòng liên hệ admin để biết thêm chi tiết."
             });
             Console.WriteLine(ex.ToString());
         }

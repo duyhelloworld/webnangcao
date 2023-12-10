@@ -1,29 +1,21 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
-using webnangcao.Entities.Enumerables;
-using webnangcao.Entities.Joins;
+using webnangcao.Enumerables;
+using webnangcao.Tools;
 
 namespace webnangcao.Entities;
-
-public class User : IdentityUser
+public class User : IdentityUser<long>
 {
-    [Key]
-    public override string Id { get; set; } = Guid.NewGuid().ToString();
+    public override long Id { get; set; }
 
-    public string? Address { get; set; }
+    [Required]
+    public override string? UserName  { get; set; }     
+    [Required]
+    public override string? Email { get; set ; } 
 
-    [StringLength((int)EMaxValue.AddressLength)]
-    public string? FullName { get; set; }
+    public string? FirstName { get; set; }
+    public string? LastName { get; set; }
 
-    [StringLength((int)EMaxValue.DirectoryLength)]
-    public string? AvatarDirectory { get; set; }
-
-    public ICollection<Comment> Comments { get; set; } 
-        = new HashSet<Comment>();
-
-    public ICollection<UserTrackAction> TrackActions { get; set; } 
-        = new HashSet<UserTrackAction>();
-
-    public ICollection<UserPlaylistAction> Playlists { get; set; } 
-        = new HashSet<UserPlaylistAction>();
+    [Max(EMaxValue.DirectoryLength)]
+    public string? Avatar { get; set; }
 }

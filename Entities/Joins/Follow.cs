@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
 namespace webnangcao.Entities.Joins;
@@ -7,16 +6,14 @@ namespace webnangcao.Entities.Joins;
 [PrimaryKey("FollowedUserId", "FollowingUserId")]
 public class Follow
 {
-    public string FollowingUserId { get; set; } = null!;
-    [ForeignKey("FollowingUserId")]
+    public long FollowingUserId { get; set; }
     [DeleteBehavior(DeleteBehavior.NoAction)]
     public User FollowingUser { get; set; } = null!;
 
-    public string FollowedUserId { get; set; } = null!;
-    [ForeignKey("FollowedUserId")]
+    public long FollowedUserId { get; set; }
     [DeleteBehavior(DeleteBehavior.NoAction)]
     public User FollowedUser { get; set; } = null!;
 
     [DataType(DataType.DateTime)]
-    public DateTime StartedAt { get; set; } = DateTime.Now;
+    public DateTime FollowedAt { get; set; }
 }

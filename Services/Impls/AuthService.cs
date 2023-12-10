@@ -7,17 +7,17 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using webnangcao.Entities;
 using webnangcao.Exceptions;
-using webnangcao.Entities.Enumerables;
+using webnangcao.Enumerables;
 using webnangcao.Tools;
+using Microsoft.Extensions.Options;
 
-namespace webnangcao.Services.Impl;
+namespace webnangcao.Services.Impls;
 
 public class AuthService : IAuthService
 {
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signInManager;
     private readonly IConfiguration _config;
-
     public AuthService(UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration config)
     {
         _userManager = userManager;
@@ -25,8 +25,9 @@ public class AuthService : IAuthService
         _config = config;
     }
 
-    public async Task<ResponseModel> SignInAsync(LoginModel model)
+    public async Task<ResponseModel> SignInAsync(SigninModel model)
     {
+        System.Console.WriteLine("Signin: " + model.UserName + " " + model.Password);
         var user = await _userManager.FindByNameAsync(model.UserName) 
             ?? throw new AppException(HttpStatusCode.NotFound, 
                 "Tài khoản không tồn tại", "Hãy đăng kí trước");
@@ -34,75 +35,107 @@ public class AuthService : IAuthService
         var result = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe, true);
         if (!result.Succeeded)
         {
+            Console.WriteLine("Error: " + result.ToString());
             return new ResponseModel()
             {
                 IsSucceed = false,
                 Data = "Tài khoản hoặc mật khẩu không chính xác"
             };
         }
-
-        var highestRole = (await _userManager.GetRolesAsync(user))
-            .Select(r => ERoleTool.ToERole(r)).Max();
-        var refreshToken = await _userManager.GenerateUserTokenAsync(user, "Default", "refresh_token");
+        var highestRole = ERoleTool.GetHighestRole(await _userManager.GetRolesAsync(user));
         return new ResponseModel()
         {
             IsSucceed = true,
-            Data = new SuccessSignupModel()
-            {
-                UserId = user.Id,
-                AccessToken = GenerateJwtToken(user, highestRole),
-                RefreshToken = refreshToken
-            }
+            Data = GenerateJwtToken(user, highestRole)
         };
     }
 
-    public async Task<ResponseModel> SignUpAsync(SignupModel model, string role)
+    public async Task<ResponseModel> SignUpAsync(SignupModel model)
     {
-        var User = new User()
+        var user = new User()
         {
             UserName = model.UserName,
             Email = model.Email,
             PhoneNumber = model.PhoneNumber,
-            FullName = model.FullName,
-            Address = model.Address
         };
-
-        var result = await _userManager.CreateAsync(User, model.Password);
+        var result = await _userManager.CreateAsync(user, model.Password);
         if (!result.Succeeded)
         {
-            throw new AppException(HttpStatusCode.BadRequest, "Đăng kí không thành công", "Hãy thử lại");
+            foreach (var err in result.Errors)
+            {
+                switch (err.Code)
+                {
+                    case "DuplicateUserName":
+                        throw new AppException(HttpStatusCode.Conflict, 
+                                $"Tên đăng nhập '{model.UserName}' đã tồn tại", "Hãy thử lại tên khác");
+                    case "DuplicateEmail":
+                        throw new AppException(HttpStatusCode.Conflict, 
+                                $"Email '{model.Email}' đã tồn tại", "Hãy thử lại email khác");
+                    default:
+                        Console.WriteLine($"Error: {err.Description}");
+                        throw new AppException(HttpStatusCode.BadRequest, 
+                            "Đăng kí không thành công", "Hãy thử lại");
+                }
+            }
         }
-        var erole = ERoleTool.ToERole(role);
-        await _userManager.AddToRoleAsync(User, erole.ToString());
-        var refreshToken = await _userManager.GenerateUserTokenAsync(User, "Default", "refresh_token");
+        await _userManager.AddToRoleAsync(user, ERole.USER.ToString());
         return new ResponseModel()
         {
             IsSucceed = true,
-            Data = new SuccessSignupModel()
-            {
-                AccessToken = GenerateJwtToken(User, erole),
-                RefreshToken = refreshToken
-            }
+            Data = GenerateJwtToken(user, ERole.USER)
         };
     }
 
-    private string GenerateJwtToken(User User, ERole role)
+    private string GenerateJwtToken(User user, ERole erole)
     {
-        var identity = new ClaimsIdentity(new[]
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var claims = new ClaimsIdentity(new[]
         {
-            new Claim(ClaimTypes.NameIdentifier, User.Id),
-            new Claim(ClaimTypes.Name, User.UserName!),
-            new Claim(ClaimTypes.Role, role.ToString())
+            new Claim("userid", user.Id.ToString(), ClaimValueTypes.Integer64),
+            new Claim(ClaimTypes.Role, ERoleTool.ToString(erole)),
+            new Claim(ClaimTypes.Name, user.UserName!),
+            new Claim(ClaimTypes.Email, user.Email!),
         });
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Authentication:Jwt:Key"]!));
-        var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+        var credentials = new SigningCredentials(
+            new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(_config["JwtInfo:Key"]!)),
+                SecurityAlgorithms.HmacSha512Signature);
+        var expireTime = DateTime.UtcNow.AddDays(
+            _config.GetSection("JwtInfo:ExpireDays").Get<int>());
+        var tokenDescriptor = new SecurityTokenDescriptor
+        {
+            Subject = claims,
+            Expires = expireTime,
+            SigningCredentials = credentials,
+            Issuer = _config["JwtInfo:Issuer"]!,
+        };
+        var token = tokenHandler.CreateJwtSecurityToken(tokenDescriptor);
+        return tokenHandler.WriteToken(token);
+    }
+    
+    public async Task<bool> ValidateToken(string token) 
+    {
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var result = await tokenHandler.ValidateTokenAsync(token, new TokenValidationParameters()
+        {
+            ValidIssuer = _config["JwtInfo:Issuer"]!,
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(_config["JwtInfo:Key"]!)),
+            ValidateIssuer = true,
+            ValidateAudience = false,
+            ValidateIssuerSigningKey = true,
+            ValidateLifetime = true
+        });
+        if (!result.IsValid)
+        {
+            Console.WriteLine(result.Exception.ToString());
+            return false;
+        }
+        return true;
+    }
 
-        var token = new JwtSecurityToken(
-            _config["Jwt:Issuer"] ?? "",
-            _config["Jwt:Audience"] ?? "",
-            identity.Claims,
-            expires: DateTime.Now.AddMinutes(30),
-            signingCredentials: credentials);
-        return new JwtSecurityTokenHandler().WriteToken(token);
+    public async Task SignOutAsync()
+    {
+        await _signInManager.SignOutAsync();
     }
 }

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using webnangcao.Entities;
@@ -5,7 +6,7 @@ using webnangcao.Entities.Joins;
 
 namespace webnangcao.Context;
 
-public class ApplicationContext : IdentityDbContext<User>
+public class ApplicationContext : IdentityDbContext<User, Role, long>
 {
     public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
     {
@@ -19,12 +20,13 @@ public class ApplicationContext : IdentityDbContext<User>
     // Bảng quan hệ
     public DbSet<Follow> Follows { get; set; } = null!;
     public DbSet<Comment> Comments { get; set; } = null!;
-    public DbSet<UserTrackAction> UserTrackActions { get; set; } = null!;
-    public DbSet<UserPlaylistAction> UserPlaylistActions { get; set; } = null!;
 
     // Bảng liên kết n-n
-    public DbSet<Track_Playlist> Track_Playlists { get; set; } = null!;
-    public DbSet<Track_Category> Track_Categories { get; set; } = null!;
+    public DbSet<TrackPlaylist> TrackPlaylists { get; set; } = null!;
+    public DbSet<TrackCategory> TrackCategories { get; set; } = null!;
+    public DbSet<LikePlaylist> LikePlaylists { get; set; } = null!;
+    public DbSet<LikeTrack> LikeTracks { get; set; } = null!;
+    // public DbSet<Like> Likes { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

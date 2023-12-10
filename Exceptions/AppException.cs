@@ -5,29 +5,25 @@ namespace webnangcao.Exceptions;
 public class AppException : Exception
 {
     public HttpStatusCode StatusCode { get; set; } = HttpStatusCode.InternalServerError;
-    public IEnumerable<string> Reasons { get; set; } = new List<string>();
-    public IEnumerable<string>? RecommmendSolutions { get; set; } = new List<string>();
+    public string Reason { get; set; } = "";
+    public string? RecommmendSolution { get; set; } = "";
     public object? DataToFix { get; set; }
 
-    public AppException(HttpStatusCode statusCode, string reason, object data)
+    public AppException(HttpStatusCode statusCode, string reason)
     {
         StatusCode = statusCode;
-        Reasons = new List<string>() { reason };
-        DataToFix = data;
+        Reason = reason;
     }
 
-    public AppException(HttpStatusCode statusCode, IEnumerable<string> reasons, IEnumerable<string> recommendSolutions)
+    public AppException(HttpStatusCode statusCode, string reason, string solution)
+        : this(statusCode, reason)
     {
-        StatusCode = statusCode;
-        Reasons = reasons;
-        RecommmendSolutions = recommendSolutions;
+        RecommmendSolution = solution;
     }
-    
-    public AppException(HttpStatusCode statusCode, IEnumerable<string> reasons, IEnumerable<string> recommendSolutions, object data)
+
+    public AppException(HttpStatusCode statusCode, string reason, string recommendSolution, object data)
+        : this(statusCode, reason, recommendSolution)
     {
-        StatusCode = statusCode;
-        Reasons = reasons;
-        RecommmendSolutions = recommendSolutions;
         DataToFix = data;
     }
 }

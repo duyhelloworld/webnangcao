@@ -1,4 +1,4 @@
-using webnangcao.Entities.Enumerables;
+using webnangcao.Enumerables;
 
 namespace webnangcao.Tools;
 
@@ -6,12 +6,12 @@ public class ERoleTool
 {
     public static ERole ToERole(string roleString)
     {
-        return roleString.ToLower().Trim() switch
+        return roleString.ToLower() switch
         {
-            "superadmin" => ERole.SuperAdmin,
-            "admin" => ERole.Admin,
-            "user" => ERole.User,
-            _ => ERole.User,
+            "superadmin" => ERole.SUPERADMIN,
+            "admin" => ERole.ADMIN,
+            "user" => ERole.USER,
+            _ => ERole.USER,
         };
     }
 
@@ -20,13 +20,13 @@ public class ERoleTool
         return erole.ToString();
     }
 
-    public static ERole GetHighestRole(string[] roles)
+    public static ERole GetHighestRole(IList<string> roles)
     {
-        if (roles.Contains("SuperAdmin"))
-            return ERole.SuperAdmin;
-        else if (roles.Contains("Admin"))
-            return ERole.Admin;
+        if (roles.FirstOrDefault(r => string.Equals(r, "SUPERADMIN", StringComparison.OrdinalIgnoreCase)) != null)
+            return ERole.SUPERADMIN;
+        else if (roles.FirstOrDefault(r => string.Equals(r, "ADMIN", StringComparison.OrdinalIgnoreCase)) != null)
+            return ERole.ADMIN;
         else
-            return ERole.User;
+            return ERole.USER;
     }
 }
