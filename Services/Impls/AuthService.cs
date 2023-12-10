@@ -9,7 +9,6 @@ using webnangcao.Entities;
 using webnangcao.Exceptions;
 using webnangcao.Enumerables;
 using webnangcao.Tools;
-using Microsoft.Extensions.Options;
 
 namespace webnangcao.Services.Impls;
 
@@ -27,7 +26,6 @@ public class AuthService : IAuthService
 
     public async Task<ResponseModel> SignInAsync(SigninModel model)
     {
-        System.Console.WriteLine("Signin: " + model.UserName + " " + model.Password);
         var user = await _userManager.FindByNameAsync(model.UserName) 
             ?? throw new AppException(HttpStatusCode.NotFound, 
                 "Tài khoản không tồn tại", "Hãy đăng kí trước");
@@ -35,7 +33,7 @@ public class AuthService : IAuthService
         var result = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe, true);
         if (!result.Succeeded)
         {
-            Console.WriteLine("Error: " + result.ToString());
+            Console.WriteLine("Error: " + result);
             return new ResponseModel()
             {
                 IsSucceed = false,
@@ -128,7 +126,6 @@ public class AuthService : IAuthService
         });
         if (!result.IsValid)
         {
-            Console.WriteLine(result.Exception.ToString());
             return false;
         }
         return true;
@@ -137,5 +134,34 @@ public class AuthService : IAuthService
     public async Task SignOutAsync()
     {
         await _signInManager.SignOutAsync();
+    }
+
+    public async Task<ResponseModel> ChangePasswordAsync(long userId, ChangePasswordModel model)
+    {
+        var user = await _userManager.FindByIdAsync(userId.ToString()) 
+            ?? throw new AppException(HttpStatusCode.NotFound, 
+                "Tài khoản không tồn tại", "Hãy đăng kí trước");
+        var result = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
+        if (!result.Succeeded)
+        {
+            foreach (var err in result.Errors)
+            {
+                switch (err.Code)
+                {
+                    case "PasswordMismatch":
+                        throw new AppException(HttpStatusCode.BadRequest, 
+                                "Mật khẩu cũ không chính xác", "Hãy thử lại");
+                    default:
+                        Console.WriteLine($"Error: {err.Description}");
+                        throw new AppException(HttpStatusCode.BadRequest, 
+                            "Đổi mật khẩu không thành công", "Hãy thử lại");
+                }
+            }
+        }
+        return new ResponseModel()
+        {
+            IsSucceed = true,
+            Data = "Đổi mật khẩu thành công"
+        };
     }
 }

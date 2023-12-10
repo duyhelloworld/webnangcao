@@ -1,18 +1,22 @@
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
 namespace webnangcao.Entities.Joins;
+
 [Table("LikePlaylist")]
-[PrimaryKey("Id")]
 public class LikePlaylist
 {    
+    [Key]
     public int Id { get; set; }
+
     public long UserId { get; set; }
-    public int PlaylistId { get; set; }
     [ForeignKey("UserId")]
     [DeleteBehavior(DeleteBehavior.NoAction)]
-    public virtual User User { get; set; }
+    public User User { get; set; } = null!;
+
+    public int PlaylistId { get; set; }
     [ForeignKey("PlaylistId")]
     [DeleteBehavior(DeleteBehavior.NoAction)]
-    public virtual Playlist Playlist { get; set; }
+    public Playlist Playlist { get; set; } = null!;
 }

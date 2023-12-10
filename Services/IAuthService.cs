@@ -12,4 +12,6 @@ public interface IAuthService
     Task<bool> ValidateToken(string token);
 
     Task SignOutAsync();
+
+    Task<ResponseModel> ChangePasswordAsync(long userId, ChangePasswordModel model);
 }

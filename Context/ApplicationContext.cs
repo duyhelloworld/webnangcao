@@ -26,7 +26,6 @@ public class ApplicationContext : IdentityDbContext<User, Role, long>
     public DbSet<TrackCategory> TrackCategories { get; set; } = null!;
     public DbSet<LikePlaylist> LikePlaylists { get; set; } = null!;
     public DbSet<LikeTrack> LikeTracks { get; set; } = null!;
-    // public DbSet<Like> Likes { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

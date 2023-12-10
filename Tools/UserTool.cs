@@ -10,6 +10,6 @@ public class UserTool
             return user.FirstName + " " + user.LastName;
         if (user.UserName != null)
             return user.UserName;
-        return "Không rõ";
+        return "Ẩn danh";
     }
 }

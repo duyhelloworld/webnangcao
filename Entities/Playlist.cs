@@ -21,6 +21,10 @@ public class Playlist
 
     public int LikeCount { get; set; }
     public int RepostCount { get; set; }
+    public int TrackCount { get; set; }
+
+    [Max(EMaxValue.DirectoryLength)]
+    public string ArtWork { get; set; } = null!;
 
     public long AuthorId { get; set; }
     [ForeignKey("AuthorId")]
@@ -28,9 +32,6 @@ public class Playlist
 
     [MaxLength]
     public string? Description { get; set; }
-
-    [Max(EMaxValue.DirectoryLength)]
-    public string ArtWork { get; set; } = "default-artwork.jpg";
 
     [MaxLength]
     public string? Tags { get; set; }
