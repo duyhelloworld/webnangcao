@@ -17,7 +17,10 @@
 - ASP.NET Core 7.0
 - SQL Server 2022
 
-## Cài đặt
+## Cài đặt để Code Front-end
+- Ở file [README.Development](README.Development.md)
+
+## Cài đặt (Cho User)
 - Cài [NodeJS](https://nodejs.org/dist/v20.8.1/node-v20.8.1-x64.msi) phiên bản 20.8.1
 - Cài [.NET 7.0 SDK](https://dotnet.microsoft.com/download/dotnet/7.0)
 - Clone project về máy
