@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace webnangcao.Migrations
 {
     /// <inheritdoc />
-    public partial class TestApp : Migration
+    public partial class NewMigra : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
