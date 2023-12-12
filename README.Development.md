@@ -21,13 +21,16 @@
 
 - Chạy lệnh `npm install` để cài đặt các package cần thiết
 
+- Chạy lệnh `dotnet restore` để cài đặt các package cần thiết
+(Nếu có bug NU1100 thì chạy lệnh `dotnet nuget locals all --clear` và `dotnet nuget sources add -n nuget.org -s https://api.nuget.org/v3/index.json` rồi restore)
+
 - Chèn dữ liệu vào database qua các file .sql trong [đây](/Assets/sql/)
 (Mở bằng SQL Server Management Studio và chạy toàn bộ lệnh trong file)
-> Thứ tự : User.sql ==> Table.sql ==> Data.sql
+> Thứ tự : User.sql ==> Data.sql
 
 - Chạy project bằng cách trở về thư mục chính `cd ..` và lệnh `dotnet run` 
 ![](/.github/images/ketquachaylenh.png)
 
-> NOTE: Nếu có nhu cầu, có thể down nhạc trên [soundcloud](https://soundcloud.com/) bằng [link](https://vi.savefrom.net/12-cach-tai-nhac-soundcloud-20.html) và thêm vào thư mục [music](/Assets/musics/)
+- Nếu lỗi `Could not obtain ...` thì restart lại SQL Server
 
-<!-- "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.SpaProxy" -->
+> NOTE: Nếu có nhu cầu, có thể down nhạc trên [soundcloud](https://soundcloud.com/) bằng [link](https://vi.savefrom.net/12-cach-tai-nhac-soundcloud-20.html) và thêm vào thư mục [music](/Assets/musics/)
