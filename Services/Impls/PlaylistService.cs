@@ -181,6 +181,8 @@ public class PlaylistService : IPlaylistService
         else
         {
             playlist.LikeCount--;
+            if (playlist.LikeCount < 0) 
+                playlist.LikeCount = 0;
             _context.LikePlaylists.Remove(like);
         }
         await _context.SaveChangesAsync();
