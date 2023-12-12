@@ -1,4 +1,4 @@
--- Active: 1698578533477@@127.0.0.1@1433@webnangcao
+-- Active: 1702345088705@@127.0.0.1@1433@webnangcao
 INSERT INTO [Categories] (Name, Description)
 VALUES
 ('Rock', 'Nhạc rock là một thể loại nhạc có nguồn gốc từ Hoa Kỳ vào cuối những năm 1940 và đầu những năm 1950. Nhạc rock thường được kết hợp với các nhạc cụ điện tử như guitar điện, bass điện và trống điện.'),
@@ -37,8 +37,6 @@ VALUES
 ('Bài hát 8', '8.mp3', 'default-artwork.jpg', '2023-10-10 09:10:12', 'false', 0, 0, 0, 'Bài hát 8', 1),
 ('Bài hát 9', '9.mp3', 'default-artwork.jpg', '2023-10-10 09:10:12', 'false', 0, 0, 0, 'Bài hát 9', 2),
 ('Bài hát 10', '10.mp3', 'default-artwork.jpg', '2023-10-10 09:10:12', 'false', 0, 0, 0, 'Bài hát 10', 3);
-
-
 
 INSERT INTO Tracks_Categories (TrackId, CategoryId)
 VALUES
@@ -132,7 +130,6 @@ VALUES
         (7, 5);
 INSERT INTO [Tracks_Playlists] (PlaylistId, TrackId)
 VALUES 
-<<<<<<< HEAD
         (1, 1),
         (1, 2),
         (1, 5),
