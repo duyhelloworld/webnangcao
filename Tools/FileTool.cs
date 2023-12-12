@@ -18,7 +18,7 @@ public class FileTool
     }
     
     private static readonly string ArtWorkFolderPath
-        = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
+        = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "artworks");
     
     private static readonly string TrackFolderPath
         = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "musics");

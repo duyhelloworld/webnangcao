@@ -12,8 +12,13 @@ using webnangcao.Context;
 namespace webnangcao.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
+<<<<<<<< HEAD:Migrations/20231212155654_InitialCreate.Designer.cs
     [Migration("20231212155654_InitialCreate")]
     partial class InitialCreate
+========
+    [Migration("20231212135534_NewMigra")]
+    partial class NewMigra
+>>>>>>>> d485faabe0d43c26686ca6e35eb57c820ba62e4b:Migrations/20231212135534_NewMigra.Designer.cs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

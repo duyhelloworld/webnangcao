@@ -1,4 +1,5 @@
 using System.Net;
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using webnangcao.Context;
 using webnangcao.Exceptions;
@@ -20,6 +21,7 @@ public class UserService : IUserService
     public async Task<List<UserResponseModel>> GetAll(int page)
     {
         return await _dbContext.Users
+            .OrderBy(u => u.Id)
             .Skip((page - 1) * PAGE_SIZE)
             .Take(PAGE_SIZE)
             .Select(u => new UserResponseModel
@@ -27,7 +29,7 @@ public class UserService : IUserService
                 Id = u.Id,
                 UserName = u.UserName!,
                 Email = u.Email!,
-                Avatar = u.Avatar,
+                Avatar = UserTool.GetAvatar(u),
                 FullName = UserTool.GetAuthorName(u),
                 PhoneNumber = u.PhoneNumber!
             })
@@ -36,17 +38,15 @@ public class UserService : IUserService
 
     public async Task<UserResponseModel> GetById(long uid)
     {
-        var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == uid);
-        if (user == null)
-        {
-            throw new AppException(HttpStatusCode.NotFound, "Không tồn tại user này");
-        }
+        var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == uid) 
+            ?? throw new AppException(HttpStatusCode.Unauthorized, 
+            "Bạn không đủ quyền truy cập");
         return new UserResponseModel() 
         {
             Id = user.Id,
             UserName = user.UserName!,
             Email = user.Email!,
-            Avatar = user.Avatar,
+            Avatar = UserTool.GetAvatar(user),
             FullName = UserTool.GetAuthorName(user),
             PhoneNumber = user.PhoneNumber!
         };
@@ -54,11 +54,18 @@ public class UserService : IUserService
 
     public async Task Update(long uid, UserUpdateModel model, IFormFile? avatar)
     {
-        var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == uid);
-        if (user == null)
-        {
-            throw new AppException(HttpStatusCode.NotFound, "Không tồn tại user này");
-        }
+        if (await _dbContext.Users.AnyAsync(u => u.UserName == model.UserName))
+            throw new AppException(HttpStatusCode.BadRequest, 
+                "Tên đăng nhập đã tồn tại");
+        if (await _dbContext.Users.AnyAsync(u => u.Email == model.Email))
+            throw new AppException(HttpStatusCode.BadRequest, 
+                "Email đã tồn tại");
+        if (await _dbContext.Users.AnyAsync(u => u.PhoneNumber == model.PhoneNumber))
+            throw new AppException(HttpStatusCode.BadRequest, 
+                "Số điện thoại đã tồn tại");
+        var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == uid)
+            ?? throw new AppException(HttpStatusCode.Forbidden, 
+                "Bạn không đủ quyền truy cập");
         user.UserName = model.UserName;
         user.Email = model.Email;
         user.PhoneNumber = model.PhoneNumber;
@@ -72,11 +79,11 @@ public class UserService : IUserService
 
     public async Task Disable(long uid)
     {
-        var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == uid);
-        if (user == null)
-        {
-            throw new AppException(HttpStatusCode.NotFound, "Không tồn tại user này");
-        }
+        var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == uid) 
+            ?? throw new AppException(HttpStatusCode.NotFound, "Bạn không đủ quyền truy cập");
+        if (user.LockoutEnabled)
+            return;
+        
         // Khoá 1 tháng
         user.LockoutEnabled = true;
         user.LockoutEnd = DateTime.Now.AddDays(30);

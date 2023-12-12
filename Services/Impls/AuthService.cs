@@ -33,7 +33,14 @@ public class AuthService : IAuthService
         var result = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe, true);
         if (!result.Succeeded)
         {
-            Console.WriteLine("Error: " + result);
+            if (result.IsLockedOut)
+            {
+                return new ResponseModel()
+                {
+                    IsSucceed = false,
+                    Data = "Tài khoản đã bị khóa"
+                };
+            }
             return new ResponseModel()
             {
                 IsSucceed = false,

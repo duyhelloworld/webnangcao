@@ -72,7 +72,7 @@ VALUES ('Admin', 'admin'),
        ('User', 'user');
 
 INSERT INTO [UserRoles] ([UserId], [RoleId])
-VALUES (2, 1),
+VALUES (1, 1),
        (2, 2),
        (3, 3),
        (4, 3),

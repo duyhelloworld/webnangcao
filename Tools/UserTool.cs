@@ -12,4 +12,11 @@ public class UserTool
             return user.UserName;
         return "Ẩn danh";
     }
+
+    public static string GetAvatar(User user)
+    {
+        if (user.Avatar != null)
+            return user.Avatar;
+        return "default-avatar.jpg";
+    }
 }

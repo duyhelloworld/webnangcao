@@ -24,11 +24,13 @@ public class TrackController : ControllerBase
     {
         return Ok(await _service.GetAll());
     }
+
     [HttpGet("{id}")]
     public async Task<IActionResult> GetTrackById(int id)
     {
         return Ok(await _service.GetById(id));
     }
+
     [HttpGet("user/{id}")]
     // [AppAuthorize(ERole.USER)]
     public async Task<IActionResult> GetTrackByUserId(int id)
@@ -76,6 +78,8 @@ public class TrackController : ControllerBase
         if (userId != null && long.TryParse(userId, out long id) && model != null)
         {
             var updateModel = JsonSerializer.Deserialize<TrackUpdateModel>(model);
+            if (updateModel == null) 
+                return BadRequest();
             await _service.UpdateInfomation(updateModel, fileArtwork, trackId);
             return Ok();
         }
@@ -89,6 +93,8 @@ public class TrackController : ControllerBase
         if (userId != null && long.TryParse(userId, out long id) && model != null)
         {
             var insertModel = JsonSerializer.Deserialize<TrackInsertModel>(model);
+            if (insertModel == null) 
+                return BadRequest();
             await _service.UploadTrack(insertModel, id, fileTrack, fileArtwork);
             return Ok();
         }

@@ -25,6 +25,10 @@ public class UserController : ControllerBase
     [AppAuthorize(ERole.ADMIN)]
     public async Task<IActionResult> GetAll([FromQuery] int page)
     {
+        if (page < 1)
+        {
+            page = 1;
+        }
         return Ok(await _userService.GetAll(page));
     }
 
@@ -36,19 +40,35 @@ public class UserController : ControllerBase
     }
 
     [HttpDelete]
-    [AppAuthorize(ERole.ADMIN, ERole.USER)]
-    public async Task Disable()
+    [AppAuthorize(ERole.USER)]
+    public async Task<IActionResult> Disable()
     {
         var userid = User.FindFirstValue("userid");
         if (userid != null && long.TryParse(userid, out long uid))
         {
             await _userService.Disable(uid);
+            return Ok();
         }
-        throw new AppException(HttpStatusCode.Forbidden, 
-            "Không tìm thấy user");
+        return Forbid();
     }
 
-    [HttpPut("{id}")]
+    [HttpDelete("{id}")]
+    [AppAuthorize(ERole.ADMIN)]
+    public async Task<IActionResult> DisableByAdmin(int id)
+    {
+        var userid = User.FindFirstValue("userid");
+        if (userid != null && long.TryParse(userid, out long uid))
+        {
+            if (uid == id)
+                return BadRequest("Không thể tự khóa chính mình");
+            await _userService.Disable(uid);
+            return Ok("Xoá thành công");
+        }
+        return Forbid();
+    }
+
+
+    [HttpPut]
     [AppAuthorize(ERole.USER)]
     public async Task UpdateInformation(
         [FromForm] string model,
@@ -67,6 +87,6 @@ public class UserController : ControllerBase
             return;
         }
         throw new AppException(HttpStatusCode.Forbidden, 
-            "Không tìm thấy user");
+            "Ban không đủ quyền truy cập");
     }
 }

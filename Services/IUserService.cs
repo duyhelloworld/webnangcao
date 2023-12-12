@@ -11,6 +11,7 @@ public interface IUserService
     // Lấy user theo id
     Task<UserResponseModel> GetById(long uid);
     
+    // Xóa user
     Task Disable(long uid);
     
     // User
