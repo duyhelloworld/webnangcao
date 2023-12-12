@@ -34,12 +34,7 @@ public class PlaylistController : ControllerBase
     [HttpGet("{playlistId}")]
     public async Task<IActionResult> GetPublicById(int playlistId)
     {
-        var rs = await _service.GetPublicById(playlistId);
-        if (rs != null)
-        {
-            return Ok(rs);
-        }
-        return NotFound("Không tìm thấy playlist này");
+        return Ok(await _service.GetPublicById(playlistId));
     }
 
     [HttpGet("admin/all")]
@@ -108,34 +103,34 @@ public class PlaylistController : ControllerBase
 
     [HttpPost("{playlistId}/repost")]
     [AppAuthorize(ERole.USER)]
-    public async Task Repost(int playlistId)
+    public async Task<IActionResult> Repost(int playlistId)
     {
         var userId = User.FindFirstValue("userid");
         if (userId != null && long.TryParse(userId, out long uid))
         {
             await _service.Repost(playlistId, uid);
-            return;
+            return Ok();
         }
-        throw new AppException(HttpStatusCode.Forbidden, "Bạn không có quyền thực hiện hành động này");
+        return Forbid();
     }
 
     [HttpPut("{playlistId}/like")]
     [AppAuthorize(ERole.USER, ERole.ADMIN)]
-    public async Task Like(int playlistId)
+    public async Task<IActionResult> Like(int playlistId)
     {
         var userId = User.FindFirstValue("userid");
         if (userId != null && long.TryParse(userId, out long uid))
         {
             await _service.Like(playlistId, uid);
-            return;
+            return Ok();
         }
-        throw new AppException(HttpStatusCode.Forbidden, "Bạn không có quyền thực hiện hành động này");
+        return Forbid();
     }
 
 
     [HttpPut("{playlistId}/information")]
     [AppAuthorize(ERole.USER)]
-    public async Task UpdateInfomation(
+    public async Task<IActionResult> UpdateInfomation(
         [FromForm] string model,
         IFormFile? artwork, 
         [FromRoute] int playlistId)
@@ -146,22 +141,22 @@ public class PlaylistController : ControllerBase
         if (userId != null && long.TryParse(userId, out long uid))
         {
             await _service.UpdateInfomation(playlistId, playlistUpdateModel, artwork, uid);
-            return;
+            return Ok();
         }
-        throw new AppException(HttpStatusCode.Forbidden, "Bạn không có quyền thực hiện hành động này");
+        return Forbid();
     }
 
     [HttpDelete("user/{playlistId}")]
     [AppAuthorize(ERole.USER)]
-    public async Task DeleteByCreator(int playlistId)
+    public async Task<IActionResult> DeleteByCreator(int playlistId)
     {
         var userId = User.FindFirstValue("userid");
         if (userId != null && long.TryParse(userId, out long uid))
         {
             await _service.DeleteByCreator(playlistId, uid);
-            return;
+            return Ok();
         }
-        throw new AppException(HttpStatusCode.Forbidden, "Bạn không có quyền thực hiện hành động này");
+        return Forbid();
     }
 
     [HttpDelete("admin/{playlistId}")]
