@@ -12,13 +12,8 @@ using webnangcao.Context;
 namespace webnangcao.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-<<<<<<<< HEAD:Migrations/20231201050225_InitialCreate.Designer.cs
-    [Migration("20231201050225_InitialCreate")]
+    [Migration("20231212155654_InitialCreate")]
     partial class InitialCreate
-========
-    [Migration("20231206115640_TestApp")]
-    partial class TestApp
->>>>>>>> origin/quanli-playlist:Migrations/20231206115640_TestApp.Designer.cs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -319,6 +314,9 @@ namespace webnangcao.Migrations
 
                     b.Property<string>("Tags")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TrackCount")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
