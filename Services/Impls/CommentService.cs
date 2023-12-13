@@ -27,6 +27,7 @@ public class CommentService : ICommentService
                 "Không tìm thấy comment này",
                 "Hãy thử lại");
         _context.Comments.Remove(comment);
+        comment.Track.CommentCount--;
         await _context.SaveChangesAsync();
     }
 
@@ -109,14 +110,13 @@ public class CommentService : ICommentService
         return await result.ToListAsync();
     }
 
-    public async Task ReportComment(int commentId, long userid)
+    public async Task ReportComment(int commentId, long userId)
     {
-        System.Console.WriteLine(userid);
         var comment = await _context.Comments.FindAsync(commentId)
             ?? throw new AppException(HttpStatusCode.NotFound,
                 "Không tìm thấy comment này",
                 "Hãy thử lại");
-        if (comment.UserId == userid)
+        if (comment.UserId == userId)
         {
             throw new AppException(HttpStatusCode.Forbidden,
                 "Bạn không thể report comment của chính mình",
@@ -143,7 +143,7 @@ public class CommentService : ICommentService
         comment.IsEdited = true;
         await _context.SaveChangesAsync();
     }
-    public async Task Comment(CommentInsertModel model, long userid, int trackId)
+    public async Task Comment(CommentInsertModel model, long userId, int trackId)
     {
         var track = await _context.Tracks.FindAsync(trackId)
             ?? throw new AppException(HttpStatusCode.NotFound,
@@ -154,7 +154,7 @@ public class CommentService : ICommentService
             Content = model.Content,
             CommentAt = DateTime.Now,
             TrackId = trackId,
-            UserId = userid,
+            UserId = userId,
         };
         await _context.Comments.AddAsync(comment);
         track.CommentCount++;

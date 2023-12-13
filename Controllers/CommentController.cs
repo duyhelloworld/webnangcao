@@ -41,30 +41,52 @@ public class CommentController : ControllerBase
 
     [HttpPut("{id}")]
     [AppAuthorize(ERole.USER)]
-    public async Task<IActionResult> UpdateCommentByCreator(int id, long userId, CommentUpdateModel model)
+    public async Task<IActionResult> UpdateCommentByCreator(int id, CommentUpdateModel model)
     {
-        System.Console.WriteLine("User id: " + userId);
-        await _service.UpdateCommentByCreator(id, userId, model);
-        return Ok();
+        var userIdString = User.FindFirstValue("userid");
+        if (long.TryParse(userIdString, out var userId))
+        {
+            await _service.UpdateCommentByCreator(id, userId, model);
+            return Ok();
+        }
+        else
+        {
+            return BadRequest("Invalid user id.");
+        }
     }
     [HttpPut("report/{id}")]
-    public async Task<IActionResult> ReportComment(int id, long userId)
+    [AppAuthorize(ERole.USER)]
+    public async Task<IActionResult> ReportComment(int id)
     {
-        await _service.ReportComment(id, userId);
-        return Ok();
+        var userIdString = User.FindFirstValue("userid");
+        if (long.TryParse(userIdString, out var userId))
+        {
+            await _service.ReportComment(id, userId);
+            return Ok();
+        }
+        else
+        {
+            return BadRequest("Invalid user id.");
+        }
     }
 
     [HttpDelete("{id}")]
-    // [AppAuthorize(ERole.USER)]
-    public async Task<IActionResult> DeleteCommentByCreator(int id)
+    [AppAuthorize(ERole.USER)]
+    public async Task<IActionResult> DeleteComment(int id)
     {
         var role = User.FindFirstValue("role");
-        if(role == "ADMIN")
+        System.Console.WriteLine("role: " + role);
+        foreach (var claim in User.Claims)
+        {
+            System.Console.WriteLine($"{claim.Type}: {claim.Value}");
+        }
+
+        if (role == "ADMIN")
         {
             await _service.DeleteCommentByAdmin(id);
             return Ok();
         }
-        else if(role == "User")
+        else if (role == "User")
         {
             var userid = long.Parse(User.FindFirstValue("userid")!);
             await _service.DeleteCommentByCreator(id, userid);
@@ -76,10 +98,18 @@ public class CommentController : ControllerBase
         }
     }
     [HttpPost("track/{id}")]
-    // [AppAuthorize(ERole.USER)]
-    public async Task<IActionResult> Comment([FromBody] CommentInsertModel model, long userId, int id)
+    [AppAuthorize(ERole.USER)]
+    public async Task<IActionResult> Comment([FromBody] CommentInsertModel model, int id)
     {
-        await _service.Comment(model, userId, id);
-        return Ok();
+        var userIdString = User.FindFirstValue("userid");
+        if (long.TryParse(userIdString, out var userId))
+        {
+            await _service.Comment(model, userId, id);
+            return Ok();
+        }
+        else
+        {
+            return BadRequest("Invalid user id.");
+        }
     }
 }
