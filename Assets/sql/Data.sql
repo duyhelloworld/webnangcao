@@ -1,4 +1,5 @@
 -- Active: 1698044165228@@127.0.0.1@1433@webnangcao
+use webnangcao
 INSERT INTO [Categories] (Name, Description)
 VALUES
 ('Rock', 'Nhạc rock là một thể loại nhạc có nguồn gốc từ Hoa Kỳ vào cuối những năm 1940 và đầu những năm 1950. Nhạc rock thường được kết hợp với các nhạc cụ điện tử như guitar điện, bass điện và trống điện.'),
