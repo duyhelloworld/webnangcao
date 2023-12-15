@@ -18,6 +18,8 @@ public interface ICommentService
     Task<IEnumerable<CommentResponseModel>> GetViolationComment();
     //Xóa comment của người dùng bởi admin
     Task DeleteCommentByAdmin(int commentId);
+    //Bỏ report comment
+    Task UnReportComment(int commentId);
 
     //Member
     //Báo cáo vi phạm comment

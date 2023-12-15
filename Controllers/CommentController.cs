@@ -69,24 +69,25 @@ public class CommentController : ControllerBase
             return BadRequest("Invalid user id.");
         }
     }
-
+    [HttpPut("unreport/{id}")]
+    [AppAuthorize(ERole.ADMIN)]
+    public async Task<IActionResult> UnReportComment(int id)
+    {
+        await _service.UnReportComment(id);
+        return Ok();
+    }
+    
     [HttpDelete("{id}")]
-    [AppAuthorize(ERole.USER)]
+    [AppAuthorize(ERole.USER, ERole.ADMIN)]
     public async Task<IActionResult> DeleteComment(int id)
     {
-        var role = User.FindFirstValue("role");
-        System.Console.WriteLine("role: " + role);
-        foreach (var claim in User.Claims)
-        {
-            System.Console.WriteLine($"{claim.Type}: {claim.Value}");
-        }
-
+        var role = User.FindFirstValue("http://schemas.microsoft.com/ws/2008/06/identity/claims/role");
         if (role == "ADMIN")
         {
             await _service.DeleteCommentByAdmin(id);
             return Ok();
         }
-        else if (role == "User")
+        else if (role == "USER")
         {
             var userid = long.Parse(User.FindFirstValue("userid")!);
             await _service.DeleteCommentByCreator(id, userid);

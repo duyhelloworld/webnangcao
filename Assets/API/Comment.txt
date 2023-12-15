@@ -26,7 +26,7 @@ http://localhost:5271/comment/report/4
     usecase: report comment (ví dụ commentId = 4)
     body: {}
     auth: true
-http://localhost:5271/comment/1002 (bug jj đó unauthorized)
+http://localhost:5271/comment/1002
     method: DELETE
     usecase: xóa comment (ví dụ commentId = 1002)
     body: {}

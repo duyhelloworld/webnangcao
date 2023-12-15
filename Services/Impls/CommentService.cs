@@ -27,24 +27,31 @@ public class CommentService : ICommentService
                 "Không tìm thấy comment này",
                 "Hãy thử lại");
         _context.Comments.Remove(comment);
-        comment.Track.CommentCount--;
+        _context.Tracks.FirstOrDefault(t => t.Id == comment.TrackId)!.CommentCount--;
         await _context.SaveChangesAsync();
     }
 
     public async Task DeleteCommentByCreator(int commentId, long userid)
     {
-        var comment = await _context.Comments.FindAsync(commentId)
-            ?? throw new AppException(HttpStatusCode.NotFound,
+        var comment =( from c in _context.Comments
+                      join t in _context.Tracks
+                          on c.TrackId equals t.Id
+                      where c.Id == commentId && c.UserId == userid
+                      select c).FirstOrDefault();
+        if (comment == null)
+        {
+            throw new AppException(HttpStatusCode.NotFound,
                 "Không tìm thấy comment này",
                 "Hãy thử lại");
-        if (comment.UserId != userid)
+        }
+        if (comment.UserId != userid )
         {
             throw new AppException(HttpStatusCode.Forbidden,
                 "Bạn không có quyền xóa comment này",
                 "Hãy thử lại");
         }
         _context.Comments.Remove(comment);
-        comment.Track.CommentCount--;
+        _context.Tracks.FirstOrDefault(t => t.Id == comment.TrackId)!.CommentCount--;
         await _context.SaveChangesAsync();
     }
 
@@ -123,6 +130,16 @@ public class CommentService : ICommentService
                 "Hãy thử lại");
         }
         comment.IsReported = true;
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task UnReportComment(int commentId)
+    {
+        var comment = await _context.Comments.FindAsync(commentId)
+            ?? throw new AppException(HttpStatusCode.NotFound,
+                "Không tìm thấy comment này",
+                "Hãy thử lại");
+        comment.IsReported = false;
         await _context.SaveChangesAsync();
     }
 
