@@ -24,6 +24,17 @@ builder.Services.AddScoped<IPlaylistService, PlaylistService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(
+                      policy  =>
+                      {
+                          policy.WithOrigins("http://localhost:44410")
+                                .AllowAnyHeader()
+                                .AllowAnyMethod();
+                      });
+});
+
 builder.Services.AddDbContext<ApplicationContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("Default"));
@@ -97,11 +108,18 @@ await scope.ServiceProvider.GetRequiredService<FakeData>().InitDataAsync();
 
 
 
+// services.AddResponseCaching();
+
+
 app.UseAuthentication();
 app.UseAuthorization();
+// app.UseHttpsRedirection();
+// app.UseStaticFiles();
+// app.UseRouting();
+app.UseCors();
 
 app.MapControllers();
-
+app.Run();
 // Code react
 // app.UseRouting();
 // app.UseStaticFiles();
@@ -109,5 +127,3 @@ app.MapControllers();
 //     name: "default",
 //     pattern: "{controller}/{action=Index}/{id?}");
 // app.MapFallbackToFile("index.html");
-
-app.Run();

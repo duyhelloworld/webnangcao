@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using webnangcao.Models.Securities;
 using webnangcao.Services;
@@ -6,6 +7,7 @@ using webnangcao.Services;
 namespace webnangcao.Controllers;
 
 [ApiController]
+// [EnableCors("MyAllowSpecificOrigins")]
 [Route("[controller]")]
 public class AuthController : ControllerBase
 {
