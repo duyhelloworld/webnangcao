@@ -103,6 +103,7 @@ public class CommentController : ControllerBase
     public async Task<IActionResult> Comment([FromBody] CommentInsertModel model, int id)
     {
         var userIdString = User.FindFirstValue("userid");
+        Console.WriteLine(userIdString);
         if (long.TryParse(userIdString, out var userId))
         {
             await _service.Comment(model, userId, id);

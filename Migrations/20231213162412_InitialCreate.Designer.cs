@@ -12,7 +12,7 @@ using webnangcao.Context;
 namespace webnangcao.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20231212194115_InitialCreate")]
+    [Migration("20231213162412_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
