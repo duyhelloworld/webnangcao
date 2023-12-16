@@ -4,16 +4,16 @@ import "./index.css";
 import Register from "./Components/Register";
 import Login from "./Components/Login";
 
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import {  Route, Router, Routes } from "react-router-dom";
 
 const App = () => {
   return (
-    <BrowserRouter>
+    <Router>
       <Routes>
-        <Route exact path="/auth/signup" element={Register} />
+        <Route index path="/auth/signup" element={Register} />
         <Route path="/auth/signin" element={Login} />
       </Routes>
-    </BrowserRouter>
+    </Router>
   );
 };
 
