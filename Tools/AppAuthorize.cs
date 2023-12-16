@@ -12,10 +12,6 @@ public class AppAuthorizeAttribute : AuthorizeAttribute
     public AppAuthorizeAttribute(params ERole[] eroles)
     {
         Roles = string.Join(", ", eroles.Select(r => ERoleTool.ToString(r)));
-        AuthenticationSchemes = @$"
-                {JwtBearerDefaults.AuthenticationScheme}
-                ";
-                // {FacebookDefaults.AuthenticationScheme}
-                // {GoogleDefaults.AuthenticationScheme},
+        AuthenticationSchemes = @$"{JwtBearerDefaults.AuthenticationScheme}";
     }
 }

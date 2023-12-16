@@ -1,8 +1,11 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using webnangcao.Enumerables;
 using webnangcao.Models.Securities;
 using webnangcao.Services;
+using webnangcao.Tools;
 
 namespace webnangcao.Controllers;
 
@@ -12,6 +15,7 @@ namespace webnangcao.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly IAuthService _service;
+
     public AuthController(IAuthService service)
     {
         _service = service;
@@ -20,7 +24,7 @@ public class AuthController : ControllerBase
     [HttpGet]
     public IActionResult GetRoot()
     {
-        return BadRequest("Truy cập <a href=\"postman.com\">Postman</a> để dùng API");
+        return Ok("Truy cập <a href=\"postman.com\">Postman</a> để dùng API");
     }
 
     [HttpPost("signup")]
@@ -35,21 +39,22 @@ public class AuthController : ControllerBase
         return Ok(await _service.SignInAsync(model));
     }
 
-    [HttpPost("validate")]
-    public async Task<bool> Validate()
-    {
-        if (Request.Headers.ContainsKey("Authorization"))
-        {
-            return await _service.ValidateToken(
-                Request.Headers["Authorization"]!.First(au => au!.StartsWith("Bearer"))!
-                .Replace("Bearer ", ""));     
-        }
-        return false;
-    }
-
     [HttpGet("signout")]
+    [AppAuthorize(ERole.USER)]
     public async Task Signout()
     {
         await _service.SignOutAsync();
+    }
+
+    [HttpPost("reset-password")]
+    [AppAuthorize(ERole.USER)]
+    public async Task<IActionResult> ResetPassword([FromBody] ChangePasswordModel model)
+    {
+        var userid = User.FindFirstValue("userid");
+        if (userid != null && int.TryParse(userid, out int id))
+        {
+            return Ok(await _service.ChangePasswordAsync(id, model));
+        }
+        return BadRequest();
     }
 }

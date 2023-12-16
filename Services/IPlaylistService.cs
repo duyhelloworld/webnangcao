@@ -9,22 +9,22 @@ public interface IPlaylistService
 {
     // Guest
     // Lấy theo phân trang các playlist public
-    Task<IEnumerable<PlaylistResponseModel>> GetAllPublic(int page);
+    Task<IEnumerable<PlaylistResponseModel>> GetAllByGuest(int page);
     //  Lấy playlist có id = playlistId nếu được đặt public
-    Task<PlaylistResponseModel?> GetPublicById(int playlistId);
+    Task<PlaylistResponseModel?> GetViaIdByGuest(int playlistId);
     // Tìm kiếm theo tên playlist/tên người tạo/mô tả
-    Task<IEnumerable<PlaylistResponseModel>> Search(string keyword);
+    Task<IEnumerable<PlaylistResponseModel>> SearchByGuest(string keyword);
+    Task<IEnumerable<PlaylistResponseModel>> SearchByAdmin(string keyword);
 
     // Admin
-    // Lấy tất cả playlist của tất cả user
-    Task<IEnumerable<PlaylistResponseModel>> GetAllPublicAndPrivate();
-
+    // Lấy tất cả playlist của tất cả user phân trang
+    Task<IEnumerable<PlaylistResponseModel>> GetAllByAdmin(int page);
 
     // User
     // Lấy tất cả playlist của user đăng nhập
-    Task<IEnumerable<PlaylistResponseModel>> GetAllPlaylistCreatedByUser(long userId);
+    Task<IEnumerable<PlaylistResponseModel>> GetAllByUser(long userId);
     // Lấy playlist trong danh sách playlist của user đăng nhập
-    Task<PlaylistResponseModel?> GetByIdInUserCreatedPlaylist(int playlistId, long userId);
+    Task<PlaylistResponseModel?> GetViaIdByUser(int playlistId, long userId);
 
     // Like/Dislike 1 playlist bất kì bằng tài khoản của user đăng nhập
     Task Like(int playlistId, long userId);
