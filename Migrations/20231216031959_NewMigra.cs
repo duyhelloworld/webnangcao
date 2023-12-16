@@ -149,7 +149,7 @@ namespace webnangcao.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FileName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ArtWork = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ArtWork = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UploadAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsPrivate = table.Column<bool>(type: "bit", nullable: false),
                     ListenCount = table.Column<int>(type: "int", nullable: false),
