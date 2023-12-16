@@ -15,74 +15,60 @@ namespace webnangcao.Controllers;
 [ApiController]
 public class PlaylistController : ControllerBase
 {
-    private readonly IPlaylistService _service;
-    public PlaylistController(IPlaylistService service)
+    private readonly IPlaylistService _playlistService;
+    private readonly IAuthService _authService;
+    public PlaylistController(IPlaylistService playlistService, IAuthService authService)
     {
-        _service = service;
-    }
+        _playlistService = playlistService;
+        _authService = authService;
+    }   
     
-    [HttpGet]
-    public async Task<IActionResult> GetPublic([FromQuery] int page)
+    [HttpGet("all/{page}")]
+    public async Task<IActionResult> GetPublic(int page)
     {
         if (page < 1)
         {
             page = 1;
         }
-        return Ok(await _service.GetAllPublic(page));
+        var authInformation = await _authService.ValidateToken(Request);
+        if (authInformation == null)
+        {
+            return Ok(await _playlistService.GetAllByGuest(page));
+        }
+        return authInformation.Role switch
+        {
+            ERole.ADMIN => Ok(await _playlistService.GetAllByAdmin(page)),
+            ERole.USER => Ok(await _playlistService.GetAllByUser(authInformation.UserId)),
+            _ => Ok(await _playlistService.GetAllByGuest(page)),
+        };
     }
 
     [HttpGet("{playlistId}")]
-    public async Task<IActionResult> GetPublicById(int playlistId)
+    public async Task<IActionResult> GetViaIdByGuest(int playlistId)
     {
-        return Ok(await _service.GetPublicById(playlistId));
-    }
-
-    [HttpGet("admin/all")]
-    [AppAuthorize(ERole.ADMIN)]
-    public async Task<IActionResult> GetAll()
-    {
-        return Ok(await _service.GetAllPublicAndPrivate());
-    }
-
-    [HttpGet("user/all")]
-    [AppAuthorize(ERole.USER)]
-    public async Task<IActionResult> GetAllByUser()
-    {
-        var userId = User.FindFirstValue("userid");
-        if (userId != null && long.TryParse(userId, out long uid))
+        var authInformation = await _authService.ValidateToken(Request);
+        if (authInformation != null && authInformation.Role == ERole.USER)
         {
-            return Ok(await _service.GetAllPlaylistCreatedByUser(uid));
+            return Ok(await _playlistService.GetViaIdByUser(playlistId, authInformation.UserId));
         }
-        return Forbid();
-    }
-
-    [HttpGet("user/{playlistId}")]
-    [AppAuthorize(ERole.USER)]
-    public async Task<IActionResult> GetOfUserById(int playlistId)
-    {
-        var userId = User.FindFirstValue("userid");
-        if (userId != null && long.TryParse(userId, out long uid))
-        {
-            var result = await _service.GetByIdInUserCreatedPlaylist(playlistId, uid);
-            if (result == null) 
-                return NotFound();
-            return Ok(result);
-        }
-        return Forbid();
+        return Ok(await _playlistService.GetViaIdByGuest(playlistId));
     }
 
     [HttpGet("artwork/{filename}")]
     public IActionResult GetArtwork(string filename)
     {
-        return new FileStreamResult(
-            fileStream: FileTool.ReadArtwork(filename),
-            contentType: new MediaTypeHeaderValue("image/jpeg"));        
+        return File(FileTool.ReadArtwork(filename), "image/jpeg");
     }
 
     [HttpGet("search")]
     public async Task<IActionResult> Search([FromQuery] string keyword)
     {
-        return Ok(await _service.Search(keyword));
+        var authInformation = await _authService.ValidateToken(Request);
+        if (authInformation !=  null && authInformation.Role == ERole.ADMIN)
+        {
+            return Ok(await _playlistService.SearchByAdmin(keyword));
+        }
+        return Ok(await _playlistService.SearchByGuest(keyword));
     }
 
     [HttpPost]
@@ -96,7 +82,7 @@ public class PlaylistController : ControllerBase
         var userId = User.FindFirstValue("userid");
         if (userId != null && long.TryParse(userId, out long uid))
         {
-            return Ok(await _service.AddNew(playlistInsertModel, artwork, uid));
+            return Ok(await _playlistService.AddNew(playlistInsertModel, artwork, uid));
         }
         return Forbid();
     }
@@ -108,7 +94,7 @@ public class PlaylistController : ControllerBase
         var userId = User.FindFirstValue("userid");
         if (userId != null && long.TryParse(userId, out long uid))
         {
-            await _service.Repost(playlistId, uid);
+            await _playlistService.Repost(playlistId, uid);
             return Ok();
         }
         return Forbid();
@@ -121,7 +107,7 @@ public class PlaylistController : ControllerBase
         var userId = User.FindFirstValue("userid");
         if (userId != null && long.TryParse(userId, out long uid))
         {
-            await _service.Like(playlistId, uid);
+            await _playlistService.Like(playlistId, uid);
             return Ok();
         }
         return Forbid();
@@ -140,7 +126,7 @@ public class PlaylistController : ControllerBase
         var userId = User.FindFirstValue("userid");
         if (userId != null && long.TryParse(userId, out long uid))
         {
-            await _service.UpdateInfomation(playlistId, playlistUpdateModel, artwork, uid);
+            await _playlistService.UpdateInfomation(playlistId, playlistUpdateModel, artwork, uid);
             return Ok();
         }
         return Forbid();
@@ -153,7 +139,7 @@ public class PlaylistController : ControllerBase
         var userId = User.FindFirstValue("userid");
         if (userId != null && long.TryParse(userId, out long uid))
         {
-            await _service.DeleteByCreator(playlistId, uid);
+            await _playlistService.DeleteByCreator(playlistId, uid);
             return Ok();
         }
         return Forbid();
@@ -163,6 +149,6 @@ public class PlaylistController : ControllerBase
     [AppAuthorize(ERole.ADMIN)]
     public async Task DeleteByAdmin(int playlistId)
     {
-        await _service.DeleteByAdmin(playlistId);
+        await _playlistService.DeleteByAdmin(playlistId);
     }
 }
