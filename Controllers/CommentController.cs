@@ -32,6 +32,28 @@ public class CommentController : ControllerBase
     {
         return Ok(await _service.GetViolationComment());
     }
+
+    [HttpGet("nonviolation")]
+    // [AppAuthorize(ERole.ADMIN)]
+    public async Task<IActionResult> GetNonViolationComment()
+    {
+        return Ok(await _service.GetNonViolationComment());
+    }
+
+    [HttpGet("search")]
+    // [AppAuthorize(ERole.ADMIN)]
+    public async Task<IActionResult> SearchComment(string query)
+    {
+        return Ok(await _service.SearchComment(query));
+    }
+
+    [HttpGet("searchbyuser")]
+    // [AppAuthorize(ERole.ADMIN)]
+    public async Task<IActionResult> SearchCommentByUser(string query)
+    {
+        return Ok(await _service.SearchCommentByUser(query));
+    }
+
     [HttpGet("track/{id}")]
     // [AppAuthorize(ERole.USER)]
     public async Task<IActionResult> GetCommentByTrackId(int id)
