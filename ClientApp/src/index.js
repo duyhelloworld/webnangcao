@@ -2,13 +2,13 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 //import Login from './Login';
-import PlaylistComponent from './ViewPlaylist';
+import TrackComponent from './Track/ViewTrackAll'; 
 import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <PlaylistComponent />
+    <TrackComponent />
   </React.StrictMode>
 );
 // server.js
