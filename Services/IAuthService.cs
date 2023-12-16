@@ -9,9 +9,9 @@ public interface IAuthService
     // Signup mặc định luôn là User
     Task<ResponseModel> SignUpAsync(SignupModel model);
 
-    Task<bool> ValidateToken(string token);
-
     Task SignOutAsync();
 
     Task<ResponseModel> ChangePasswordAsync(long userId, ChangePasswordModel model);
+
+    Task<AuthInformation?> ValidateToken(HttpRequest request);
 }
