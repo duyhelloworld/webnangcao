@@ -1,19 +1,30 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import ReactDOM from "react-dom/client";
 import "./index.css";
-import PlaylistComponent from "./Playlist/Playlist"; // Sửa lại đường dẫn import
-import reportWebVitals from "./reportWebVitals";
+import Register from "./Components/Register";
+import Login from "./Components/Login";
 
-// const root = document.getElementById("root");
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 
-// Render PlaylistComponent component with specific props (page and userType)
-ReactDOM.createRoot(document.getElementById("playlist-root")).render(
+const App = () => {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route exact path="/auth/signup" element={Register} />
+        <Route path="/auth/signin" element={Login} />
+      </Routes>
+    </BrowserRouter>
+  );
+};
+
+ReactDOM.render(
   <React.StrictMode>
-    <PlaylistComponent page={1} userType="admin" />
-  </React.StrictMode>
+    <App />
+  </React.StrictMode>,
+  document.getElementById("root")
 );
+// server.js
 
-// Nếu bạn muốn đo lường hiệu suất trong ứng dụng của mình, hãy truyền một hàm
-// để ghi lại kết quả (ví dụ: reportWebVitals(console.log))
-// hoặc gửi đến một điểm cuộc phân tích. Tìm hiểu thêm tại: https://bit.ly/CRA-vitals
-reportWebVitals();
+// If you want to start measuring performance in your app, pass a function
+// to log results (for example: reportWebVitals(console.log))
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals

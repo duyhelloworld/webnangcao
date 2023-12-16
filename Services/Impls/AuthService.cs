@@ -118,10 +118,20 @@ public class AuthService : IAuthService
         return tokenHandler.WriteToken(token);
     }
     
-    public async Task<bool> ValidateToken(string token) 
+    public async Task<AuthInformation?> ValidateToken(HttpRequest request) 
     {
+        var header = request.Headers["Authorization"];
+        if (string.IsNullOrWhiteSpace(header))
+        {
+            return null;
+        }
+        var token = header.First()!.Replace("Bearer ", "");
+        if (string.IsNullOrWhiteSpace(token))
+        {
+            return null;
+        }
         var tokenHandler = new JwtSecurityTokenHandler();
-        var result = await tokenHandler.ValidateTokenAsync(token, new TokenValidationParameters()
+        var tokenResult = await tokenHandler.ValidateTokenAsync(token, new TokenValidationParameters()
         {
             ValidIssuer = _config["JwtInfo:Issuer"]!,
             IssuerSigningKey = new SymmetricSecurityKey(
@@ -131,11 +141,17 @@ public class AuthService : IAuthService
             ValidateIssuerSigningKey = true,
             ValidateLifetime = true
         });
-        if (!result.IsValid)
+        if (!tokenResult.IsValid)
         {
-            return false;
+            return null;
         }
-        return true;
+        return new AuthInformation()
+        {
+            UserId = long.Parse(tokenResult.Claims.First(claim => claim.Key == "userid").Value.ToString()!),
+            UserName = tokenResult.Claims.First(claim => claim.Key == ClaimTypes.Name).Value.ToString()!,
+            Email = tokenResult.Claims.First(claim => claim.Key == ClaimTypes.Email).Value.ToString()!,
+            Role = ERoleTool.ToERole(tokenResult.Claims.First(claim => claim.Key == ClaimTypes.Role).Value.ToString()!)
+        };
     }
 
     public async Task SignOutAsync()

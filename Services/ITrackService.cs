@@ -1,6 +1,3 @@
-using Microsoft.AspNetCore.Mvc;
-using webnangcao.Entities;
-using webnangcao.Models;
 using webnangcao.Models.Inserts;
 using webnangcao.Models.Responses;
 using webnangcao.Models.Updates;
@@ -8,16 +5,39 @@ namespace webnangcao.Services;
 
 public interface ITrackService
 {
-    public Task<IEnumerable<TrackResponseModel>> GetAll();
-    public Task<TrackResponseModel> GetById(int id);
-    public Task<IEnumerable<TrackResponseModel>> GetByName(String name);
-    // public Task<IEnumerable<TrackResponseModel>> Search(string input);
-    public Task<IEnumerable<TrackResponseModel>> GetByUserId(int id);
-    // public Task UploadTrack(TrackInsertModel model, long userId);
-    public Task UpdateInfomation(TrackUpdateModel model, IFormFile? fileArtwork, int trackId);
-    public Task UploadTrack(TrackInsertModel model, long userId, IFormFile fileAudio, IFormFile? fileArtwork);
-    public Task Remove(int id);
+    // Admin
+    // Lấy tất cả track có phân trang
+    public Task<IEnumerable<TrackResponseModel>> GetAllByAdmin(int page);
+    // Tìm kiếm các track cả public cả private
+    public Task<IEnumerable<TrackResponseModel>> SearchByAdmin(string input);
+
+    // User
+    // Lấy tất cả track của user
+    public Task<IEnumerable<TrackResponseModel>> GetAllUploadedByUser(long uid);
+    // Lấy tất cả track public và của user có phân trang
+    public Task<IEnumerable<TrackResponseModel>> GetAllByGuestByUser(long uid, int page);
+    // Guest
+    // Lấy tất cả track public có phân trang
+    public Task<IEnumerable<TrackResponseModel>> GetAllByGuest(int page);
+    // Tìm kiếm tất cả track cuả user
+    public Task<IEnumerable<TrackResponseModel>> SearchByUser(string input, long userId);
+    
+
+    // Tìm kiếm track bởi guest
+    public Task<IEnumerable<TrackResponseModel>> SearchByGuest(string input);
+    
+    // Nghe nhạc
+    public Task<Stream> PlayTrack(string fileName, long userId);
+
+    // Cập nhật thông tin track
+    public Task UpdateInfomation(TrackUpdateModel model, IFormFile? fileArtwork, int trackId, long userid);
+    
+    // Thêm mới track
+    public Task AddNew(TrackInsertModel model, long userId, IFormFile fileAudio, IFormFile? fileArtwork);
+    
+    // Like
     public Task LikeTrack(int userId, int trackId);
-    // public Task PlayTrack(int id);
-    public Task<IActionResult> PlayTrack(int trackId);
+    
+    // Xóa track
+    public Task Remove(int id);
 }
