@@ -154,8 +154,12 @@ public class TrackService : ITrackService
     public async Task<IEnumerable<TrackResponseModel>> SearchByGuest(string input)
     {
         return await _context.Tracks
-            .Where(t => !t.IsPrivate && (t.Name.Contains(input) 
-                || $"{t.Author.UserName} {t.Author.FirstName} {t.Author.LastName}".Contains(input)))
+            .Where(t => !t.IsPrivate 
+                && (t.Name.Contains(input) 
+                    || (t.Author.FirstName != null && t.Author.FirstName.Contains(input))
+                    || (t.Author.LastName != null && t.Author.LastName.Contains(input))
+                    || t.Author.UserName!.Contains(input)
+                    || (t.Description != null && t.Description.Contains(input))))
             .Select(track => new TrackResponseModel()
             {
                 Id = track.Id,

@@ -98,7 +98,6 @@ public class PlaylistService : IPlaylistService
         return await _context.Playlists
             .Where(p => !p.IsPrivate && (p.Name.Contains(keyword)
                     || (p.Tags != null && p.Tags.Contains(keyword))
-                    || $"{p.Author.FirstName} {p.Author.LastName} {p.Author.UserName}".Contains(keyword)
                     || (p.Description != null && p.Description.Contains(keyword))))
             .Select(p => new PlaylistResponseModel
             {
