@@ -11,7 +11,7 @@ public class ERoleTool
             "superadmin" => ERole.SUPERADMIN,
             "admin" => ERole.ADMIN,
             "user" => ERole.USER,
-            _ => ERole.USER,
+            _ => ERole.GUEST,
         };
     }
 

@@ -22,12 +22,13 @@ public class PlaylistService : IPlaylistService
         _context = context;
     }
 
-    public async Task<IEnumerable<PlaylistResponseModel>> GetAllPublic(int page)
+    public async Task<IEnumerable<PlaylistResponseModel>> GetAllByGuest(int page)
     {
         return await _context.Playlists
             .OrderBy(p => p.Id)
             .Skip((page - 1) * PAGE_SIZE)
             .Take(PAGE_SIZE)
+            .Where(p => !p.IsPrivate)
             .Select(p => new PlaylistResponseModel
             {
                 Id = p.Id,
@@ -35,13 +36,13 @@ public class PlaylistService : IPlaylistService
                 AuthorName = p.Author.UserName!,
                 CreatedAt = p.CreatedAt,
                 Description = p.Description,            
-                ArtWork = FileTool.PlaylistArtWorkBaseUrl(p.ArtWork),
+                ArtWork = p.ArtWork,
                 Tags = TagTool.GetTags(p.Tags),
             })
             .ToListAsync();
     }
 
-    public async Task<PlaylistResponseModel?> GetPublicById(int playlistId)
+    public async Task<PlaylistResponseModel?> GetViaIdByGuest(int playlistId)
     {
         var playlist = await _context.Playlists
                 .Include(p => p.Author)
@@ -62,7 +63,7 @@ public class PlaylistService : IPlaylistService
             IsPrivate = playlist.IsPrivate,
             LikeCount = playlist.LikeCount,
             RepostCount = playlist.RepostCount,
-            ArtWork = FileTool.PlaylistArtWorkBaseUrl(playlist.ArtWork ?? "default.png"),
+            ArtWork = playlist.ArtWork,
             Tags = TagTool.GetTags(playlist.Tags),
             TrackIds = _context.TrackPlaylists
                     .Where(tp => tp.PlaylistId == playlistId)
@@ -71,13 +72,33 @@ public class PlaylistService : IPlaylistService
         };
     }
 
-    public async Task<IEnumerable<PlaylistResponseModel>> Search(string keyword)
+    public async Task<IEnumerable<PlaylistResponseModel>> SearchByAdmin(string keyword)
     {
         return await _context.Playlists
-            .Where(p => !p.IsPrivate
-                && (p.Name.Contains(keyword)
+            .Where(p => p.Name.Contains(keyword)
                     || (p.Tags != null && p.Tags.Contains(keyword)) 
-                    || p.Author.UserName!.Contains(keyword)
+                    || $"{p.Author.FirstName} {p.Author.LastName} {p.Author.UserName}".Contains(keyword)
+                    || (p.Description != null && p.Description.Contains(keyword)))
+            .Select(p => new PlaylistResponseModel
+            {
+                Id = p.Id,
+                PlaylistName = p.Name,
+                AuthorName = UserTool.GetAuthorName(p.Author),
+                CreatedAt = p.CreatedAt,
+                Description = p.Description,
+                ArtWork = p.ArtWork,
+                Tags = TagTool.GetTags(p.Tags),
+                IsPrivate = p.IsPrivate
+            })
+            .ToListAsync();
+    }
+
+    public async Task<IEnumerable<PlaylistResponseModel>> SearchByGuest(string keyword)
+    {
+        return await _context.Playlists
+            .Where(p => !p.IsPrivate && (p.Name.Contains(keyword)
+                    || (p.Tags != null && p.Tags.Contains(keyword))
+                    || $"{p.Author.FirstName} {p.Author.LastName} {p.Author.UserName}".Contains(keyword)
                     || (p.Description != null && p.Description.Contains(keyword))))
             .Select(p => new PlaylistResponseModel
             {
@@ -86,16 +107,19 @@ public class PlaylistService : IPlaylistService
                 AuthorName = UserTool.GetAuthorName(p.Author),
                 CreatedAt = p.CreatedAt,
                 Description = p.Description,
-                ArtWork = FileTool.PlaylistArtWorkBaseUrl(p.ArtWork),
+                ArtWork = p.ArtWork,
                 Tags = TagTool.GetTags(p.Tags),
                 IsPrivate = false
             })
             .ToListAsync();
     }
 
-    public async Task<IEnumerable<PlaylistResponseModel>> GetAllPublicAndPrivate()
+    public async Task<IEnumerable<PlaylistResponseModel>> GetAllByAdmin(int page)
     {
         return await _context.Playlists
+            .OrderBy(p => p.Id)
+            .Skip((page - 1) * PAGE_SIZE)
+            .Take(PAGE_SIZE)
             .Select(p => new PlaylistResponseModel
             {
                 Id = p.Id,
@@ -107,13 +131,13 @@ public class PlaylistService : IPlaylistService
                 LikeCount = p.LikeCount,
                 RepostCount = p.RepostCount,
                 IsPrivate = p.IsPrivate,
-                ArtWork = FileTool.PlaylistArtWorkBaseUrl(p.ArtWork),
+                ArtWork = p.ArtWork,
                 Tags = TagTool.GetTags(p.Tags),
             })
             .ToListAsync();
     }   
 
-    public async Task<IEnumerable<PlaylistResponseModel>> GetAllPlaylistCreatedByUser(long userId)
+    public async Task<IEnumerable<PlaylistResponseModel>> GetAllByUser(long userId)
     {
         return await _context.Playlists
             .Where(p => p.AuthorId == userId)
@@ -127,13 +151,14 @@ public class PlaylistService : IPlaylistService
                 LikeCount = p.LikeCount,
                 RepostCount = p.RepostCount,
                 Description = p.Description,
-                ArtWork = FileTool.PlaylistArtWorkBaseUrl(p.ArtWork),
+                ArtWork = p.ArtWork,
                 Tags = TagTool.GetTags(p.Tags),
+                IsPrivate = p.IsPrivate
             })
             .ToListAsync();
     }
 
-    public async Task<PlaylistResponseModel?> GetByIdInUserCreatedPlaylist(int playlistId, long userId)
+    public async Task<PlaylistResponseModel?> GetViaIdByUser(int playlistId, long userId)
     {
         var result = await _context.Playlists
             .Where(p => p.AuthorId == userId && p.Id == playlistId)
@@ -148,9 +173,10 @@ public class PlaylistService : IPlaylistService
                 CreatedAt = result.CreatedAt,
                 AuthorId = result.AuthorId,
                 LikeCount = result.LikeCount,
+                IsPrivate = result.IsPrivate,
                 RepostCount = result.RepostCount,
                 Description = result.Description,
-                ArtWork = FileTool.PlaylistArtWorkBaseUrl(result.ArtWork),
+                ArtWork = result.ArtWork,
                 Tags = TagTool.GetTags(result.Tags),
                 TrackIds = await _context.TrackPlaylists
                     .Where(tp => tp.PlaylistId == playlistId)
@@ -284,10 +310,12 @@ public class PlaylistService : IPlaylistService
         if (playlist.AuthorId != userId)
             throw new AppException(HttpStatusCode.Forbidden, 
                 "Bạn không có quyền xóa playlist này");
+        
         var trackPlaylists = await _context.TrackPlaylists
             .Where(tp => tp.PlaylistId == playlistId).ToListAsync();
         if (trackPlaylists != null)
             _context.TrackPlaylists.RemoveRange(trackPlaylists);
+        
         var likes = await _context.LikePlaylists
             .Where(l => l.PlaylistId == playlistId).ToListAsync();
         if (likes != null)
@@ -301,14 +329,17 @@ public class PlaylistService : IPlaylistService
         var playlist = await _context.Playlists.FindAsync(playlistId)
             ?? throw new AppException(HttpStatusCode.NotFound,
                 "Không thấy playlist yêu cầu");
+        
         var trackPlaylists = await _context.TrackPlaylists
             .Where(tp => tp.PlaylistId == playlistId).ToListAsync();
         if (trackPlaylists != null)
             _context.TrackPlaylists.RemoveRange(trackPlaylists);
+        
         var likes = await _context.LikePlaylists
             .Where(l => l.PlaylistId == playlistId).ToListAsync();
         if (likes != null)
             _context.LikePlaylists.RemoveRange(likes);
+        
         _context.Playlists.Remove(playlist);
         await _context.SaveChangesAsync();
     }

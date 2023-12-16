@@ -5,18 +5,6 @@ namespace webnangcao.Tools;
 
 public class FileTool
 {
-    public static string PlaylistArtWorkBaseUrl (string fileArtworkName)
-    {
-        var fileName = Path.GetFileName(fileArtworkName);
-        return $"http://localhost:5271/playlist/artwork/{fileName}";
-    }
-
-    public static string TrackArtworkBaseUrl (string fileArtworkName)
-    {
-        var fileName = Path.GetFileName(fileArtworkName);
-        return $"http://localhost:5271/track/artwork/{fileName}";
-    }
-    
     private static readonly string ArtWorkFolderPath
         = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "artworks");
     
@@ -40,13 +28,17 @@ public class FileTool
                         Path.Combine(folder, defaultFile), FileMode.Open);
                 return Stream.Null;
             }
+            if (fileName.Contains(" "))
+            {
+                fileName = fileName.Replace(" ", "_");
+            }
             return new FileStream(
                 Path.Combine(folder, fileName), FileMode.Open);
         }
         catch (FileNotFoundException)
         {
             throw new AppException(HttpStatusCode.NotFound,
-                "Không tìm thấy ảnh", "Vui lòng kiểm tra lại tên ảnh");
+                "Không tìm thấy file yêu cầu", "Vui lòng kiểm tra lại tên file");
         }
     }
 

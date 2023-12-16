@@ -17,7 +17,7 @@ public class Track
     public string FileName { get; set; } = null!;
 
     [Max(EMaxValue.DirectoryLength)]
-    public string? ArtWork { get; set; }
+    public string ArtWork { get; set; } = null!;
 
     public DateTime UploadAt { get; set; }
 
