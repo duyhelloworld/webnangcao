@@ -14,12 +14,19 @@ public interface ICommentService
     //Admin
     //Xem tất cả comment ủa app (để kiểm tra xem có comment vi phạm hay không)
     Task<IEnumerable<CommentResponseModel>> GetAll();
+    //Xem các bình luận không vi phạm
+    Task<IEnumerable<CommentResponseModel>> GetNonViolationComment();
     //Xem các bình luận vi phạm
     Task<IEnumerable<CommentResponseModel>> GetViolationComment();
     //Xóa comment của người dùng bởi admin
     Task DeleteCommentByAdmin(int commentId);
     //Bỏ report comment
     Task UnReportComment(int commentId);
+    //Tìm kiếm comment theo nội dung
+    Task<IEnumerable<CommentResponseModel>> SearchComment(string query);
+    //Tìm kiếm comment theo người dùng
+    Task<IEnumerable<CommentResponseModel>> SearchCommentByUser(string query);
+    
 
     //Member
     //Báo cáo vi phạm comment
