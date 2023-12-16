@@ -1,30 +1,9 @@
-import logo from './logo.svg';
+import logo from "./logo.svg";
 // import './App.css';
-import React from 'react';
+import React from "react";
 
 // Các thành phần của bạn sử dụng JSX ở đây
 
-
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <h1>WEB NÂNG CAO</h1>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  return <PlayList />;
 }
-
-// export default App;
