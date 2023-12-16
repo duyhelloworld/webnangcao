@@ -13,139 +13,143 @@ namespace webnangcao.Controllers;
 [Route("[controller]")]
 public class TrackController : ControllerBase
 {
-    private readonly ITrackService _service;
-    public TrackController(ITrackService service)
+    private readonly ITrackService _trackService;
+    private readonly IAuthService _authService;
+    public TrackController(ITrackService trackService, IAuthService authService)
     {
-        _service = service;
+        _trackService = trackService;
+        _authService = authService;
     }
 
-    [HttpGet]
-    public async Task<IActionResult> GetAllTrack()
+    [HttpGet("all/{page:int}")]
+    public async Task<IActionResult> GetAllTrack(int page)
     {
-        return Ok(await _service.GetAll());
+        if (page < 1)
+        {
+            page = 1;
+        }
+        var authInformation = await _authService.ValidateToken(Request);
+        if (authInformation != null)
+        {
+            return authInformation.Role switch
+            {
+                ERole.ADMIN => Ok(await _trackService.GetAllByAdmin(page)),
+                ERole.USER => Ok(await _trackService.GetAllByGuestByUser(authInformation.UserId, page)),
+                _ => Ok(await _trackService.GetAllByGuest(page)),
+            };
+        }
+        return Ok(await _trackService.GetAllByGuest(page));
     }
 
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetTrackById(int id)
-    {
-        return Ok(await _service.GetById(id));
-    }
-
-    [HttpGet("user/{id}")]
-    // [AppAuthorize(ERole.USER)]
-    public async Task<IActionResult> GetTrackByUserId(int id)
-    {
-        return Ok(await _service.GetByUserId(id));
-    }
-    [HttpGet("name/{name}")]
-    // [AppAuthorize(ERole.USER)]
-    public async Task<IActionResult> GetTrackByName(string name)
-    {
-        return Ok(await _service.GetByName(name));
-    }
-    [HttpGet("play/{id}")]
-    // [AppAuthorize(ERole.USER)]
-    public async Task<IActionResult> PlayTrack(int id)
+    [HttpGet("library")]
+    [AppAuthorize(ERole.USER)]
+    public async Task<IActionResult> GetAllLibrary()
     {
         var userId = User.FindFirstValue("userid");
         if (userId != null && int.TryParse(userId, out int uid))
         {
-            await _service.PlayTrack(id);
-            return Ok();
-        }
-        return BadRequest();
-    }
-    
-    // [HttpPost("add")]
-    // [AppAuthorize(ERole.USER)]
-    // public async Task<IActionResult> Upload([FromForm] TrackInsertModel model)
-    // {
-    //     var model = JsonSerializer.Deserialize<TrackInsertModel>(modelstring);
-    //     var userId = User.FindFirstValue("userid");
-    //     if (userId != null && long.TryParse(userId, out long id) && model != null)
-    //     {
-    //         await _service.UploadTrack(model, id);
-    //         return Ok();
-    //     }
-    //     return BadRequest();
-    // }
-
-    [HttpPut("update/{trackId}")]
-    [AppAuthorize(ERole.USER)]
-    public async Task<IActionResult> Update([FromForm] string model, IFormFile? fileArtwork, int trackId)
-    {
-        var userId = User.FindFirstValue("userid");
-        if (userId != null && long.TryParse(userId, out long id) && model != null)
-        {
-            var updateModel = JsonSerializer.Deserialize<TrackUpdateModel>(model);
-            if (updateModel == null) 
-                return BadRequest();
-            await _service.UpdateInfomation(updateModel, fileArtwork, trackId);
-            return Ok();
-        }
-        return BadRequest();
-    }
-    [HttpPost("upload")]
-    [AppAuthorize(ERole.USER)]
-    public async Task<IActionResult> Upload([FromForm] string model, IFormFile fileTrack, IFormFile? fileArtwork)
-    {
-        var userId = User.FindFirstValue("userid");
-        if (userId != null && long.TryParse(userId, out long id) && model != null)
-        {
-            var insertModel = JsonSerializer.Deserialize<TrackInsertModel>(model);
-            if (insertModel == null) 
-                return BadRequest();
-            await _service.UploadTrack(insertModel, id, fileTrack, fileArtwork);
-            return Ok();
+            return Ok(await _trackService.GetAllUploadedByUser(uid));
         }
         return Unauthorized();
     }
-    
+
+    [HttpGet("{filename}")]
+    public async Task<IActionResult> PlayTrack([FromRoute] string filename)
+    {
+        var authInformation = await _authService.ValidateToken(Request);
+        if (authInformation != null)
+        {
+            return File(await _trackService.PlayTrack(filename, authInformation.UserId),
+                "audio/mpeg",
+                enableRangeProcessing: true);
+        }
+        return File(await _trackService.PlayTrack(filename, 0),
+            "audio/mpeg",
+            enableRangeProcessing: true);
+    }
+
     [HttpGet("artwork/{filename}")]
     public IActionResult GetArtworkTrack([FromRoute] string filename)
     {
-        var stream = FileTool.ReadTrack(filename);
-        return new FileStreamResult(
-            fileStream: stream,
-            contentType: MediaTypeHeaderValue.Parse("audio/mpeg"));
+        return File(FileTool.ReadArtwork(filename), "image/jpeg");
     }
 
-
-
-    // [HttpPut("{id}")]
-    // [AppAuthorize(ERole.USER)]
-    // public async Task<IActionResult> UpdateTrack(
-    //     [FromForm] string modelstring,
-    //     [FromForm] IFormFile? fileArtwork,
-    //      int trackId)
-    // {
-    //     var model = JsonSerializer.Deserialize<TrackUpdateModel>(modelstring);
-    //     var userId = User.FindFirstValue("userid");
-    //     if (userId != null && long.TryParse(userId, out long id) && model != null)
-    //     {
-    //         await _service.UpdateInfomation(model, fileArtwork, trackId);
-    //         return Ok();
-    //     }
-    //     return Forbid();
-    // }
-    [HttpDelete("{id}")]
-    // [AppAuthorize(ERole.USER)]
-    public async Task<IActionResult> Delete(int id)
+    [HttpGet("search")]
+    public async Task<IActionResult> Search([FromQuery] string keyword)
     {
-        await _service.Remove(id);
-        return Ok();
+        var authInformation = await _authService.ValidateToken(Request);
+        if (authInformation == null)
+        {
+            return Ok(await _trackService.SearchByGuest(keyword));
+        }
+        return authInformation.Role switch
+        {
+            ERole.ADMIN => Ok(await _trackService.SearchByAdmin(keyword)),
+            ERole.USER => Ok(await _trackService.SearchByUser(keyword, authInformation.UserId)),
+            _ => Ok(await _trackService.SearchByGuest(keyword)),
+        };
     }
-    [HttpPost("like/{id}")]
-    // [AppAuthorize(ERole.USER)]
+
+    [HttpPost]
+    [AppAuthorize(ERole.USER)]
+    public async Task<IActionResult> Update(
+        [FromForm] string model,
+        IFormFile? fileArtwork,
+        IFormFile fileTrack)
+    {
+        var uid = User.FindFirstValue("userid");
+        if (uid != null && long.TryParse(uid, out long userId) && model != null)
+        {
+            var updateModel = JsonSerializer.Deserialize<TrackInsertModel>(model);
+            if (updateModel == null)
+            {
+                return BadRequest("Model sai");
+            }
+            await _trackService.AddNew(updateModel, userId, fileTrack, fileArtwork);
+            return Ok();
+        }
+        return BadRequest();
+    }
+
+    [HttpPut("{trackId}")]
+    [AppAuthorize(ERole.USER)]
+    public async Task<IActionResult> Update(
+        int trackId,
+        [FromForm] string model,
+        [FromForm] IFormFile? fileArtwork)
+    {
+        var trackUpdateModel = JsonSerializer.Deserialize<TrackUpdateModel>(model);
+        if (trackUpdateModel == null)
+        {
+            return BadRequest("Model sai");
+        }
+        var userId = User.FindFirstValue("userid");
+        if (userId != null && long.TryParse(userId, out long uid))
+        {
+            await _trackService.UpdateInfomation(trackUpdateModel, fileArtwork, trackId, uid);
+            return Ok();
+        }
+        return BadRequest();
+    }
+
+    [HttpPut("like/{id}")]
+    [AppAuthorize(ERole.USER)]
     public async Task<IActionResult> Like(int id)
     {
         var userId = User.FindFirstValue("userid");
         if (userId != null && int.TryParse(userId, out int uid))
         {
-            await _service.LikeTrack(uid, id);
+            await _trackService.LikeTrack(uid, id);
             return Ok();
         }
         return BadRequest();
     }
-    
+
+    [HttpDelete("{id}")]
+    [AppAuthorize(ERole.USER)]
+    public async Task<IActionResult> Delete(int id)
+    {
+        await _trackService.Remove(id);
+        return Ok();
+    }
 }
