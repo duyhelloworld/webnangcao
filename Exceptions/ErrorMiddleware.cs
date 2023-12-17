@@ -14,21 +14,13 @@ public class ErrorMiddleware : IMiddleware
         {
             context.Response.StatusCode = (int) ex.StatusCode;
             context.Response.ContentType = "application/json";
-            await context.Response.WriteAsJsonAsync(new ResponseError()
-            {
-                Reason = ex.Reason,
-                RecommmendSolution = ex.RecommmendSolution,
-            });
+            await context.Response.WriteAsJsonAsync(ex.Reason);
         }
         catch (Exception ex)
         {
             context.Response.StatusCode = 500;
-            context.Response.ContentType = MediaTypeNames.Application.Json;
-            await context.Response.WriteAsJsonAsync(new ResponseError()
-            {
-                Reason = "Có lỗi xảy ra với hệ thống",
-                RecommmendSolution = "Vui lòng liên hệ admin để biết thêm chi tiết."
-            });
+            context.Response.ContentType = "application/json";
+            await context.Response.WriteAsJsonAsync("Có lỗi xảy ra với hệ thống"); 
             Console.WriteLine(ex.ToString());
         }
     }
