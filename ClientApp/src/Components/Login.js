@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+
 import axios from 'axios';
 
 function Login() {
@@ -14,10 +13,10 @@ function Login() {
         username,
         password,
       });
-      toast.success('Login successful'); // Hiển thị thông báo thành công
+      console.log(response);// Hiển thị thông báo thành công
     } catch (error) {
-      console.error('Error logging in:', error);
-      toast.error('Login failed'); // Hiển thị thông báo thất bại
+      
+      console.log(error);
     }
   };
 
@@ -36,7 +35,7 @@ function Login() {
         onChange={(e) => setPassword(e.target.value)}
       />
       <button onClick={handleLogin}>Login</button>
-      <ToastContainer /> {}
+      
     </div>
   );
 }

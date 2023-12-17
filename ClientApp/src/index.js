@@ -1,27 +1,14 @@
 import React from "react";
-import ReactDOM from "react-dom/client";
+import {createRoot} from 'react-dom/client';
 import "./index.css";
-import Register from "./Components/Register";
-import Login from "./Components/Login";
+import App from "./App";
 
-import {  Route, Router, Routes } from "react-router-dom";
 
-const App = () => {
-  return (
-    <Router>
-      <Routes>
-        <Route index path="/auth/signup" element={Register} />
-        <Route path="/auth/signin" element={Login} />
-      </Routes>
-    </Router>
-  );
-};
-
-ReactDOM.render(
+// const server = require('server');
+createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <App />
-  </React.StrictMode>,
-  document.getElementById("root")
+  </React.StrictMode>
 );
 // server.js
 
