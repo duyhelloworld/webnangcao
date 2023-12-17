@@ -24,8 +24,7 @@ public class CommentService : ICommentService
     {
         var comment = await _context.Comments.FindAsync(commentId)
             ?? throw new AppException(HttpStatusCode.NotFound,
-                "Không tìm thấy comment này",
-                "Hãy thử lại");
+                "Không tìm thấy comment này");
         _context.Comments.Remove(comment);
         _context.Tracks.FirstOrDefault(t => t.Id == comment.TrackId)!.CommentCount--;
         await _context.SaveChangesAsync();
@@ -41,14 +40,12 @@ public class CommentService : ICommentService
         if (comment == null)
         {
             throw new AppException(HttpStatusCode.NotFound,
-                "Không tìm thấy comment này",
-                "Hãy thử lại");
+                "Không tìm thấy comment này");
         }
         if (comment.UserId != userid )
         {
             throw new AppException(HttpStatusCode.Forbidden,
-                "Bạn không có quyền xóa comment này",
-                "Hãy thử lại");
+                "Bạn không có quyền xóa comment này");
         }
         _context.Comments.Remove(comment);
         _context.Tracks.FirstOrDefault(t => t.Id == comment.TrackId)!.CommentCount--;
@@ -121,13 +118,11 @@ public class CommentService : ICommentService
     {
         var comment = await _context.Comments.FindAsync(commentId)
             ?? throw new AppException(HttpStatusCode.NotFound,
-                "Không tìm thấy comment này",
-                "Hãy thử lại");
+                "Không tìm thấy comment này");
         if (comment.UserId == userId)
         {
             throw new AppException(HttpStatusCode.Forbidden,
-                "Bạn không thể report comment của chính mình",
-                "Hãy thử lại");
+                "Bạn không thể report comment của chính mình");
         }
         comment.IsReported = true;
         await _context.SaveChangesAsync();
@@ -137,8 +132,7 @@ public class CommentService : ICommentService
     {
         var comment = await _context.Comments.FindAsync(commentId)
             ?? throw new AppException(HttpStatusCode.NotFound,
-                "Không tìm thấy comment này",
-                "Hãy thử lại");
+                "Không tìm thấy comment này");
         comment.IsReported = false;
         await _context.SaveChangesAsync();
     }
@@ -147,25 +141,23 @@ public class CommentService : ICommentService
     {
         var comment = await _context.Comments.FindAsync(commentId)
             ?? throw new AppException(HttpStatusCode.NotFound,
-                "Không tìm thấy comment này",
-                "Hãy thử lại");
+                "Không tìm thấy comment này");
         if (comment.UserId != userid)
         {
             throw new AppException(HttpStatusCode.Forbidden,
-                "Bạn không có quyền chỉnh sửa comment này",
-                "Hãy thử lại");
+                "Bạn không có quyền chỉnh sửa comment này");
         }
 
         comment.Content = model.Content;
         comment.IsEdited = true;
         await _context.SaveChangesAsync();
     }
+
     public async Task Comment(CommentInsertModel model, long userId, int trackId)
     {
         var track = await _context.Tracks.FindAsync(trackId)
             ?? throw new AppException(HttpStatusCode.NotFound,
-                "Không tìm thấy bài hát này",
-                "Hãy thử lại");
+                "Không tìm thấy bài hát này");
         var comment = new Comment()
         {
             Content = model.Content,

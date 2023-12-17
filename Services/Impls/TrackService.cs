@@ -180,13 +180,11 @@ public class TrackService : ITrackService
     {
         var currentTrack = await _context.Tracks.FindAsync(trackId)
             ?? throw new AppException(HttpStatusCode.NotFound,
-                "Không tìm thấy bài hát",
-                "Hãy thử lại");
+                "Không tìm thấy bài hát");
         if (currentTrack.AuthorId != userid)
         {
             throw new AppException(HttpStatusCode.Forbidden,
-                "Bạn không có quyền chỉnh sửa bài hát này",
-                "Hãy thử lại");
+                "Bạn không có quyền chỉnh sửa bài hát này");
         }
         currentTrack.Name = model.TrackName;
         currentTrack.Description = model.Description;
@@ -262,8 +260,7 @@ public class TrackService : ITrackService
     {
         var currentTrack = await _context.Tracks.FindAsync(trackId)
             ?? throw new AppException(HttpStatusCode.NotFound,
-                "Không tìm thấy bài hát",
-                "Hãy thử lại");
+                "Không tìm thấy bài hát");
 
         currentTrack.Name = model.TrackName;
         currentTrack.Description = model.Description;
@@ -283,8 +280,7 @@ public class TrackService : ITrackService
     {
         var track = await _context.Tracks.FindAsync(id)
             ?? throw new AppException(HttpStatusCode.NotFound,
-                "Không tìm thấy bài hát",
-                "Hãy thử lại");
+                "Không tìm thấy bài hát");
         _context.Tracks.Remove(track);
         await _context.SaveChangesAsync();
     } 
@@ -312,16 +308,11 @@ public class TrackService : ITrackService
     {
         var track = await _context.Tracks
             .FirstOrDefaultAsync(t => t.FileName == fileName) ?? throw new AppException(HttpStatusCode.NotFound,
-                "Không tìm thấy bài hát",
-                "Hãy thử lại");
-        if (track.IsPrivate)
+                "Không tìm thấy bài hát");
+        if (track.IsPrivate && track.AuthorId != userId)
         {
-            if (track.AuthorId != userId)
-            {
-                throw new AppException(HttpStatusCode.Forbidden,
-                    "Bạn không có quyền nghe bài hát này",
-                    "Hãy thử lại");
-            }
+            throw new AppException(HttpStatusCode.Forbidden,
+                "Bài hát bị khóa bởi chủ sở hữu");
         }
         return FileTool.ReadTrack(fileName);
     }
