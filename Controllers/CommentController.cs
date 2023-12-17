@@ -26,6 +26,7 @@ public class CommentController : ControllerBase
     {
         return Ok(await _service.GetAll());
     }
+
     [HttpGet("violation")]
     [AppAuthorize(ERole.ADMIN)]
     public async Task<IActionResult> GetViolationComment()
@@ -61,6 +62,19 @@ public class CommentController : ControllerBase
         return Ok(await _service.GetByTrackId(id));
     }
 
+    [HttpPost("track/{id}")]
+    [AppAuthorize(ERole.USER)]
+    public async Task<IActionResult> Comment([FromBody] CommentInsertModel model, int id)
+    {
+        var userIdString = User.FindFirstValue("userid");
+        if (long.TryParse(userIdString, out var userId))
+        {
+            await _service.Comment(model, userId, id);
+            return Ok();
+        }
+        return BadRequest("Token không hợp lệ");
+    }
+
     [HttpPut("{id}")]
     [AppAuthorize(ERole.USER)]
     public async Task<IActionResult> UpdateCommentByCreator(int id, CommentUpdateModel model)
@@ -71,11 +85,9 @@ public class CommentController : ControllerBase
             await _service.UpdateCommentByCreator(id, userId, model);
             return Ok();
         }
-        else
-        {
-            return BadRequest("Invalid user id.");
-        }
+        return BadRequest("Invalid user id.");
     }
+
     [HttpPut("report/{id}")]
     [AppAuthorize(ERole.USER)]
     public async Task<IActionResult> ReportComment(int id)
@@ -86,11 +98,9 @@ public class CommentController : ControllerBase
             await _service.ReportComment(id, userId);
             return Ok();
         }
-        else
-        {
-            return BadRequest("Invalid user id.");
-        }
+        return BadRequest("Invalid user id.");
     }
+
     [HttpPut("unreport/{id}")]
     [AppAuthorize(ERole.ADMIN)]
     public async Task<IActionResult> UnReportComment(int id)
@@ -103,37 +113,20 @@ public class CommentController : ControllerBase
     [AppAuthorize(ERole.USER, ERole.ADMIN)]
     public async Task<IActionResult> DeleteComment(int id)
     {
-        var role = User.FindFirstValue("http://schemas.microsoft.com/ws/2008/06/identity/claims/role");
-        if (role == "ADMIN")
+        var role = ERoleTool.ToERole(User.FindFirstValue(ClaimTypes.Role)!);
+        if (role == ERole.ADMIN)
         {
             await _service.DeleteCommentByAdmin(id);
             return Ok();
         }
-        else if (role == "USER")
+        else if (role == ERole.USER)
         {
             var userid = long.Parse(User.FindFirstValue("userid")!);
             await _service.DeleteCommentByCreator(id, userid);
             return Ok();
         }
-        else
-        {
-            return Unauthorized();
-        }
+        return Unauthorized();
     }
-    [HttpPost("track/{id}")]
-    [AppAuthorize(ERole.USER)]
-    public async Task<IActionResult> Comment([FromBody] CommentInsertModel model, int id)
-    {
-        var userIdString = User.FindFirstValue("userid");
-        Console.WriteLine(userIdString);
-        if (long.TryParse(userIdString, out var userId))
-        {
-            await _service.Comment(model, userId, id);
-            return Ok();
-        }
-        else
-        {
-            return BadRequest("Invalid user id.");
-        }
-    }
+
+    
 }

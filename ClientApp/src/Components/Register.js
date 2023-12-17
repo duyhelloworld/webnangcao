@@ -18,7 +18,8 @@ const Register = () => {
 
       // Nếu thành công, chuyển hướng đến một trang mới
       if (response.status === 200) {
-        navigate('/auth/signin'); // Mở trang mới
+         navigate('/login'); // Mở trang mới
+        
       }
     } catch (error) {
       console.error('Error:', error);

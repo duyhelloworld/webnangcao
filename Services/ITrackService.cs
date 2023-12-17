@@ -1,3 +1,4 @@
+using webnangcao.Enumerables;
 using webnangcao.Models.Inserts;
 using webnangcao.Models.Responses;
 using webnangcao.Models.Updates;
@@ -11,6 +12,8 @@ public interface ITrackService
     // Tìm kiếm các track cả public cả private
     public Task<IEnumerable<TrackResponseModel>> SearchByAdmin(string input);
 
+    // Get By id
+    public Task<TrackResponseModel> GetById(int id, ERole role, long userId);
     // User
     // Lấy tất cả track của user
     public Task<IEnumerable<TrackResponseModel>> GetAllUploadedByUser(long uid);

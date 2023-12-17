@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using webnangcao.Context;
 using webnangcao.Entities;
 using webnangcao.Entities.Joins;
+using webnangcao.Enumerables;
 using webnangcao.Exceptions;
 using webnangcao.Models.Inserts;
 using webnangcao.Models.Responses;
@@ -176,17 +177,59 @@ public class TrackService : ITrackService
             .ToListAsync();
     }
 
+
+    public async Task<TrackResponseModel> GetById(int id, ERole role, long userId)
+    {
+        var track = await _context.Tracks
+            .Include(t => t.Author)
+            .Where(t => t.Id == id)
+            .FirstOrDefaultAsync()
+                ?? throw new AppException(HttpStatusCode.NotFound,
+                    "Không tìm thấy bài hát");
+        switch (role)
+        {
+            case ERole.GUEST:
+                if (track.IsPrivate)
+                {
+                    throw new AppException(HttpStatusCode.Forbidden,
+                        "Bài hát bị khóa bởi chủ sở hữu");
+                }
+                break;
+            case ERole.USER:
+                if (track.AuthorId != userId)
+                {
+                    throw new AppException(HttpStatusCode.Forbidden,
+                        "Bạn không có quyền xem bài hát này");
+                }
+                break;
+            case ERole.ADMIN:
+            case ERole.SUPERADMIN:
+                break;
+        }
+        return new TrackResponseModel()
+        {
+            Id = track.Id,
+            TrackName = track.Name,
+            Author = UserTool.GetAuthorName(track.Author),
+            FileName = track.FileName,
+            ArtWork = track.ArtWork,
+            Description = track.Description,
+            UploadAt = track.UploadAt,
+            ListenCount = track.ListenCount,
+            LikeCount = track.LikeCount,
+            CommentCount = track.CommentCount
+        };
+    }
+
     public async Task UpdateInfomation(TrackUpdateModel model, IFormFile? fileArtwork, int trackId, long userid)
     {
         var currentTrack = await _context.Tracks.FindAsync(trackId)
             ?? throw new AppException(HttpStatusCode.NotFound,
-                "Không tìm thấy bài hát",
-                "Hãy thử lại");
+                "Không tìm thấy bài hát");
         if (currentTrack.AuthorId != userid)
         {
             throw new AppException(HttpStatusCode.Forbidden,
-                "Bạn không có quyền chỉnh sửa bài hát này",
-                "Hãy thử lại");
+                "Bạn không có quyền chỉnh sửa bài hát này");
         }
         currentTrack.Name = model.TrackName;
         currentTrack.Description = model.Description;
@@ -262,8 +305,7 @@ public class TrackService : ITrackService
     {
         var currentTrack = await _context.Tracks.FindAsync(trackId)
             ?? throw new AppException(HttpStatusCode.NotFound,
-                "Không tìm thấy bài hát",
-                "Hãy thử lại");
+                "Không tìm thấy bài hát");
 
         currentTrack.Name = model.TrackName;
         currentTrack.Description = model.Description;
@@ -283,8 +325,7 @@ public class TrackService : ITrackService
     {
         var track = await _context.Tracks.FindAsync(id)
             ?? throw new AppException(HttpStatusCode.NotFound,
-                "Không tìm thấy bài hát",
-                "Hãy thử lại");
+                "Không tìm thấy bài hát");
         _context.Tracks.Remove(track);
         await _context.SaveChangesAsync();
     } 
@@ -312,19 +353,12 @@ public class TrackService : ITrackService
     {
         var track = await _context.Tracks
             .FirstOrDefaultAsync(t => t.FileName == fileName) ?? throw new AppException(HttpStatusCode.NotFound,
-                "Không tìm thấy bài hát",
-                "Hãy thử lại");
-        if (track.IsPrivate)
+                "Không tìm thấy bài hát");
+        if (track.IsPrivate && track.AuthorId != userId)
         {
-            if (track.AuthorId != userId)
-            {
-                throw new AppException(HttpStatusCode.Forbidden,
-                    "Bạn không có quyền nghe bài hát này",
-                    "Hãy thử lại");
-            }
+            throw new AppException(HttpStatusCode.Forbidden,
+                "Bài hát bị khóa bởi chủ sở hữu");
         }
         return FileTool.ReadTrack(fileName);
     }
-
-    
 }

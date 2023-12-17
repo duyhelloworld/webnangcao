@@ -53,7 +53,18 @@ public class TrackController : ControllerBase
         return Unauthorized();
     }
 
-    [HttpGet("{filename}")]
+    [HttpGet("{id:int}")]
+    public async Task<IActionResult> GetById(int id)
+    {
+        var authInformation = await _authService.ValidateToken(Request);
+        if (authInformation != null)
+        {
+            return Ok(await _trackService.GetById(id, authInformation.Role, authInformation.UserId));
+        }
+        return Ok(await _trackService.GetById(id, ERole.GUEST, 0));
+    }
+
+    [HttpGet("media/{filename}")]
     public async Task<IActionResult> PlayTrack([FromRoute] string filename)
     {
         var authInformation = await _authService.ValidateToken(Request);
