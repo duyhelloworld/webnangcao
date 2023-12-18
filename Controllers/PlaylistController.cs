@@ -132,23 +132,18 @@ public class PlaylistController : ControllerBase
         return Forbid();
     }
 
-    [HttpDelete("user/{playlistId}")]
-    [AppAuthorize(ERole.USER)]
+    [HttpDelete("{playlistId}")]
+    [AppAuthorize(ERole.USER, ERole.ADMIN)]
     public async Task<IActionResult> DeleteByCreator(int playlistId)
     {
         var userId = User.FindFirstValue("userid");
-        if (userId != null && long.TryParse(userId, out long uid))
+        var role = ERoleTool.ToERole(User.FindFirstValue(ClaimTypes.Role)!);
+        if (role == ERole.USER && userId != null && long.TryParse(userId, out long uid))
         {
             await _playlistService.DeleteByCreator(playlistId, uid);
             return Ok();
         }
-        return Forbid();
-    }
-
-    [HttpDelete("admin/{playlistId}")]
-    [AppAuthorize(ERole.ADMIN)]
-    public async Task DeleteByAdmin(int playlistId)
-    {
         await _playlistService.DeleteByAdmin(playlistId);
+        return Ok();
     }
 }
