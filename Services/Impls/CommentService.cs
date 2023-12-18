@@ -177,4 +177,67 @@ public class CommentService : ICommentService
         track.CommentCount++;
         await _context.SaveChangesAsync();
     }
+
+    public async Task<IEnumerable<CommentResponseModel>> GetNonViolationComment()
+    {
+        var result = from comment in _context.Comments
+                     join user in _context.Users
+                         on comment.UserId equals user.Id
+                     join track in _context.Tracks
+                         on comment.TrackId equals track.Id
+                     where !comment.IsReported
+                     select new CommentResponseModel
+                     {
+                         Id = comment.Id,
+                         Content = comment.Content,
+                         CreatedAt = comment.CommentAt,
+                         IsEdited = comment.IsEdited,
+                         UserId = comment.UserId,
+                         TrackId = comment.TrackId,
+                         User = $"{user.FirstName} {user.LastName}"
+                     };
+        return await result.ToListAsync();
+    }
+
+    public async Task<IEnumerable<CommentResponseModel>> SearchComment(string query)
+    {
+        var result = from comment in _context.Comments
+                     join user in _context.Users
+                         on comment.UserId equals user.Id
+                     join track in _context.Tracks
+                         on comment.TrackId equals track.Id
+                     where comment.Content.Contains(query)
+                     select new CommentResponseModel
+                     {
+                         Id = comment.Id,
+                         Content = comment.Content,
+                         CreatedAt = comment.CommentAt,
+                         IsEdited = comment.IsEdited,
+                         UserId = comment.UserId,
+                         TrackId = comment.TrackId,
+                         User = $"{user.FirstName} {user.LastName}"
+                     };
+        return await result.ToListAsync();
+    }
+
+    public async Task<IEnumerable<CommentResponseModel>> SearchCommentByUser(string query)
+    {
+        var result = from comment in _context.Comments
+                     join user in _context.Users
+                         on comment.UserId equals user.Id
+                     join track in _context.Tracks
+                         on comment.TrackId equals track.Id
+                     where user.FirstName.Contains(query) || user.LastName.Contains(query)
+                     select new CommentResponseModel
+                     {
+                         Id = comment.Id,
+                         Content = comment.Content,
+                         CreatedAt = comment.CommentAt,
+                         IsEdited = comment.IsEdited,
+                         UserId = comment.UserId,
+                         TrackId = comment.TrackId,
+                         User = $"{user.FirstName} {user.LastName}"
+                     };
+        return await result.ToListAsync();
+    }
 }

@@ -12,7 +12,7 @@ using webnangcao.Context;
 namespace webnangcao.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20231213162412_InitialCreate")]
+    [Migration("20231217092853_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -368,6 +368,7 @@ namespace webnangcao.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ArtWork")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<long>("AuthorId")

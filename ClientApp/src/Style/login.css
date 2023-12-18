@@ -1,0 +1,45 @@
+.login-form {
+    /* Đặt form ở giữa trang */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    
+    /* Tạo viền cho form */
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+    flex-direction: column;
+    width: 300px;
+    z-index: 999;
+
+    margin: 0 auto;
+  }
+  
+  .login-form input,
+  .login-form button {
+    /* Kiểu dáng chung cho các input và button */
+    width: 250px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    margin-bottom: 10px;
+  }
+  
+  .login-form button {
+    background-color: orange;
+    color: #fff;
+    cursor: pointer;
+  }
+  
+  /* Kiểu dáng riêng cho từng input */
+  .login-form input[type="text"] {
+    font-size: 16px;
+  }
+  
+  .login-form input[type="password"] {
+    font-size: 14px;
+  }
+  
