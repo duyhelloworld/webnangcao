@@ -1,32 +1,21 @@
 import React from 'react';
-import {  Route, Routes, Link, BrowserRouter } from "react-router-dom";
-
+import {  Route, Routes, BrowserRouter } from "react-router-dom";
+import Navigation from './Components/Navigation';
 import Home from './Components/Home';
 import Register from './Components/Register';
 import Login from './Components/Login';
-
+import GetTrack from './Components/Test';
+import './Style/link.css';
 const App = () => {
   return (
     <BrowserRouter>
       <div>
-        <nav>
-          <ul>
-            <li>
-              <Link to="/">Home</Link>
-            </li>
-            <li>
-              <Link to="/register">Register</Link>
-            </li>
-            <li>
-                <Link to="/login">Login</Link>
-            </li>
-          </ul>
-        </nav>
+        <Navigation/>
         <Routes>
           <Route path="/register" Component={Register}></Route>
           <Route path="/" Component={Home}></Route>
           <Route path="/login" Component={Login}></Route>
-
+          <Route path="/test" Component={GetTrack}></Route>
         </Routes>
       </div>
     </BrowserRouter>
