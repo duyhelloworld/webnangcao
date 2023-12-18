@@ -23,7 +23,7 @@ function Login() {
         
         localStorage.setItem('token', response.data.data);
         console.log(response);
-        navigate('/');
+        navigate('/userinfo');
       }
     } catch (error) {
       

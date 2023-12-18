@@ -6,9 +6,11 @@ const UserInfo = () => {
 
   useEffect(() => {
     // Hàm để lấy thông tin người dùng khi component được mount
+    var token = localStorage.getItem("token");
+
     const fetchUserData = async () => {
       try {
-        const response = await axios.get('http://localhost:5271/user'); 
+        const response = await axios.get('http://localhost:5271/user',{headers:{Authorization: "Bearer "+ token}}); 
         setUserData(response.data);
       } catch (error) {
         console.error('Error fetching user data:', error);
