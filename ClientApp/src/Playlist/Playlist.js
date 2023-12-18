@@ -1,51 +1,64 @@
-// PlaylistComponent
+// // App.js
+// import React from "react";
+// import PlaylistList from "./PlaylistList";
+
+// const Playlist = () => {
+//   return (
+//     <div>
+//       <h1>My Playlist App</h1>
+//       <PlaylistList />
+//     </div>
+//   );
+// };
+
+// export default Playlist;
+
+// Playlist.js
 import React, { useState, useEffect } from "react";
-import PlaylistService from "./PlaylistService";
+import axios from "axios";
+import PlaylistItem from "./PlaylistItem";
 
-// import { PlaylistComponent } from "./Playlist/PlaylistComponent";
-
-const PlaylistComponent = ({ page, userType }) => {
-  const [playlist, setPlaylist] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+const Playlist = () => {
+  const [playlists, setPlaylists] = useState([]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        let playlistData;
+    // Gọi API để lấy danh sách playlist
+    var token = localStorage.getItem("token");
+    axios
+      .get("http://localhost:5271/playlist/all/1", {
+        headers: { Authorization: "Bearer" + token },
+      })
+      .then((response) => setPlaylists(response.data))
+      .catch((error) =>
+        console.error("Lỗi khi lấy danh sách playlist:", error)
+      );
+  }, []);
 
-        if (userType === "admin") {
-          playlistData = await PlaylistService.getAdminPlaylists();
-        } else if (userType === "user") {
-          playlistData = await PlaylistService.getUserPlaylists();
-        } else {
-          playlistData = await PlaylistService.getPlaylist(page);
-        }
+  const handleEditPlaylist = (playlist) => {
+    // Xử lý sự kiện sửa playlist
+    console.log("Edit playlist:", playlist);
+  };
 
-        setPlaylist(playlistData);
-      } catch (error) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [page, userType]);
+  const handleDeletePlaylist = (playlistId) => {
+    // Xử lý sự kiện xóa playlist
+    console.log("Delete playlist with ID:", playlistId);
+  };
 
   return (
     <div>
-      <h1>Danh sách phát</h1>
-      {loading && <p>Loading...</p>}
-      {error && <p>Error: {error}</p>}
+      <h2>Playlists</h2>
       <ul>
-        {playlist.map((item) => (
-          <li key={item.id}>{item.name}</li>
+        {playlists.map((playlist) => (
+          <PlaylistItem
+            key={playlist.id}
+            playlist={playlist}
+            onEdit={handleEditPlaylist}
+            onDelete={handleDeletePlaylist}
+          />
         ))}
       </ul>
     </div>
   );
 };
 
-export default PlaylistComponent;
+export default Playlist;

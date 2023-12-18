@@ -27,12 +27,13 @@ builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(
-                      policy  =>
-                      {
-                          policy.WithOrigins("http://localhost:44410")
-                                .AllowAnyHeader()
-                                .AllowAnyMethod();
-                      });
+            policy  =>
+                {
+                    policy
+                        .WithOrigins("http://localhost:44410", "*")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
 });
 
 builder.Services.AddDbContext<ApplicationContext>(options =>
@@ -55,17 +56,17 @@ builder.Services.AddAuthentication(FacebookDefaults.AuthenticationScheme)
         ValidateIssuerSigningKey = true,
         ValidateLifetime = true
     };
-})
-.AddFacebook(options =>
-{
-    options.AppId = config["FacebookInfo:AppId"]!;
-    options.AppSecret = config["FacebookInfo:AppSecret"]!;
-})
-.AddGoogle(options => 
-{
-    options.ClientId = config["GoogleInfo:ClientId"]!;
-    options.ClientSecret = config["GoogleInfo:ClientSecret"]!;
 });
+// .AddFacebook(options =>
+// {
+//     options.AppId = config["FacebookInfo:AppId"]!;
+//     options.AppSecret = config["FacebookInfo:AppSecret"]!;
+// })
+// .AddGoogle(options => 
+// {
+//     options.ClientId = config["GoogleInfo:ClientId"]!;
+//     options.ClientSecret = config["GoogleInfo:ClientSecret"]!;
+// });
 
 builder.Services.AddAuthorization();
 
@@ -111,15 +112,14 @@ await scope.ServiceProvider.GetRequiredService<FakeData>().InitDataAsync();
 // services.AddResponseCaching();
 
 
+app.UseRouting();
+app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
-// app.UseHttpsRedirection();
-// app.UseStaticFiles();
-// app.UseRouting();
-app.UseCors();
 
 app.MapControllers();
 app.Run();
+
 // Code react
 // app.UseRouting();
 // app.UseStaticFiles();
