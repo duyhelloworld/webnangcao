@@ -40,6 +40,13 @@ public class UserController : ControllerBase
         return Ok(await _userService.GetById(id));
     }
 
+    [HttpGet("avatar/{fileName}")]
+    public async Task<IActionResult> GetAvatar(string fileName)
+    {
+        var avatar = await _userService.GetAvatar(fileName);
+        return File(avatar, "image/jpeg");
+    }
+
     [HttpDelete]
     [AppAuthorize(ERole.USER)]
     public async Task<IActionResult> Disable()

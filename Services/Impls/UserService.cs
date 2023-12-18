@@ -52,6 +52,12 @@ public class UserService : IUserService
         };
     }
 
+    public async Task<Stream> GetAvatar(string fileName)
+    {
+        await Task.CompletedTask;
+        return FileTool.ReadAvatar(fileName);
+    }
+
     public async Task Update(long uid, UserUpdateModel model, IFormFile? avatar)
     {
         if (await _dbContext.Users.AnyAsync(u => u.UserName == model.UserName))
