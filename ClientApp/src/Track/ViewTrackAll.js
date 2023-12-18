@@ -13,9 +13,10 @@ function TrackComponent() {
         setTracks(response.data);
       })
       .catch(error => {
-        console.error('Error fetching tracks:', error);
+        console.error('lỗi get data: ', error);
       });
-  }, []); // useEffect chỉ chạy một lần khi component được render
+  }, []); 
+  // [] ==>  useEffect chỉ chạy một lần khi component được render
 
   return (
     <div className="container">
