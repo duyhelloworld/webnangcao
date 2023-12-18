@@ -5,10 +5,14 @@ const UserInfo = () => {
   const [userData, setUserData] = useState(null);
 
   useEffect(() => {
-    // Hàm để lấy thông tin người dùng khi component được mount
     const fetchUserData = async () => {
       try {
-        const response = await axios.get('http://localhost:5271/user'); 
+        // var token = localStorage.getItem('token');
+        var token = 'eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJ1c2VyaWQiOjEsInJvbGUiOiJBRE1JTiIsInVuaXF1ZV9uYW1lIjoid2VibmFuZ2NhbyIsImVtYWlsIjoid2VibmFuZ2Nhb0BnbWFpbC5jb20iLCJuYmYiOjE3MDIzOTExOTcsImV4cCI6MTcwMzI1NTE5NywiaWF0IjoxNzAyMzkxMTk3LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjUyNzEifQ.4WERuD9cSm1wQ9rX_td1bfcDlUUPFlYj-T4pXZi0hJgPbbeqyW7RZGx66VUfmiXTsK3MBLVFj-G0r4um3R11TA';
+        const response = await axios.get(
+          'http://localhost:5271/user/1',
+          { headers: { Authorization: `Bearer ${token}` }}
+        ); 
         setUserData(response.data);
       } catch (error) {
         console.error('Error fetching user data:', error);
@@ -16,7 +20,7 @@ const UserInfo = () => {
     };
 
     fetchUserData();
-  }, []); // [] đảm bảo rằng hàm useEffect chỉ chạy một lần khi component được mount
+  }, []);
 
   return (
     <div>
