@@ -1,4 +1,3 @@
-// TrackComponent.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './style.css';
@@ -8,7 +7,7 @@ function TrackComponent() {
 
   useEffect(() => {
     // Gọi API để lấy danh sách bài hát
-    axios.get('http://localhost:5271/track')
+    axios.get('http://localhost:5271/track/library')
       .then(response => {
         setTracks(response.data);
       })
