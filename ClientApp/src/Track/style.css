@@ -3,6 +3,9 @@ body {
     font-family: 'Arial', sans-serif;
     background-color: #f3f3f3;
     margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
   
   .container {
@@ -82,4 +85,8 @@ body {
 .countsList li {
   margin-right: 10px; /* Khoảng cách giữa các mục danh sách */
   list-style-type: none;
+}
+
+.play-music{
+    padding-top: 20px;
 }
