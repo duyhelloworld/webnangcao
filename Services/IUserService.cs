@@ -10,6 +10,9 @@ public interface IUserService
     Task<List<UserResponseModel>> GetAll(int page);
     // Lấy user theo id
     Task<UserResponseModel> GetById(long uid);
+
+    // Lấy avatar của user
+    Task<Stream> GetAvatar(string fileName);
     
     // Xóa user
     Task Disable(long uid);
