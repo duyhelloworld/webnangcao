@@ -28,7 +28,7 @@ public class AuthService : IAuthService
     {
         var user = await _userManager.FindByNameAsync(model.UserName) 
             ?? throw new AppException(HttpStatusCode.NotFound, 
-                "Tài khoản không tồn tại", "Hãy đăng kí trước");
+                "Tài khoản không tồn tại");
                 
         var result = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe, true);
         if (!result.Succeeded)
@@ -72,14 +72,14 @@ public class AuthService : IAuthService
                 {
                     case "DuplicateUserName":
                         throw new AppException(HttpStatusCode.Conflict, 
-                                $"Tên đăng nhập '{model.UserName}' đã tồn tại", "Hãy thử lại tên khác");
+                                $"Tên đăng nhập '{model.UserName}' đã tồn tại");
                     case "DuplicateEmail":
                         throw new AppException(HttpStatusCode.Conflict, 
-                                $"Email '{model.Email}' đã tồn tại", "Hãy thử lại email khác");
+                                $"Email '{model.Email}' đã tồn tại");
                     default:
                         Console.WriteLine($"Error: {err.Description}");
                         throw new AppException(HttpStatusCode.BadRequest, 
-                            "Đăng kí không thành công", "Hãy thử lại");
+                            "Đăng kí không thành công");
                 }
             }
         }
@@ -163,7 +163,7 @@ public class AuthService : IAuthService
     {
         var user = await _userManager.FindByIdAsync(userId.ToString()) 
             ?? throw new AppException(HttpStatusCode.NotFound, 
-                "Tài khoản không tồn tại", "Hãy đăng kí trước");
+                "Tài khoản không tồn tại");
         var result = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
         if (!result.Succeeded)
         {
@@ -173,11 +173,11 @@ public class AuthService : IAuthService
                 {
                     case "PasswordMismatch":
                         throw new AppException(HttpStatusCode.BadRequest, 
-                                "Mật khẩu cũ không chính xác", "Hãy thử lại");
+                                "Mật khẩu cũ không chính xác");
                     default:
                         Console.WriteLine($"Error: {err.Description}");
                         throw new AppException(HttpStatusCode.BadRequest, 
-                            "Đổi mật khẩu không thành công", "Hãy thử lại");
+                            "Đổi mật khẩu không thành công");
                 }
             }
         }

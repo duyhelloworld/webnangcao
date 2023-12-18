@@ -1,6 +1,7 @@
 using System.Net;
 using System.Security.Claims;
 using System.Text.Json;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using webnangcao.Enumerables;
 using webnangcao.Exceptions;

@@ -1,18 +1,27 @@
 import React from "react";
-import {createRoot} from 'react-dom/client';
+import ReactDOM from "react-dom/client";
 import "./index.css";
-import App from "./App";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Register from "./Components/Register";
+import Login from "./Components/Login";
+import UserInfo from "./User/UserInfo";
+import TrackPlayer from "./Track/TrackPlayer";
+import Home from './Components/Home';
 
-
-// const server = require('server');
-createRoot(document.getElementById('root')).render(
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
   <React.StrictMode>
-    <App />
+    {/* <BrowserRouter>
+      <Routes>
+        <Route exact path="/" element={Home} />
+        <Route exact path="/auth/signup" element={Register} />
+        <Route path="/auth/signin" element={Login} />
+        <Route path="/user/info" element={UserInfo} />
+        <Route path="/track/play" element={TrackPlayer} />
+      </Routes>
+    </BrowserRouter> */}
+    <UserInfo />
   </React.StrictMode>
 );
 
 // server.js
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
