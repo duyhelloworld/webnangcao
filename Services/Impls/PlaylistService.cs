@@ -278,8 +278,7 @@ public class PlaylistService : IPlaylistService
         if (await _context.Playlists.AnyAsync(p => p.Author.Id == userId && p.Name == model.Name))
         {
             throw new AppException(HttpStatusCode.BadRequest, 
-                $"Bạn đã tạo playlist có tên {model.Name} rồi",
-                "Vui lòng sửa tên playlist này");
+                $"Bạn đã tạo playlist có tên {model.Name} rồi");
         }
         var playlist = await _context.Playlists.FindAsync(playlistId) 
             ?? throw new AppException(HttpStatusCode.NotFound, 

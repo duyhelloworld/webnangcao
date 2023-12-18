@@ -4,7 +4,7 @@ import AudioPlayer from 'react-h5-audio-player';
 import 'react-h5-audio-player/lib/styles.css';
 import './style.css';
 
-const Player = () => {
+const TrackPlayer = () => {
   const [trackData, setTrackData] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -53,4 +53,4 @@ const Player = () => {
   );
 };
 
-export default Player;
+export default TrackPlayer;

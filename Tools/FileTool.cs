@@ -28,7 +28,7 @@ public class FileTool
                         Path.Combine(folder, defaultFile), FileMode.Open);
                 return Stream.Null;
             }
-            if (fileName.Contains(" "))
+            if (fileName.Contains(' '))
             {
                 fileName = fileName.Replace(" ", "_");
             }
@@ -38,7 +38,7 @@ public class FileTool
         catch (FileNotFoundException)
         {
             throw new AppException(HttpStatusCode.NotFound,
-                "Không tìm thấy file yêu cầu", "Vui lòng kiểm tra lại tên file");
+                "Không tìm thấy file yêu cầu");
         }
     }
 
@@ -56,14 +56,14 @@ public class FileTool
             if (File.Exists(filePath))
             {
                 throw new AppException(HttpStatusCode.BadRequest,
-                    "Ảnh này đã tồn tại", "Vui lòng chọn ảnh khác");
+                    "Ảnh này đã tồn tại. Vui lòng chọn ảnh khác");
             }
             using var stream = new FileStream(filePath, FileMode.Create);
             await fileInput.CopyToAsync(stream);
             return;
         }
         throw new AppException(HttpStatusCode.UnsupportedMediaType,
-            "Ảnh không đúng định dạng", "Vui lòng chọn ảnh đuôi .png hoặc .jpg");
+            "Ảnh không đúng định dạng. Vui lòng chọn ảnh đuôi .png hoặc .jpg");
     }
 
     public static Stream ReadAvatar(string? fileName)
@@ -87,7 +87,7 @@ public class FileTool
         if (!file.FileName.EndsWith(".mp3"))
         {
             throw new AppException(HttpStatusCode.UnsupportedMediaType,
-                "File không đúng định dạng", "Vui lòng chọn file đuôi .mp3");
+                "File không đúng định dạng. Vui lòng chọn file đuôi .mp3");
         }
         using var stream = new FileStream(
             Path.Combine(TrackFolderPath, file.FileName), FileMode.Create);

@@ -10,7 +10,6 @@ using webnangcao.Tools;
 namespace webnangcao.Controllers;
 
 [ApiController]
-// [EnableCors("MyAllowSpecificOrigins")]
 [Route("[controller]")]
 public class AuthController : ControllerBase
 {
