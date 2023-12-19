@@ -23,7 +23,7 @@
 ## Cài đặt (Cho User)
 - Cài [NodeJS](https://nodejs.org/dist/v20.8.1/node-v20.8.1-x64.msi) phiên bản 20.8.1
 - Cài [.NET 7.0 SDK](https://dotnet.microsoft.com/download/dotnet/7.0)
-- Clone project về máy
+- Clone project về máy https://github.com/duyhelloworld/webnangcao
 - Mở project bằng [Visual Studio Code](https://code.visualstudio.com/download)
 - Mở terminal và chạy lệnh `npm install` để cài đặt các thư viện cần thiết
 - Chạy project bằng lệnh `dotnet run`
