@@ -1,6 +1,84 @@
-ul.link-list {
-    display: flex;
-    justify-content: space-between;
-    margin-left: 10px;
-  }
-  
+/* Định dạng navigation */
+nav {
+  border-top: 1px solid transparent;
+  border-bottom: 1px solid #ccc;
+  background-color: #F4A460;
+}
+
+/* Style cho các liên kết */
+.link-list {
+  list-style-type: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+}
+
+.link-list li a {
+  text-decoration: none;
+  color: #333;
+  padding: 5px 10px;
+  border-radius: 5px;
+  border: 1px solid transparent;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.link-list li a:hover {
+  background-color: #eee;
+  border-color: #ccc;
+}
+
+/* Định dạng hình ảnh */
+.nav-image {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  order: 1; /* Đưa hình ảnh lên đầu tiên */
+  margin-right: 10px; /* Khoảng cách giữa hình ảnh và input search */
+}
+
+/* Định dạng input tìm kiếm */
+.search-input {
+  padding: 8px 12px; /* Cải thiện padding để tăng kích thước của input */
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 14px; /* Đổi kích thước chữ */
+  width: 400px; /* Đổi chiều rộng của input */
+  outline: none; /* Loại bỏ viền bôi đen khi được focus */
+  order: 2; /* Hiển thị input search tiếp theo sau hình ảnh */
+}
+
+/* Chỉnh định dạng cho các liên kết "Register" và "Login" */
+.link-list li:nth-child(3),
+.link-list li:nth-child(4) {
+  margin-left: auto; /* Đẩy link "Register" về bên phải */
+  order: 2; /* Hiển thị link register sau input search */
+}
+.login-logout {
+  display: flex;
+}
+
+.login-logout a {
+  /* Styles for both login and logout link */
+}
+
+.login-logout a.login {
+  visibility: hidden; /* Hide login link when logged in */
+}
+.login-logout button {
+  padding: 8px 12px; /* Giảm padding để thu nhỏ kích thước */
+  border-radius: 8px; /* Giữ viền bo tròn */
+  color: white;
+  background-color: #FF6347;
+  border: 2px solid #2F4F4F;
+  font-size: 14px; /* Giảm kích thước chữ */
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.login-logout button:hover {
+  background-color: white;
+  color: black;
+}
+

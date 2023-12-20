@@ -8,7 +8,12 @@ body {
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: monospace;
 }
 
+#footer {
+  position: fixed;
+  bottom: 0;
+  border-top: 1px solid black;
+  width: 100%;
+}
