@@ -8,5 +8,5 @@ public class UserResponseModel
     public string Email  { get; set; }  = null!;
     public string PhoneNumber { get; set; }  = null!;
     public string? FullName  { get; set; }  = null!;
-    public string? Avatar { get; set; } = null!;
+    public string Avatar { get; set; } = null!;
 }

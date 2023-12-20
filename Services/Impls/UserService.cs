@@ -24,6 +24,7 @@ public class UserService : IUserService
             .OrderBy(u => u.Id)
             .Skip((page - 1) * PAGE_SIZE)
             .Take(PAGE_SIZE)
+            .Where(u => !u.LockoutEnabled)
             .Select(u => new UserResponseModel
             {
                 Id = u.Id,
@@ -52,27 +53,44 @@ public class UserService : IUserService
         };
     }
 
+    public async Task<Stream> GetAvatar(string fileName)
+    {
+        await Task.CompletedTask;
+        return FileTool.ReadAvatar(fileName);
+    }
+
     public async Task Update(long uid, UserUpdateModel model, IFormFile? avatar)
     {
-        if (await _dbContext.Users.AnyAsync(u => u.UserName == model.UserName))
-            throw new AppException(HttpStatusCode.BadRequest, 
-                "Tên đăng nhập đã tồn tại");
-        if (await _dbContext.Users.AnyAsync(u => u.Email == model.Email))
+        if (await _dbContext.Users.AnyAsync(u => u.Email == model.Email  && u.Id != uid))
             throw new AppException(HttpStatusCode.BadRequest, 
                 "Email đã tồn tại");
-        if (await _dbContext.Users.AnyAsync(u => u.PhoneNumber == model.PhoneNumber))
+        if (await _dbContext.Users.AnyAsync(u => u.PhoneNumber == model.PhoneNumber  && u.Id != uid))
             throw new AppException(HttpStatusCode.BadRequest, 
                 "Số điện thoại đã tồn tại");
         var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == uid)
             ?? throw new AppException(HttpStatusCode.Forbidden, 
                 "Bạn không đủ quyền truy cập");
-        user.UserName = model.UserName;
         user.Email = model.Email;
         user.PhoneNumber = model.PhoneNumber;
-        if (avatar != null)
+        if (!string.IsNullOrEmpty(model.FullName))
         {
+            if (model.FullName.Contains(' '))
+            {
+                var arr = model.FullName.Split(" ");
+                user.FirstName = arr[0];
+                user.LastName = arr[1];
+            }
+            else 
+            {
+                user.FirstName = null;
+                user.LastName = model.FullName;
+            }
+        }
+        if (avatar != null  && avatar.FileName != user.Avatar)
+        {
+            // await FileTool.DeleteAvatar(user.Avatar);
             await FileTool.SaveAvatar(avatar);
-            user.Avatar = avatar.FileName;
+            user.Avatar = avatar.FileName.Replace(" ", "_");
         }
         await _dbContext.SaveChangesAsync();
     }
