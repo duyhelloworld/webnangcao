@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { AuthContext } from './AuthContext';
 import {jwtDecode} from 'jwt-decode';
-import Playlist from './Playlist';
+import ViewTrackAll from '../../Track/ViewTrackAll';
 
 const Home = ({ children }) => {
   const [isAdmin, setIsAdmin] = useState(false);
@@ -29,9 +29,9 @@ const Home = ({ children }) => {
       {isLoggedIn && (
         <div>
           {isAdmin ? (
-            <Playlist/>
+            <h1>Đây là giao diện admin</h1>
           ) : (
-            <div><h1>Đây là giao diện của user</h1></div>
+            <div><ViewTrackAll/></div>
           )}
         </div>
       )}

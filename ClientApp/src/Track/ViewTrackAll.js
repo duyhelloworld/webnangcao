@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import SearchTrack from './SearchTrack';
+import { useNavigate } from 'react-router';
 
 function ViewTrackAll() {
   const [tracks, setTracks] = useState([]);
   const token = localStorage.getItem('token');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchTracks = async () => {
@@ -27,7 +29,10 @@ function ViewTrackAll() {
       fetchTracks();
     }
   }, [token]);
-
+  const handlePlay = (trackId) => {
+    // Điều hướng đến đường dẫn '/track/media/:trackId'
+    navigate(`/track/media/${trackId}`);
+  };
   return (
     <div className="container">
   <header className="header py-3">
@@ -45,7 +50,7 @@ function ViewTrackAll() {
             <p className="description my-1">{track.description}</p>
           </div>
           <div className="d-flex">
-            <button className="btn btn-primary playButton">Play</button>
+            <button className="btn btn-primary playButton" onClick={() => handlePlay(track.id)}>Play</button>
             <div className="trackCounts ms-3">
               <ul className="list-unstyled countsList">
                 <li className="listenCount">Lượt nghe: {track.listenCount}</li>

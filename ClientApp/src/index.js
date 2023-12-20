@@ -4,18 +4,17 @@ import {createRoot} from 'react-dom/client';
 import "./index.css";
 import { createBrowserRouter } from "react-router-dom";
 import { RouterProvider } from "react-router-dom";
-// import Navigation from './Components/Home/Navigation';
 import Home from './Components/Home/Home';
 import Register from './Components/Home/Register';
 import Login from './Components/Home/Login';
-// import Footer from "./Components/Home/Footer";
+import ViewTrackAll from "./Track/ViewTrackAll";
 import { AuthProvider } from "./Components/Home/AuthContext";
 import HelpContent from "./Components/Content/HelpContent";
-// import AboutUs from "./Page/Aboutus";
-// import Help from "./Page/Help";
+
 import Layout from "./Page/layout";
 import AboutUsContent from "./Components/Content/AboutUsContent";
-
+import 'bootstrap/dist/css/bootstrap.min.css';
+import TrackPlayer from "./Track/TrackPlayer";
 
 
 
@@ -47,7 +46,12 @@ const router = createBrowserRouter([
         element: <HelpContent />, // Thay thế Footer thành component riêng cho trang Help
       },
       {
-        path: "/"
+        path: "/track/library",
+        element: <ViewTrackAll/>
+      },
+      {
+       path: "/track/media/:trackId",
+       element: <TrackPlayer/>
       }
 
     ],
