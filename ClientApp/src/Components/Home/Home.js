@@ -24,14 +24,20 @@ const Home = ({ children }) => {
 
   return (
   
-    <div>
+    <div className='container-fluid'>
       {!isLoggedIn && <div><h1>Chưa đăng nhập</h1></div>}
       {isLoggedIn && (
         <div>
           {isAdmin ? (
             <h1>Đây là giao diện admin</h1>
           ) : (
-            <div><ViewTrackAll/></div>
+            <div>
+            <a className="btn btn-success view" href= '/playlist'>xem playlist</a>
+            <ViewTrackAll/> 
+           </div>
+            
+            
+            
           )}
         </div>
       )}

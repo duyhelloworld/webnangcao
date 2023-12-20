@@ -1,11 +1,11 @@
 /* Add some basic styles to improve the appearance of the PlaylistList component */
 
 /* Style the container */
-div {
+/* div {
     max-width: 600px;
     margin: 0 auto;
   }
-  
+   */
   /* Style the heading */
   h2 {
     color: #333;
@@ -52,5 +52,11 @@ div {
   /* Add some spacing between the buttons and form elements */
   button, input {
     margin-bottom: 10px;
+  }
+
+  .view{
+    text-align: center;
+    width: 20%;
+    float: right;
   }
   

@@ -16,6 +16,7 @@ import Layout from "./Page/layout";
 import AboutUsContent from "./Components/Content/AboutUsContent";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import TrackPlayer from "./Track/TrackPlayer";
+import Playlist from "./Playlist/Playlist";
 
 
 
@@ -53,6 +54,10 @@ const router = createBrowserRouter([
       {
        path: "/track/media/:trackId",
        element: <TrackPlayer/>
+      },
+      {
+        path: "/playlist",
+        element: <Playlist/>
       }
 
     ],
