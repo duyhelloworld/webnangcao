@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-const PlaylistRepost = ({ playlistId, token }) => {
+const PlaylistRepost = ({ playlistId, onClick }) => {
   const [reposted, setReposted] = useState(false);
   const [error, setError] = useState(null);
 
   const handleRepostPlaylist = () => {
+    var token = localStorage.getItem("token");
     // Kiểm tra trạng thái đã repost để tránh gửi yêu cầu thừa
     if (!reposted) {
+
       axios
         .post(`http://localhost:5271/playlist/${playlistId}/repost`, null, {
           headers: {
@@ -20,7 +22,9 @@ const PlaylistRepost = ({ playlistId, token }) => {
         })
         .catch((error) => {
           console.error("Lỗi khi repost playlist:", error);
-          setError("Không thể thực hiện repost playlist.");
+          if (error.response.status === 401 ) {
+            setError("Ban chua dang nhap");
+          }
         });
     }
   };

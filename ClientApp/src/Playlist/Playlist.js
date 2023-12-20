@@ -3,6 +3,7 @@ import axios from "axios";
 import PlaylistEdit from "./PlaylistEdit";
 import PlaylistDelete from "./PlaylistDelete";
 import "./PlaylistList.css"
+import PlaylistRepost from "./PlaylistRepost";
 const Playlist = () => {
   const [playlists, setPlaylists] = useState([]);
 
@@ -27,6 +28,10 @@ const Playlist = () => {
     setPlaylists((prevPlaylist) => prevPlaylist.filter(p => p.id !== playlistId));
   }
 
+  const handleRepostPlaylist = (playlistId) => {
+    setPlaylists((prevPlaylist) => prevPlaylist.filter(p => p.id !== playlistId));
+  }
+
   return (
     <div>
       <h2>Playlists</h2>
@@ -42,6 +47,7 @@ const Playlist = () => {
             <p>Tags: {playlist.tags}</p>
             <PlaylistEdit playlist={playlist} onEdit={handleEditPlaylist} />
             <PlaylistDelete playlistId={playlist.id} onDelete={handleDeletePlaylist} />
+            <PlaylistRepost playlistId={playlist.id} onClick={handleRepostPlaylist} />
           </li>
         ))}
       </ul>

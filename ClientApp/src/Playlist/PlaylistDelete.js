@@ -4,8 +4,7 @@ import axios from "axios";
 const PlaylistDelete = ({ playlistId, onDelete }) => {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const handleDelete = () => {
-    var token =
-      "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJ1c2VyaWQiOjEsInJvbGUiOiJBRE1JTiIsInVuaXF1ZV9uYW1lIjoid2VibmFuZ2NhbyIsImVtYWlsIjoid2VibmFuZ2Nhb0BnbWFpbC5jb20iLCJuYmYiOjE3MDI4ODgzMjEsImV4cCI6MTcwMzc1MjMyMSwiaWF0IjoxNzAyODg4MzIxLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjUyNzEifQ.sECLGa03iYvonOaKS5AM7zCRkzjwBM9DnxG7pCpqizDL4iPtz9SUZPG5qQoRV27VNo477fjO6Q3fortPVRI0AA";
+    var token = localStorage.getItem("token");
     axios
       .delete(`http://localhost:5271/playlist/${playlistId}`, {
         headers: { Authorization: "Bearer " + token },
