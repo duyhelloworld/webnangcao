@@ -5,6 +5,7 @@
 
     Mở terminal và chạy lệnh `dotnet --info`
     
+    
     Nếu có báo đỏ ==> Cài đặt .NET 7.0 SDK [tại đây](https://dotnet.microsoft.com/download/dotnet/7.0)
 
 - Kiểm tra môi trường NodeJSnpm install react react-dom

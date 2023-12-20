@@ -14,4 +14,5 @@ public interface IAuthService
     Task<ResponseModel> ChangePasswordAsync(long userId, ChangePasswordModel model);
 
     Task<AuthInformation?> ValidateToken(HttpRequest request);
+    Task<AuthInformation?> ValidateToken(string token);
 }

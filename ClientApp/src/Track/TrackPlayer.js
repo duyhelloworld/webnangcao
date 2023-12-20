@@ -9,6 +9,7 @@ const TrackPlayer = (props) => {
   const [trackData, setTrackData] = useState(null);
   const [loading, setLoading] = useState(true);
   const trackId = useParams().trackId;
+  const token = localStorage.getItem("token");
   // const track = props.track;
 
   const Listen = async (trackId) => {
@@ -77,7 +78,7 @@ const TrackPlayer = (props) => {
               <div>
                 <AudioPlayer
                   //autoPlay
-                  src={`http://localhost:5271/track/media/${trackData.fileName }`}
+                  src={`http://localhost:5271/track/media/${trackData.fileName}`}
                   onPlay={e => Listen(trackData.id )}
                 // other props here
                 />

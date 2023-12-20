@@ -118,18 +118,7 @@ public class AuthService : IAuthService
         return tokenHandler.WriteToken(token);
     }
     
-    public async Task<AuthInformation?> ValidateToken(HttpRequest request) 
-    {
-        var header = request.Headers["Authorization"];
-        if (string.IsNullOrWhiteSpace(header))
-        {
-            return null;
-        }
-        var token = header.First()!.Replace("Bearer ", "");
-        if (string.IsNullOrWhiteSpace(token))
-        {
-            return null;
-        }
+    public async Task<AuthInformation?> ValidateToken(string token) {
         var tokenHandler = new JwtSecurityTokenHandler();
         var tokenResult = await tokenHandler.ValidateTokenAsync(token, new TokenValidationParameters()
         {
@@ -152,6 +141,20 @@ public class AuthService : IAuthService
             Email = tokenResult.Claims.First(claim => claim.Key == ClaimTypes.Email).Value.ToString()!,
             Role = ERoleTool.ToERole(tokenResult.Claims.First(claim => claim.Key == ClaimTypes.Role).Value.ToString()!)
         };
+    }
+    public async Task<AuthInformation?> ValidateToken(HttpRequest request) 
+    {
+        var header = request.Headers["Authorization"];
+        if (string.IsNullOrWhiteSpace(header))
+        {
+            return null;
+        }
+        var token = header.First()!.Replace("Bearer ", "");
+        if (string.IsNullOrWhiteSpace(token))
+        {
+            return null;
+        }
+        return await ValidateToken(token);
     }
 
     public async Task SignOutAsync()
