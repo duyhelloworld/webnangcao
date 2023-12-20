@@ -134,7 +134,30 @@ public class PlaylistService : IPlaylistService
                 Tags = TagTool.GetTags(p.Tags),
             })
             .ToListAsync();
-    }   
+    }  
+
+    public async Task<PlaylistResponseModel> GetById(int playlistId, long userId, bool isAdmin) {
+        var p = await _context.Playlists.FindAsync(playlistId)!;
+        if (userId != p.Id)
+        {
+            throw new AppException(HttpStatusCode.NotFound, 
+                    "Không tìm thấy playlist yêu cầu");
+        }
+        return new PlaylistResponseModel
+                    {
+                        Id = p.Id,
+                        AuthorId = p.AuthorId,
+                        PlaylistName = p.Name,
+                        AuthorName = p.Author.UserName!,
+                        CreatedAt = p.CreatedAt,
+                        LikeCount = p.LikeCount,
+                        RepostCount = p.RepostCount,
+                        Description = p.Description,
+                        ArtWork = p.ArtWork,
+                        Tags = TagTool.GetTags(p.Tags),
+                        IsPrivate = p.IsPrivate
+                    };
+    }
 
     public async Task<IEnumerable<PlaylistResponseModel>> GetAllByUser(long userId)
     {

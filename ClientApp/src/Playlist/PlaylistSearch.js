@@ -68,7 +68,13 @@ const PlaylistSearch = () => {
       {Array.isArray(searchResults) && searchResults.length > 0 && (
         <ul>
           {searchResults.map((result) => (
-            <li key={result.id}>{result.playlistName}</li>
+            <div>
+              <li key={result.id}>
+                Name: {result.playlistName} <br />
+                Author: {result.authorName} <br />
+                Description : {result.description}
+              </li>
+            </div>
           ))}
         </ul>
       )}

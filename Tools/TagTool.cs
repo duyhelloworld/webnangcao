@@ -9,7 +9,7 @@ public class TagTool
         return tags.Split(",", StringSplitOptions.TrimEntries);
     }
 
-    public static string? SetTags(string[]? tags)
+    public static string? SetTags(string? tags)
     {
         if (tags == null)
             return null;

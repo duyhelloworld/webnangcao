@@ -6,6 +6,9 @@ public class UserTool
 {
     public static string GetAuthorName(User user)
     {
+        if (user == null) {
+            return "No";
+        }
         if (user.FirstName != null && user.LastName != null)
             return user.FirstName + " " + user.LastName;
         if (user.UserName != null)

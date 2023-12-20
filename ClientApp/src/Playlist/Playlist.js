@@ -1,60 +1,48 @@
-// // App.js
-// import React from "react";
-// import PlaylistList from "./PlaylistList";
-
-// const Playlist = () => {
-//   return (
-//     <div>
-//       <h1>My Playlist App</h1>
-//       <PlaylistList />
-//     </div>
-//   );
-// };
-
-// export default Playlist;
-
-// Playlist.js
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import PlaylistItem from "./PlaylistItem";
-
+import PlaylistEdit from "./PlaylistEdit";
+import PlaylistDelete from "./PlaylistDelete";
+import "./PlaylistList.css"
 const Playlist = () => {
   const [playlists, setPlaylists] = useState([]);
 
   useEffect(() => {
-    // Gọi API để lấy danh sách playlist
-    var token = localStorage.getItem("token");
-    axios
-      .get("http://localhost:5271/playlist/all/1", {
-        headers: { Authorization: "Bearer" + token },
-      })
-      .then((response) => setPlaylists(response.data))
-      .catch((error) =>
-        console.error("Lỗi khi lấy danh sách playlist:", error)
-      );
+    const fetchData = async () => {
+      var token = localStorage.getItem("token");
+    try {
+      var response = await axios.get("http://localhost:5271/playlist/all/1", { headers: { Authorization: "Bearer" + token }});
+        setPlaylists(response.data);
+    } catch (error) {
+      console.error("Lỗi khi lấy danh sách playlist:", error)
+    }}
+
+    fetchData();
   }, []);
 
-  const handleEditPlaylist = (playlist) => {
-    // Xử lý sự kiện sửa playlist
-    console.log("Edit playlist:", playlist);
-  };
+  const handleEditPlaylist = (newPlaylist) => {
+    setPlaylists((prevPlaylist) => [...prevPlaylist, newPlaylist]);
+  }
 
   const handleDeletePlaylist = (playlistId) => {
-    // Xử lý sự kiện xóa playlist
-    console.log("Delete playlist with ID:", playlistId);
-  };
+    setPlaylists((prevPlaylist) => prevPlaylist.filter(p => p.id !== playlistId));
+  }
 
   return (
     <div>
       <h2>Playlists</h2>
       <ul>
         {playlists.map((playlist) => (
-          <PlaylistItem
-            key={playlist.id}
-            playlist={playlist}
-            onEdit={handleEditPlaylist}
-            onDelete={handleDeletePlaylist}
-          />
+          <li key={playlist.id}>
+            <h3>{playlist.playlistName}</h3>
+            <p>Created at: {playlist.createdAt}</p>
+            <p>Private: {playlist.isPrivate ? "Yes" : "No"}</p>
+            <p>Likes: {playlist.likeCount}</p>
+            <p>Reposts: {playlist.repostCount}</p>
+            <p>Description: {playlist.description}</p>
+            <p>Tags: {playlist.tags}</p>
+            <PlaylistEdit playlist={playlist} onEdit={handleEditPlaylist} />
+            <PlaylistDelete playlistId={playlist.id} onDelete={handleDeletePlaylist} />
+          </li>
         ))}
       </ul>
     </div>

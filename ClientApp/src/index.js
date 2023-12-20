@@ -1,16 +1,15 @@
 // index.js
 import React from "react";
-import ReactDOM from "react-dom";
-import PlaylistList from "./Playlist/PlaylistList";
+import { createRoot } from "react-dom/client";
+import Playlist from "./Playlist/Playlist";
 import PlaylistSearch from "./Playlist/PlaylistSearch";
-
 const App = () => {
   return (
     <div>
-      <PlaylistList />
+      <Playlist />
       <PlaylistSearch />
     </div>
   );
 };
 
-ReactDOM.render(<App />, document.getElementById("root"));
+createRoot(document.getElementById("root")).render(<App />);
