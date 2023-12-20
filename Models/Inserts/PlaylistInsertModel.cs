@@ -17,7 +17,7 @@ public class PlaylistInsertModel
 
     public bool IsPrivate { get; set; } = false;
 
-    public string[]? Tags { get; set; }
+    public string? Tags { get; set; }
 
     // Phải có ít nhất 1 bài hát mới tạo được playlist
     public IEnumerable<int> TrackIds { get; set; } = null!;

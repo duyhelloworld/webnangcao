@@ -10,5 +10,5 @@ public class PlaylistUpdateModel
     public bool IsPrivate { get; set; }
     public string? Description { get; set; }
     public IEnumerable<int>? TrackIds { get; set; }
-    public string[]? Tags { get; set; }
+    public string? Tags { get; set; }
 }

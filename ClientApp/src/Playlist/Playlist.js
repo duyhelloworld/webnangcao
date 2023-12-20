@@ -1,51 +1,58 @@
-// PlaylistComponent
 import React, { useState, useEffect } from "react";
-import PlaylistService from "./PlaylistService";
-
-// import { PlaylistComponent } from "./Playlist/PlaylistComponent";
-
-const PlaylistComponent = ({ page, userType }) => {
-  const [playlist, setPlaylist] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+import axios from "axios";
+import PlaylistEdit from "./PlaylistEdit";
+import PlaylistDelete from "./PlaylistDelete";
+import "./PlaylistList.css"
+import PlaylistRepost from "./PlaylistRepost";
+const Playlist = () => {
+  const [playlists, setPlaylists] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true);
-      try {
-        let playlistData;
-
-        if (userType === "admin") {
-          playlistData = await PlaylistService.getAdminPlaylists();
-        } else if (userType === "user") {
-          playlistData = await PlaylistService.getUserPlaylists();
-        } else {
-          playlistData = await PlaylistService.getPlaylist(page);
-        }
-
-        setPlaylist(playlistData);
-      } catch (error) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
+      var token = localStorage.getItem("token");
+    try {
+      var response = await axios.get("http://localhost:5271/playlist/all/1", { headers: { Authorization: "Bearer" + token }});
+        setPlaylists(response.data);
+    } catch (error) {
+      console.error("Lỗi khi lấy danh sách playlist:", error)
+    }}
 
     fetchData();
-  }, [page, userType]);
+  }, []);
+
+  const handleEditPlaylist = (newPlaylist) => {
+    setPlaylists((prevPlaylist) => [...prevPlaylist, newPlaylist]);
+  }
+
+  const handleDeletePlaylist = (playlistId) => {
+    setPlaylists((prevPlaylist) => prevPlaylist.filter(p => p.id !== playlistId));
+  }
+
+  const handleRepostPlaylist = (playlistId) => {
+    setPlaylists((prevPlaylist) => prevPlaylist.filter(p => p.id !== playlistId));
+  }
 
   return (
     <div>
-      <h1>Danh sách phát</h1>
-      {loading && <p>Loading...</p>}
-      {error && <p>Error: {error}</p>}
+      <h2>Playlists</h2>
       <ul>
-        {playlist.map((item) => (
-          <li key={item.id}>{item.name}</li>
+        {playlists.map((playlist) => (
+          <li key={playlist.id}>
+            <h3>{playlist.playlistName}</h3>
+            <p>Created at: {playlist.createdAt}</p>
+            <p>Private: {playlist.isPrivate ? "Yes" : "No"}</p>
+            <p>Likes: {playlist.likeCount}</p>
+            <p>Reposts: {playlist.repostCount}</p>
+            <p>Description: {playlist.description}</p>
+            <p>Tags: {playlist.tags}</p>
+            <PlaylistEdit playlist={playlist} onEdit={handleEditPlaylist} />
+            <PlaylistDelete playlistId={playlist.id} onDelete={handleDeletePlaylist} />
+            <PlaylistRepost playlistId={playlist.id} onClick={handleRepostPlaylist} />
+          </li>
         ))}
       </ul>
     </div>
   );
 };
 
-export default PlaylistComponent;
+export default Playlist;

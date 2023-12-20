@@ -1,0 +1,56 @@
+/* Add some basic styles to improve the appearance of the PlaylistList component */
+
+/* Style the container */
+div {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  /* Style the heading */
+  h2 {
+    color: #333;
+  }
+  
+  /* Style the playlist items */
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  li {
+    border: 1px solid #ddd;
+    margin-bottom: 10px;
+    padding: 10px;
+  }
+  
+  /* Style the input fields and labels */
+  label {
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+  }
+  
+  /* Style the buttons */
+  button {
+    background-color: #4caf50;
+    color: white;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    margin-right: 5px;
+  }
+  
+  button:hover {
+    background-color: #45a049;
+  }
+  
+  /* Add some spacing between the buttons and form elements */
+  button, input {
+    margin-bottom: 10px;
+  }
+  

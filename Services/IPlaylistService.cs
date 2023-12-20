@@ -19,6 +19,7 @@ public interface IPlaylistService
     // Admin
     // Lấy tất cả playlist của tất cả user phân trang
     Task<IEnumerable<PlaylistResponseModel>> GetAllByAdmin(int page);
+    Task<PlaylistResponseModel> GetById(int trackId, long userId, bool isAdmin);
 
     // User
     // Lấy tất cả playlist của user đăng nhập
