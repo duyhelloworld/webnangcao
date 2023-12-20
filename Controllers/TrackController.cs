@@ -122,6 +122,13 @@ public class TrackController : ControllerBase
         return BadRequest();
     }
 
+    [HttpPut("listen/{trackId}")]
+    public async Task<IActionResult> Listen(int trackId)
+    {
+        await _trackService.Listen(trackId);
+        return Ok();
+    }
+
     [HttpPut("{trackId}")]
     [AppAuthorize(ERole.USER)]
     public async Task<IActionResult> Update(

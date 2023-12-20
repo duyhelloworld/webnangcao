@@ -40,6 +40,18 @@ public class UserController : ControllerBase
         return Ok(await _userService.GetById(id));
     }
 
+    [HttpGet("info")]
+    [AppAuthorize(ERole.USER)]
+    public async Task<IActionResult> GetById()
+    {
+        var userid = User.FindFirstValue("userid");
+        if (userid != null && long.TryParse(userid, out long uid))
+        {
+            return Ok(await _userService.GetById(uid));
+        }
+        return Forbid();
+    }
+
     [HttpGet("avatar/{fileName}")]
     public async Task<IActionResult> GetAvatar(string fileName)
     {
@@ -69,7 +81,7 @@ public class UserController : ControllerBase
         {
             if (uid == id)
                 return BadRequest("Không thể tự khóa chính mình");
-            await _userService.Disable(uid);
+            await _userService.Disable(id);
             return Ok("Xoá thành công");
         }
         return Forbid();

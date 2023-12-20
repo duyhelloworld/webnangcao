@@ -7,7 +7,7 @@ public class FileTool
 {
     private static readonly string ArtWorkFolderPath
         = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "artworks");
-    
+
     private static readonly string TrackFolderPath
         = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "musics");
 
@@ -52,6 +52,10 @@ public class FileTool
         if (Path.GetExtension(fileInputName) == ".jpg" ||
             Path.GetExtension(fileInputName) == ".png")
         {
+            if (fileInputName.Contains(' '))
+            {
+                fileInputName = fileInputName.Replace(" ", "_");
+            }
             var filePath = Path.Combine(folder, fileInputName);
             if (File.Exists(filePath))
             {
@@ -103,4 +107,46 @@ public class FileTool
     {
         await SaveImage(file, ArtWorkFolderPath);
     }
+
+    public static async Task DeleteFile(string? fileName, string folder)
+    {
+        if (string.IsNullOrWhiteSpace(fileName) || fileName == DefaultAvatar || fileName == DefaultArtWork)
+        {
+            // Không xóa ảnh mặc định
+            return;
+        }
+
+        try
+        {
+            var filePath = Path.Combine(folder, fileName);
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+                await Task.CompletedTask;
+            }
+            else
+            {
+                throw new AppException(HttpStatusCode.NotFound,
+                    "Không tìm thấy file để xóa");
+            }
+        }
+        catch (Exception ex)
+        {
+            // Xử lý các trường hợp xóa thất bại
+            System.Console.WriteLine(ex);
+            throw new AppException(HttpStatusCode.InternalServerError,
+                "Lỗi xóa file");
+        }
+    }
+
+    public static async Task DeleteAvatar(string? fileName)
+    {
+        await DeleteFile(fileName, AvatarFolderPath);
+    }
+
+    public static async Task DeleteArtwork(string? fileName)
+    {
+        await DeleteFile(fileName, ArtWorkFolderPath);
+    }
+
 }

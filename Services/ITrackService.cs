@@ -34,6 +34,8 @@ public interface ITrackService
 
     // Cập nhật thông tin track
     public Task UpdateInfomation(TrackUpdateModel model, IFormFile? fileArtwork, int trackId, long userid);
+
+    public Task Listen(int trackId);
     
     // Thêm mới track
     public Task AddNew(TrackInsertModel model, long userId, IFormFile fileAudio, IFormFile? fileArtwork);

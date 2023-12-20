@@ -261,6 +261,15 @@ public class TrackService : ITrackService
         await _context.SaveChangesAsync();
     }
 
+    public async Task Listen(int trackId) 
+    {
+        var track = await _context.Tracks.FindAsync(trackId)
+            ?? throw new AppException(HttpStatusCode.NotFound,
+                "Không tìm thấy bài hát");
+        track.ListenCount++;
+        await _context.SaveChangesAsync();
+    }
+
     public async Task AddNew(TrackInsertModel model, long userId, IFormFile fileTrack, IFormFile? fileArtwork)
     {
         var track = new Track()
